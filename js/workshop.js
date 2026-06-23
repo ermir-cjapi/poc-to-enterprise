@@ -444,10 +444,15 @@
       const cloudPct = parseInt(sliderCloud.value) / 100;
       const cachePct = parseInt(sliderCache.value) / 100;
 
-      // Pricing approximations (per 1K tokens)
-      const EMBED_COST_PER_Q   = 0.00002; // OpenAI ada-002 equiv
-      const GEN_COST_PER_Q_BIG = 0.0006;  // gpt-4o-mini output
-      const GEN_COST_PER_Q_SML = 0.0;     // self-hosted Llama (sunk GPU)
+      // Realistic enterprise RAG pricing per query
+      // Embedding: ~1,000 tokens × ada-002, plus ingestion pipeline overhead
+      // Generation (cloud): gpt-4o, ~4,000 token context + 400 token response + function calls
+      //   → calibrated so 1,000/day × 100% cloud × 0 cache = ~$4,200/month (Incident B)
+      // Generation (self-hosted): NIM on dedicated GPU — mostly sunk GPU cost (~$0.036/q)
+      //   → 1,000/day × 20% cloud × 70% cache = ~$1,824/month (NovaAssist v2.0, CFO approved)
+      const EMBED_COST_PER_Q   = 0.04;   // embedding + ingestion overhead per query
+      const GEN_COST_PER_Q_BIG = 0.10;   // cloud gpt-4o (4K ctx + 400 tok response)
+      const GEN_COST_PER_Q_SML = 0.036;  // self-hosted NIM (GPU amortised)
 
       const monthlyQ   = queries * 30;
       const uncachedQ  = monthlyQ * (1 - cachePct);
