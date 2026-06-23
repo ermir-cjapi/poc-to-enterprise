@@ -1,11 +1,11 @@
-# NovaAssist — Full Case Study Reference
+# NovaAssist â€” Full Case Study Reference
 ### The AI project that threads through every slide
 
 This document gives you everything you need to know about NovaAssist before the workshop. Read it once. Reference it during the session.
 
 ---
 
-## 1. The Company — NovaTech
+## 1. The Company â€” NovaTech
 
 | Attribute | Detail |
 |-----------|--------|
@@ -20,7 +20,7 @@ This document gives you everything you need to know about NovaAssist before the 
 
 ---
 
-## 2. The Intern — Alex
+## 2. The Intern â€” Alex
 
 Alex is a 6-week AI placement intern, halfway through a Master's in AI/ML. Alex knows:
 - Python, FastAPI, basic LangChain
@@ -39,7 +39,7 @@ Alex does **not** know (yet):
 
 ---
 
-## 3. The Project — NovaAssist v0.1
+## 3. The Project â€” NovaAssist v0.1
 
 ### What it does
 Internal Q&A chatbot. Employees ask questions in plain English; the bot searches uploaded department PDFs and answers using an LLM.
@@ -53,43 +53,43 @@ User (browser)
 ```
 
 ### What works well
-- Correct answers 85–90% of the time for HR-only queries with 1 user
+- Correct answers 85â€“90% of the time for HR-only queries with 1 user
 - Simple to deploy: `pip install -r requirements.txt && uvicorn main:app`
 - Fast to build: ~3 days of coding
 
 ### What is dangerously missing
-1. **No authentication** — the API endpoint has no auth; anyone with the URL can query any department's documents
-2. **No tenant isolation** — all departments share one Chroma collection; no WHERE filter on retrieval
-3. **Shared API key in `.env`** — committed to the Git repo (private at the time, but later publicised when Alex shared the project)
-4. **No rate limiting** — no per-user quotas, no monthly budget cap, no cost alerts
-5. **Re-embedding on every query** — the HTTP handler re-embeds the query AND re-indexes uploaded documents on every request
-6. **No evaluation** — Alex judged quality by manually reading 5 responses
-7. **No observability** — no logging of retrieval scores, latency, or costs
+1. **No authentication** â€” the API endpoint has no auth; anyone with the URL can query any department's documents
+2. **No tenant isolation** â€” all departments share one Chroma collection; no WHERE filter on retrieval
+3. **Shared API key in `.env`** â€” committed to the Git repo (private at the time, but later publicised when Alex shared the project)
+4. **No rate limiting** â€” no per-user quotas, no monthly budget cap, no cost alerts
+5. **Re-embedding on every query** â€” the HTTP handler re-embeds the query AND re-indexes uploaded documents on every request
+6. **No evaluation** â€” Alex judged quality by manually reading 5 responses
+7. **No observability** â€” no logging of retrieval scores, latency, or costs
 
 ---
 
 ## 4. The Timeline
 
 ### Week 1
-- Monday–Thursday: Build and iterate
+- Mondayâ€“Thursday: Build and iterate
 - Friday 3 PM: Demo to HR manager and director
 - Result: Standing ovation. "This is brilliant. Can IT and Finance use it too?"
 - Alex: "Sure, I'll set it up over the weekend."
 
 ### Week 2
 - Monday: IT and Finance both upload their PDFs. 120 users have access.
-- Tuesday 9:14 AM: **Incident A — Data Leak**
-- Wednesday: **Incident B — Cost Spike**
-- Thursday: **Incident C — Wrong Policy Answer** (discovered via HR ticket)
-- Friday: **Incident D — API Key Scraped**
+- Tuesday 9:14 AM: **Incident A â€” Data Leak**
+- Wednesday: **Incident B â€” Cost Spike**
+- Thursday: **Incident C â€” Wrong Policy Answer** (discovered via HR ticket)
+- Friday: **Incident D â€” API Key Scraped**
 - Friday afternoon: Alex in emergency meeting with CTO, HR director, IT Security, CFO
 
 ---
 
-## 5. The Four Incidents — Full Detail
+## 5. The Four Incidents â€” Full Detail
 
 ### Incident A: The Data Leak
-**What happened:** An HR employee searched for "remote access policy." NovaAssist returned a chunk from IT's server-access runbook — a document that contained internal IP addresses, VPN configuration, and SSH key instructions.
+**What happened:** An HR employee searched for "remote access policy." NovaAssist returned a chunk from IT's server-access runbook â€” a document that contained internal IP addresses, VPN configuration, and SSH key instructions.
 
 **Root cause:** Chroma had a single collection. When IT uploaded their runbooks Monday morning, they landed in the same index as the HR PDFs. There was no `department_id` field on any chunk. The retrieval query had no WHERE filter. The cosine similarity between "remote access" in an IT runbook and an HR "remote work policy" was high enough to surface the wrong document.
 
@@ -99,7 +99,7 @@ User (browser)
 - Add `dept_id` metadata to every chunk at ingestion time
 - Store in Milvus with one collection per department (or namespace per department)
 - Every retrieval query MUST include `WHERE dept_id = :user_dept` from the JWT claim
-- Test: try an HR query after ingesting IT docs — zero IT results should come back
+- Test: try an HR query after ingesting IT docs â€” zero IT results should come back
 
 **Gap pillar:** Data & Governance (Pillar 1)
 
@@ -110,10 +110,10 @@ User (browser)
 
 **Root cause breakdown:**
 - 62% of the cost was **embedding**, not generation
-- Every incoming query re-embedded the query text — fine, that's normal
-- But Alex's code also re-embedded the TOP-K retrieved document chunks before sending them to the LLM, "to check freshness" — this was redundant and expensive
+- Every incoming query re-embedded the query text â€” fine, that's normal
+- But Alex's code also re-embedded the TOP-K retrieved document chunks before sending them to the LLM, "to check freshness" â€” this was redundant and expensive
 - Additionally, when new PDFs were uploaded, the HTTP handler re-processed ALL existing documents synchronously, not just the new ones
-- No rate limit: one Finance user wrote a script to batch-query all 2,000 Finance policies to "test the system" — 2,000 queries in 3 hours
+- No rate limit: one Finance user wrote a script to batch-query all 2,000 Finance policies to "test the system" â€” 2,000 queries in 3 hours
 
 **The fix:**
 - Move embedding to an async worker (Celery/RQ): upload API returns immediately, embedding happens in background
@@ -123,8 +123,8 @@ User (browser)
 - Self-hosted NIM embedding model: zero marginal cost per embedding after GPU cost
 
 **Cost breakdown at 1,000 queries/day, 100% cloud:**
-- Embedding: ~$0.0001 × 1,000 × 30 = ~$3/day ? $90/month
-- Generation: ~$0.002 × 1,000 × 30 = ~$60/day ? $1,800/month (this was the minority)
+- Embedding: ~$0.0001 Ã— 1,000 Ã— 30 = ~$3/day ? $90/month
+- Generation: ~$0.002 Ã— 1,000 Ã— 30 = ~$60/day ? $1,800/month (this was the minority)
 - Re-indexing bug added ~3x multiplier on embeddings ? the actual $4,200 bill
 
 **Gap pillar:** Scale & Cost (Pillar 5)
@@ -132,7 +132,7 @@ User (browser)
 ---
 
 ### Incident C: Wrong Policy Answer
-**What happened:** An HR employee asked: "How many weeks of parental leave am I entitled to?" NovaAssist answered "8 weeks" based on an older version of the policy PDF. The actual current policy was 12 weeks (updated 2 months earlier, new PDF not yet uploaded by HR). The employee submitted their leave request for 8 weeks. HR manager caught it and had to manually correct it — causing a 2-day delay.
+**What happened:** An HR employee asked: "How many weeks of parental leave am I entitled to?" NovaAssist answered "8 weeks" based on an older version of the policy PDF. The actual current policy was 12 weeks (updated 2 months earlier, new PDF not yet uploaded by HR). The employee submitted their leave request for 8 weeks. HR manager caught it and had to manually correct it â€” causing a 2-day delay.
 
 **Root cause:**
 - No document versioning: old and new PDFs both in Chroma, old chunks surfacing because they had higher embedding similarity
@@ -144,7 +144,7 @@ User (browser)
 - Require citation in every answer: guardrail rule blocks responses that don't cite a chunk ID and upload date
 - Document versioning: when a new PDF is uploaded for the same source document, mark old chunks as superseded
 - Offline eval: 30-question golden set in CI that tests answers against known correct policy versions
-- Confidence threshold: if top retrieved chunk score < 0.65, respond "I found relevant documents but my confidence is low — please contact HR directly"
+- Confidence threshold: if top retrieved chunk score < 0.65, respond "I found relevant documents but my confidence is low â€” please contact HR directly"
 
 **Gap pillar:** Observability (Pillar 4) + Data & Governance (Pillar 1)
 
@@ -161,7 +161,7 @@ User (browser)
 - $147 in additional charges from scraper usage
 
 **The fix (immediate):**
-1. Rotate the key immediately — assume it was used maliciously
+1. Rotate the key immediately â€” assume it was used maliciously
 2. Make repo private again
 3. Add `.env` to `.gitignore` and remove from git history (`git filter-branch` or BFG)
 
@@ -169,7 +169,7 @@ User (browser)
 - API key in Azure Key Vault, accessed via managed identity (no key in code)
 - Pre-commit hook: `detect-secrets` scanner blocks any commit with API key patterns
 - CI pipeline: `trufflehog` or `gitleaks` scans every pull request
-- Principle: the application reads secrets from environment variables injected at runtime by the secret store — never stored in files, never in config
+- Principle: the application reads secrets from environment variables injected at runtime by the secret store â€” never stored in files, never in config
 
 **Gap pillar:** Security (Pillar 2)
 
@@ -179,7 +179,7 @@ User (browser)
 
 ### v0.1 ? v1.0: Fix RAG
 **Main changes:**
-- Async worker (Celery) for PDF ingestion — HTTP handler no longer embeds
+- Async worker (Celery) for PDF ingestion â€” HTTP handler no longer embeds
 - Milvus with dept namespace replacing flat Chroma
 - NIM Embed service replacing OpenAI embedding for all chunks
 - Cross-encoder reranker added to query path
@@ -203,7 +203,7 @@ User (browser)
 - Audit log: every step logged with 90-day retention
 - `max_steps=8`, `timeout=30s`, `cost_cap=$0.50/session`
 
-**The incident that forced this:** Before the policy engine was added, Alex tested the agent overnight. The agent created 12 duplicate ServiceNow tickets for the same request — the loop ran 47 iterations without hitting a stop condition. IT team spent 4 hours cleaning up.
+**The incident that forced this:** Before the policy engine was added, Alex tested the agent overnight. The agent created 12 duplicate ServiceNow tickets for the same request â€” the loop ran 47 iterations without hitting a stop condition. IT team spent 4 hours cleaning up.
 
 ---
 
@@ -235,7 +235,7 @@ User (browser)
 
 ---
 
-## 8. The Stakeholders — What Each One Needs to See
+## 8. The Stakeholders â€” What Each One Needs to See
 
 ### HR Sponsor
 - **Concern:** "One wrong answer could become an HR incident. Every answer must cite its source and be traceable."
