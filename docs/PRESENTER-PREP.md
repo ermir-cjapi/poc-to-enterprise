@@ -1,4 +1,4 @@
-# Presenter Prep Guide
+﻿# Presenter Prep Guide
 ## Read this before presenting the workshop
 
 This document tells you exactly what to read, what to understand, and what to practise before standing in front of the room. Estimated prep time: 2–3 hours.
@@ -45,8 +45,19 @@ Open notes in a second window. Read them for each slide — they contain extra c
 
 Practice saying these out loud before the session:
 
-### 1. Why the POC is not wrong
-*"The POC is correct for week 1 with 1 user and 1 department. The mistake is calling it production on Monday. Architecture decisions are triggered by scale and stakeholder pressure — not by best practices people memorise."*
+### 1. POC vs Enterprise System — the core distinction
+
+This is the single most important concept in the workshop. Be able to say it in your own words.
+
+**A POC (Proof of Concept)** answers one question: *"Can this idea work?"* Risks are deliberately ignored or bypassed to move fast. It is an experimental sandbox. Alex's POC was correct — it proved the idea in 3 days with one user and one department. That is exactly what a POC should do.
+
+**An Enterprise System** answers a different question: *"Is this system reliable, compliant, and secure enough for the real world?"* Every potential risk must be identified before go-live, assigned to a specific person, and either fixed or explicitly accepted. No risk can be left ownerless.
+
+**The principle:** Enterprises prioritise **proactive accountability over reactive damage control.**
+
+Alex's mistake was not building the POC. It was skipping the accountability step — going from "it worked on Friday" to "120 users, 3 departments, Monday morning" without anyone running a risk list and signing their name next to each item. The four incidents that followed were all foreseeable from the code. They were not bad luck; they were predictable consequences of skipped accountability.
+
+*Practise saying this in one sentence:* "The difference between a POC and an enterprise system is not the code — it is whether someone was accountable for every known risk before the first real user hit it."
 
 ### 2. The retrieval-before-model principle
 *"Fix retrieval before upgrading the model. NovaAssist went from 61% to 89% retrieval precision — by adding a reranker. Same model. No fine-tuning. The LLM writes fluent text; the vector DB decides whether it has the right context. If the context is wrong, a better LLM just writes wrong answers more confidently."*

@@ -994,18 +994,22 @@
 }
 
 #arch-explain-panel {
-  grid-column: 1 / -1;
-  min-height: 36px;
-  color: var(--accent-blue);
-  font-size: 0.75em;
-  padding: 6px 10px;
+  margin-bottom: 8px;
+  min-height: 42px;
+  color: var(--text-muted);
+  font-size: 0.82em;
+  line-height: 1.5;
+  padding: 8px 10px;
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  display: none;
+  display: block;
 }
 
-#arch-explain-panel.visible { display: block; }
+#arch-explain-panel.visible {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
 
 /* ── Tool Policy Game ── */
 #tool-game { font-size: 0.73em; }

@@ -20,6 +20,34 @@ This document gives you everything you need to know about NovaAssist before the 
 
 ---
 
+## The Core Distinction This Case Study Teaches
+
+### POC vs Enterprise System
+
+| | Proof of Concept (POC) | Enterprise System |
+|---|---|---|
+| **Primary question** | "Can this idea work?" | "Is this safe, reliable, and compliant for the real world?" |
+| **Approach to risk** | Ignored or bypassed to move fast | Every risk identified, assigned, and mitigated before go-live |
+| **Accountability** | None — it's a sandbox experiment | Explicit owner per risk, sign-off before launch |
+| **Failure mode** | Expected and acceptable | Unacceptable — real users, real data, real consequences |
+| **Alex's version** | v0.1 — FastAPI + Chroma + OpenAI, built in 3 days | v1.0 through v2.0 — the rest of this document |
+
+**The key principle:** Enterprises prioritise **proactive accountability over reactive damage control**.
+
+Alex's POC was not wrong. It was correct for its purpose: proving that an HR chatbot could work at NovaTech. The mistake was treating "it worked on Friday with one user" as evidence it was ready for 120 users across three departments on Monday — without anyone sitting down and running a risk list first.
+
+Every risk that caused an incident in Week 2 was **already visible in the code on Friday afternoon**:
+- No `dept_id` filter → cross-department leak (Incident A)
+- No rate limit + re-embedding bug → $4,200 bill (Incident B)
+- No document versioning + no eval → wrong policy answer (Incident C)
+- API key in `.env` committed to Git → key scraped (Incident D)
+
+None were surprises. All were foreseeable. The difference between a POC team and an enterprise team is that the enterprise team runs this list **before** opening to users, assigns a name to each risk, and decides: *"We fix this before go-live"* or *"We accept this risk and document why."*
+
+That decision process — not the code, not the model — is what separates a POC from a production system.
+
+---
+
 ## 2. The Intern — Alex
 
 Alex is a 6-week AI placement intern, halfway through a Master's in AI/ML. Alex knows:
@@ -287,19 +315,56 @@ These are the 3 main decisions Alex documented as ADRs:
 
 ## 10. Offline vs Online Eval — What Each One Catches
 
+### Why AI systems need a different approach than traditional software
+
+For traditional software, the deployment lifecycle is linear:
+
+```
+Unit Tests → Deploy → Done
+```
+
+For AI systems, the world keeps moving after you deploy:
+
+```
+Tests pass → Deploy → Knowledge changes
+                      Users change
+                      Prompts change
+                      Models change
+                         ↓
+                   Quality degrades
+```
+
+That is why online evaluation exists. It is not a replacement for offline testing — it is the gate that covers everything offline testing cannot see.
+
 ### The core distinction
 
 | | Offline eval | Online eval |
 |---|---|---|
 | **When it runs** | In CI, before every deploy | Continuously in production |
-| **What it tests** | 30 known questions with known correct answers | Real user queries, real traffic |
+| **What it tests** | Known questions with known correct answers | Real user queries, real traffic |
 | **What it catches** | Regressions *you introduced* (prompt change, model swap, chunk size change) | Production drift *the world introduced* (updated documents, unexpected query patterns, cost spikes) |
 | **How fast** | Minutes (automated) | Immediate (live signals) |
 | **Tool in NovaAssist** | LangSmith eval datasets + RAGAS faithfulness scorer | LangSmith traces + thumbs-down feedback |
 
+### Why offline evaluation alone is not enough — a concrete example
+
+Consider NovaAssist's parental leave scenario.
+
+Offline test (written in Month 1):
+> Q: How many weeks of parental leave do I get?
+> A: 12 weeks — **PASS**
+
+You deploy. The tests pass. Two weeks later, HR uploads a revised policy PDF with the new entitlement. The old PDF is never deleted from Milvus — both versions now coexist. The new document uses different wording chosen by a lawyer. When a user asks "How many weeks of parental leave?", the old chunk scores higher in cosine similarity (0.82 vs 0.71) because the wording matches better. NovaAssist answers from the old chunk:
+
+> 8 weeks — **WRONG**
+
+Offline evaluation still reports 100% accuracy, because nobody re-ran the tests after the new PDF was uploaded. The tests were passing against the correct answer in CI — but in production, the wrong chunk ranked first. This is exactly Incident C.
+
+The key point: **offline eval can only catch regressions in things you control**. It cannot detect that a new document was uploaded alongside an old one, or that vocabulary drift in the new version caused the wrong chunk to rank higher.
+
 ### Offline eval in NovaAssist
 
-HR's HR manager and IT lead contributed 30 questions with verified correct answers — things like "How many vacation days does a senior engineer get?", "What is the VPN reset procedure?", "What is the parental leave entitlement?" (answer must be 12 weeks, not 8).
+HR's manager and IT lead contributed 30 questions with verified correct answers — things like "How many vacation days does a senior engineer get?", "What is the VPN reset procedure?", "What is the parental leave entitlement?" (answer must be 12 weeks, not 8).
 
 Before any deploy, the CI pipeline runs all 30 questions through the live RAG stack and checks:
 - **Faithfulness score** (via RAGAS): is every claim in the answer supported by a retrieved chunk? Must be ≥ 0.85 or deploy is blocked.
@@ -308,23 +373,148 @@ Before any deploy, the CI pipeline runs all 30 questions through the live RAG st
 
 If any check fails, the GitHub Actions pipeline fails and the deploy does not proceed.
 
-### Online eval in NovaAssist
+### Online eval in NovaAssist — the 7 signals
 
-Three live signals tracked continuously in LangSmith:
+Online evaluation does not check whether an answer exactly matches expected text. It asks: *"Is the system behaving normally?"*
 
-**1. Thumbs-down rate (per topic)**
-Every response has a thumbs up/down button. LangSmith aggregates by topic cluster. A spike in thumbs-down on "parental leave" queries before HR files a ticket is an early warning that something has changed. This is how Incident C would be caught *before* an employee acts on a wrong answer in a future version.
+NovaAssist tracks these signals continuously in LangSmith:
 
-**2. Retrieval score drift**
-Every query logs the cosine similarity score of the top retrieved chunk. Normal range: 0.78–0.85. If this drops to 0.61 across many queries, the most common reason is that documents were updated externally (e.g. HR updated a policy in SharePoint) but nobody re-ingested the new PDF into Milvus. The model is fine — the data is stale. A LangSmith alert fires when the 7-day rolling average drops below 0.70.
+---
 
-**3. Cost per query per department**
-Tracked daily, emailed to CFO weekly. If Finance's cost-per-query triples on a Tuesday morning, someone wrote a batch script (Incident B pattern recurring). The API Gateway's rate limiter catches it, but the cost dashboard makes it visible before the monthly bill arrives.
+**Signal 1 — User Feedback (thumbs-down rate)**
+
+The simplest signal. Every response has a thumbs-up / thumbs-down button. LangSmith aggregates by topic cluster.
+
+Example from NovaAssist:
+
+| Week | Parental Leave Questions | Downvotes |
+|------|--------------------------|-----------|
+| 1 | 100 | 2 |
+| 2 | 120 | 3 |
+| 3 | 115 | 35 |
+
+Week 3 spike — something changed. Nobody needs to read logs. The metric reveals the problem before HR files a support ticket.
+
+---
+
+**Signal 2 — Retrieval Quality Drift**
+
+Every query logs the cosine similarity score of the top retrieved chunk. Normal range in NovaAssist: 0.78–0.85.
+
+Example drift:
+
+> Query: "What is parental leave?"
+> Month 1 — Chunk #1 similarity: **0.84** (good)
+> Month 2 — Chunk #1 similarity: **0.61** (alert)
+
+A drop like this across many queries usually means: documents were updated or replaced in the source system but the new versions were never ingested into Milvus. The LLM is fine. The retrieval layer is stale.
+
+Concrete example: HR uploads `Parental Leave Policy 2026.pdf` to SharePoint but nobody triggers the ingestion pipeline. Milvus still holds only the 2025 version. Queries that used to match cleanly now return lower similarity because the vocabulary in user questions has drifted away from the outdated document. Similarity drops. Online evaluation catches it.
+
+Note: this is a **different failure mode from Incident C**. In Incident C, the new document *was* ingested — but the old one was never deleted. Both coexisted, and the old chunk won the similarity race due to vocabulary mismatch. Retrieval score drift would not have flagged Incident C because the old chunk still scored 0.82. What would catch Incident C is document versioning (filtering out superseded chunks) combined with an offline eval that checks the answer against the current policy, not just whether a chunk was returned.
+
+A LangSmith alert fires when the 7-day rolling average drops below 0.70.
+
+---
+
+**Signal 3 — Context Relevance**
+
+Measures whether retrieved chunks were actually relevant to the question. If a query about parental leave retrieves HR policy + travel expenses + VPN guide, only one chunk is useful.
+
+| Period | Average relevance score |
+|--------|------------------------|
+| Month 1 | 0.82 |
+| Month 3 | 0.63 |
+
+A drop like this suggests chunking strategy has degraded, embedding model has drifted, or new documents are polluting the namespace.
+
+---
+
+**Signal 4 — Hallucination Rate**
+
+A second LLM (the judge) reads each response alongside the retrieved context and asks: *"Is this answer supported by the context?"*
+
+Example:
+> Context says: leave = 30 days
+> Answer says: leave = 45 days
+> Judge verdict: **Unsupported**
+
+NovaAssist alert thresholds:
+
+| Hallucination rate | Status |
+|--------------------|--------|
+| ≤ 3% | Normal |
+| 8% | Warning |
+| 15% | Alert — block deploys |
+
+---
+
+**Signal 5 — Cost per Query per Department**
+
+Every query has a measurable token cost. Normal range in NovaAssist: ~2,000 tokens / $0.02 per HR query.
+
+Example alert:
+> Finance department: 40,000 tokens / query — $0.50/query
+
+Investigation finds a batch script calling the assistant 5,000 times per hour (Incident B pattern). The API Gateway rate limiter catches it in real time, but the cost dashboard makes it visible before the monthly CFO report.
+
+---
+
+**Signal 6 — Latency (P50 / P95 / P99)**
+
+Track response time percentiles, not just the average. An average of 2 seconds can hide a p99 of 10 seconds, which is what a small subset of users experiences.
+
+Common causes of latency spikes in NovaAssist:
+- Vector DB slow (Milvus index not optimised)
+- LLM provider degraded
+- MCP tool timeout in the agent pipeline
+- Prompt explosion (context window too large)
+
+---
+
+**Signal 7 — Agent Success Rate** *(for NovaAssist v1.5 onwards)*
+
+Agent pipelines have multiple steps. Each step can fail independently. Track success rate at the workflow level, not just step level.
+
+Example: Create Offer Workflow = Retrieve Customer → Calculate Price → Generate Excel → Generate Word
+
+| Period | Success rate |
+|--------|-------------|
+| Week 1 | 97% |
+| After deploy | 72% |
+
+A drop from 97% to 72% tells you a specific step broke — investigate the step-level trace in LangSmith.
+
+---
+
+### What LangSmith stores per request
+
+For every query through NovaAssist, LangSmith logs:
+
+```
+Question
+Retrieved documents
+Similarity scores
+Prompt sent to model
+Model used
+Token count
+Cost
+Latency
+Final answer
+User feedback (thumbs)
+```
+
+Dashboards then aggregate:
+- Average similarity (retrieval health)
+- Average cost (budget tracking)
+- Average latency (performance)
+- Thumbs-down rate (user satisfaction)
+- Hallucination score (answer quality)
 
 ### Why you need both
 
-- **Offline only**: catches your changes, misses the world's changes. The Incident C pattern (stale documents returning wrong answers) would not be caught by offline eval because the golden test set was written against the correct document version — it's the live data that drifted.
-- **Online only**: you wait for users to discover regressions. No gate before deploy. A prompt change that drops faithfulness from 0.88 to 0.72 would only be caught after real users got bad answers.
+- **Offline only**: catches regressions *you introduced*, misses changes *the world introduced*. Incident C (old chunk winning over new due to vocabulary mismatch) would not be caught by offline eval — the golden test set tests that the *answer* is correct, not that the *right chunk ranked first*. After HR uploaded the new PDF alongside the old one, the tests still passed in CI because they were run in isolation, not against the live Milvus index with both documents in it. The problem was in production data, not in the code.
+- **Online only**: no gate before deploy. A prompt change that drops faithfulness from 0.88 to 0.72 ships to production and only real users discover it.
 - **Both**: offline catches what you broke before it ships; online catches what the world broke after it shipped.
 
 ---

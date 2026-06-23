@@ -155,7 +155,17 @@ Common answers and how to respond:
 
 **Key point to say out loud after results:**
 
-*"Every single one of these is a real risk. None are wrong answers. The difference between a POC and an enterprise system is that enterprise assigns an explicit owner and a mitigation to every risk before go-live — not after the incident proves it's real. Alex's mistake wasn't building the POC. It was not running this list on Monday morning before opening it to three departments."*
+*"Every single one of these is a real risk. None are wrong answers."*
+
+**Then say the POC vs Enterprise distinction explicitly — this is the core thesis of the whole workshop:**
+
+*"A Proof of Concept exists to answer one question: can this idea work? Risks are ignored or bypassed to move fast. That is not a failure — it is the point of a POC. Alex's POC was good at what it was built for.*
+
+*An enterprise system exists to answer a different question: is this system reliable, compliant, and secure enough for the real world? Every potential risk must be identified, assigned to a specific owner, and mitigated before go-live — not after an incident proves it is real.*
+
+*The difference is not better code or a bigger model. It is proactive accountability over reactive damage control.*
+
+*Alex's mistake was not building the POC. It was going from 'Friday demo worked with one user' to 'Monday, 120 users, three departments' without anyone signing their name next to each risk on this list and deciding: we accept this, or we fix this before launch. Every incident that followed was a predictable consequence of skipped accountability — not bad luck."*
 
 **Optional deeper point (say if time allows):**
 
@@ -289,18 +299,56 @@ After all three are found, name the real incident for each:
 
 Start the 2:00 timer. While students discuss, you can circulate or stay quiet.
 
-**After timer:** Ask 2 students what they came up with. Then deliver the full answer below.
+**After timer:** Ask 2 students what they came up with. Then deliver the answer below. The target answer is: **both offline and online — and they protect you from completely different things.**
 
-**Say:** *"Target answer: both offline and online — and they protect you from different things."*
+---
+
+**First, explain why AI systems need online eval at all. Say this out loud:**
+
+*"For traditional software: tests pass, deploy, done. For AI systems: tests pass, deploy — then knowledge changes, users change, prompts change, models change, and quality degrades. That is why online evaluation exists."*
+
+---
 
 **Offline eval — runs in CI before every deploy:**
-*"HR gives you 30 real questions with known correct answers. Before any deploy, you run those automatically and check two things: faithfulness — does the answer come from the retrieved chunk, or did the model hallucinate it? And citation accuracy — is a source document cited? If faithfulness drops below 0.85, the deploy is blocked. This catches regressions you introduced."*
 
-**Online eval — runs continuously in production:**
-*"You can't pre-write correct answers for every real query. So instead you track signals. Three signals in NovaAssist: thumbs-down rate — a spike on parental leave queries tells you something changed before HR files a ticket. Retrieval score drift — every query logs the cosine similarity of the top chunk in LangSmith. If that score drops from 0.80 to 0.61 across many queries, it usually means HR updated their PDFs but nobody re-uploaded them to Milvus — the model didn't get worse, the data did. And cost-per-query per department — if Finance's cost triples on a Tuesday, someone wrote a batch script."*
+*"HR gives you 30 real questions with known correct answers. Before any deploy, the pipeline runs them automatically and checks two things: faithfulness — does the answer come from the retrieved chunk, or did the model hallucinate? And citation presence — is a source document cited? If faithfulness drops below 0.85, the deploy is blocked. This catches regressions you introduced."*
 
-**Key distinction to say explicitly:**
-*"Offline eval protects you from regressions you know about. Online eval protects you from the real world, which changes without asking your permission. Documents get updated. Users ask unexpected things. None of that shows up in a 30-question test written three months ago."*
+---
+
+**Then explain why offline alone is not enough — use this example:**
+
+*"Imagine this: your offline test says 'How many weeks of parental leave?' Answer: 12 weeks. Test passes. You deploy. Two weeks later, HR uploads a revised policy PDF. The new one gets indexed — but nobody deleted the old one. Both documents now live in Milvus. The new policy was rewritten by a lawyer with different wording: 'primary caregiver allowance' instead of 'parental leave'. Old chunk similarity: 0.82. New chunk: 0.71. The old chunk wins. NovaAssist answers 8 weeks. But your offline test still shows 100% accuracy — because CI ran against the golden answer, not against which chunk ranked first in the live index. Production users are getting the wrong answer. That is exactly Incident C."*
+
+---
+
+**Online eval — runs continuously in production. Walk through the key signals:**
+
+**Signal 1 — User feedback (thumbs-down rate)**
+*"Every response has a thumbs up/down button. LangSmith tracks it by topic cluster. A spike in downvotes on parental leave questions in Week 3 tells you something changed — before HR ever files a support ticket."*
+
+**Signal 2 — Retrieval score drift**
+*"Every query logs the cosine similarity of the top retrieved chunk. Normal range: 0.78–0.85. If it drops to 0.61 across many queries, HR probably updated their PDFs externally but nobody re-ingested them. The model is fine — the data is stale. An alert fires when the 7-day rolling average drops below 0.70."*
+
+**Signal 3 — Context relevance**
+*"Did the retrieved chunks actually match the question? If average relevance drops from 0.82 to 0.63 over time, something degraded in retrieval or chunking — possibly new documents polluting the namespace."*
+
+**Signal 4 — Hallucination rate**
+*"A second LLM judges whether the answer was supported by the retrieved context. Context says 30 days, answer says 45 days — unsupported. NovaAssist alerts when the hallucination rate exceeds 8%."*
+
+**Signal 5 — Cost per query per department**
+*"Every query costs money. If Finance's cost-per-query suddenly triples on a Tuesday, someone wrote a batch script. The API Gateway rate-limits it, but the cost dashboard makes it visible before the monthly bill arrives — Incident B pattern."*
+
+**Signal 6 — Latency (P50 / P95 / P99)**
+*"Track percentiles, not averages. An average of 2 seconds can hide a p99 of 10 seconds, which is what a subset of users actually experience."*
+
+**Signal 7 — Agent success rate** *(for v1.5 agent pipelines)*
+*"For agents, track the full workflow success rate. If Create Offer drops from 97% to 72%, a specific step broke — you find it in the LangSmith trace."*
+
+---
+
+**Key distinction to close with:**
+
+*"Offline eval protects you from regressions you introduced. Online eval protects you from the real world, which changes without asking your permission. Documents get updated. Users ask unexpected things. None of that shows up in a 30-question test written three months ago. You need both gates: one before deploy, one after."*
 
 ---
 
@@ -359,6 +407,18 @@ Give 3–4 minutes for students to classify.
 Start 2:00 timer. Expected answer: human gate + amount threshold (e.g., <$50 auto, $50–$500 gate, >$500 block). Two-factor approval above $200.
 
 **Say after:** *"Financial writes are never auto-approve. Even $1 — because the amount can change between the intent and the execution. The pattern: show the user what the agent is about to do, give them 30 seconds to approve or reject."*
+
+**Then explain intent vs execution — this is the key concept:**
+
+*"Intent is what the user asked for. Execution is what the agent is actually about to do. They are not always the same thing.*
+
+*Example: a user says 'refund John's last order.' The agent looks up John's last order. It was $340. The agent is now about to execute `refund_payment(customer_id=JohnSmith, amount=340.00)`. That is a specific, irreversible action — not a vague request anymore.*
+
+*The gap between 'refund John's last order' and 'transfer $340 out of the company account to John Smith' is where mistakes happen. The user may have meant a different order. The agent may have retrieved the wrong one. The amount may have changed because of a partial refund already applied.*
+
+*The human gate exists at this exact moment — after the agent has resolved the intent into a concrete action, before it executes. You show the user: 'I am about to refund $340 to John Smith for Order #4821. Approve?' That 30-second pause is the difference between a recoverable mistake and an irreversible one.*
+
+*This is called a human-in-the-loop approval step. In LangGraph it is a `interrupt_before` node — the graph pauses, surfaces the pending action to the UI, and only continues when the user confirms."*
 
 ---
 

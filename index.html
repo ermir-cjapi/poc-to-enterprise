@@ -360,7 +360,7 @@
   <!-- ARCHITECTURE BUILDER -->
   <section data-background-color="#0d1117">
     <span class="part-label">PART 2 &mdash; BUILD IT YOURSELF</span>
-    <div class="case-banner">Add the 5 missing enterprise layers to NovaAssist v0.1</div>
+    <div class="case-banner">Add the 6 missing enterprise layers to NovaAssist v0.1</div>
     <h2>Architecture Builder</h2>
     <div id="arch-builder">
       <div id="arch-builder-diagram">
@@ -396,15 +396,15 @@
         <div id="arch-complete-msg">&#9989; NovaAssist v1.0 complete! Now HR Security &amp; CFO are all satisfied.</div>
       </div>
       <div id="arch-builder-buttons">
-        <p style="color:#8b949e;font-size:0.75em;margin:0 0 10px;">Click each to add it to the architecture:</p>
-        <button type="button" class="arch-add-btn" data-target="layer-auth" data-explain="SSO + JWT with dept_id claim. Without this, anyone can query anyone's documents.">+ Auth &amp; JWT</button>
+        <div id="arch-explain-panel">Click a button to see what it fixes &rarr;</div>
+        <p style="color:#8b949e;font-size:0.75em;margin:8px 0 6px;">Click each to add it to the architecture:</p>
+        <button type="button" class="arch-add-btn" data-target="layer-auth" data-explain="SSO + JWT with dept_id claim. Without this, anyone can query anyone&rsquo;s documents.">+ Auth &amp; JWT</button>
         <button type="button" class="arch-add-btn" data-target="layer-namespace" data-explain="Milvus collection per dept. Every chunk tagged dept_id. One WHERE clause prevents the IT/HR leak.">+ Dept namespace</button>
-        <button type="button" class="arch-add-btn" data-target="layer-async" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately — no more timeouts.">+ Async worker</button>
+        <button type="button" class="arch-add-btn" data-target="layer-async" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately &mdash; no more timeouts or $4,200 re-embedding bills.">+ Async worker</button>
         <button type="button" class="arch-add-btn" data-target="layer-reranker" data-explain="Cross-encoder re-scores top-K chunks. NovaAssist precision: 0.61 &rarr; 0.89. No model change needed.">+ Reranker</button>
-        <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off after seeing this.">+ Guardrails</button>
-        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="LangSmith traces every request. 30-Q golden set in CI. Online: thumbs rate + cost/query.">+ Eval &amp; Observability</button>
+        <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off on v1.0 only after seeing this.">+ Guardrails</button>
+        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="LangSmith traces every request. 30-question golden set in CI blocks bad deploys. Online: thumbs-down rate + retrieval score drift + cost/query.">+ Eval &amp; Observability</button>
       </div>
-      <div id="arch-explain-panel"></div>
     </div>
   </section>
 
