@@ -289,9 +289,18 @@ After all three are found, name the real incident for each:
 
 Start the 2:00 timer. While students discuss, you can circulate or stay quiet.
 
-**After timer:** Ask 2 students what they came up with. Then:
+**After timer:** Ask 2 students what they came up with. Then deliver the full answer below.
 
-**Say:** *"Target answer: both offline and online. Offline means: HR gives you 30 real questions with correct answers. Before any deploy, you run those 30 questions automatically and check faithfulness — does the answer actually come from the retrieved chunk? Citation accuracy — is a source cited? If faithfulness drops below 0.85, deploy is blocked. Online means: you track thumbs-down rates, retrieval score drift, and cost-per-query in production. Drift in retrieval scores tells you your documents changed but your chunks didn't get re-indexed."*
+**Say:** *"Target answer: both offline and online — and they protect you from different things."*
+
+**Offline eval — runs in CI before every deploy:**
+*"HR gives you 30 real questions with known correct answers. Before any deploy, you run those automatically and check two things: faithfulness — does the answer come from the retrieved chunk, or did the model hallucinate it? And citation accuracy — is a source document cited? If faithfulness drops below 0.85, the deploy is blocked. This catches regressions you introduced."*
+
+**Online eval — runs continuously in production:**
+*"You can't pre-write correct answers for every real query. So instead you track signals. Three signals in NovaAssist: thumbs-down rate — a spike on parental leave queries tells you something changed before HR files a ticket. Retrieval score drift — every query logs the cosine similarity of the top chunk in LangSmith. If that score drops from 0.80 to 0.61 across many queries, it usually means HR updated their PDFs but nobody re-uploaded them to Milvus — the model didn't get worse, the data did. And cost-per-query per department — if Finance's cost triples on a Tuesday, someone wrote a batch script."*
+
+**Key distinction to say explicitly:**
+*"Offline eval protects you from regressions you know about. Online eval protects you from the real world, which changes without asking your permission. Documents get updated. Users ask unexpected things. None of that shows up in a 30-question test written three months ago."*
 
 ---
 
@@ -300,7 +309,7 @@ Start the 2:00 timer. While students discuss, you can circulate or stay quiet.
 
 Correct answer: **Both offline CI gate + online monitoring**.
 
-After reveal: *"Offline without online misses production drift. Online without offline means you wait for users to catch regressions. You need both gates: one before deploy, one after."*
+After reveal: *"Offline without online means you wait for users to discover production drift — like the Incident C wrong policy answer. Online without offline means your CI never catches regressions before they hit production. You need both gates: one before deploy, one after. This is exactly what NovaAssist v1.0 added after Week 3."*
 
 ---
 
@@ -406,7 +415,27 @@ After: *"The routing decision itself is made by a tiny, fast, cheap model. The e
 
 Correct: **RAG ingestion pipeline + routing + eval**.
 
-After: *"Fine-tuning on docs that change weekly means you are always training on stale data. By the time the fine-tuned model ships, 200 policies have changed. RAG + ingestion pipeline means you update the vector store when a PDF changes — same day. That's why RAG is the right answer for volatile document stores."*
+**Purpose of this slide:** This is the most common architecture mistake interns make — they hear "fine-tuning makes models smarter on your data" and immediately want to fine-tune on their documents. This quiz forces the decision: *when is fine-tuning right, and when is RAG right?* The answer depends entirely on how often the data changes.
+
+**After reveal — explain the core decision rule:**
+
+*"Fine-tuning bakes knowledge INTO the model weights. Once trained, that knowledge is frozen. NovaTech's 2,000 policy PDFs change every week. By the time a fine-tuned model completes training, validation, and deployment — typically 2–4 weeks — 200+ policies have already changed. You would be shipping stale knowledge every month, indefinitely."*
+
+*"RAG externalises the knowledge. The model stays generic; documents live in the vector store. When a PDF is updated, you re-ingest that one document — same day, no retraining, no redeployment. Retrieval always hits the current version. This is exactly how NovaAssist fixed the Incident C wrong-policy-answer problem."*
+
+**Decision rule to give students explicitly:**
+
+| Use RAG when... | Use fine-tuning when... |
+|---|---|
+| Documents change frequently (weekly, daily) | Knowledge is stable for months or years |
+| You need same-day accuracy on new content | You need to change the model's *style* or *output format* |
+| You need traceable source citations | You have a small, high-quality curated task dataset |
+| Data is large and varied (thousands of PDFs) | You want the model to learn a repeatable task pattern |
+
+*"NovaAssist has 2,000 PDFs updated weekly. That is the textbook definition of a volatile document store. RAG is the only viable architecture. Fine-tuning here would cost more, take longer, and deliver worse accuracy on current policies."*
+
+**If a student asks "why not both — fine-tune AND RAG?"**
+*"You can combine them: fine-tune for style, RAG for facts. But that adds complexity without benefit here. NovaAssist v0.1 already proved gpt-4o-mini quality is fine. The problem was never the model — it was retrieval and data management. Fine-tuning solves nothing that RAG doesn't solve better, and cheaper."*
 
 ---
 

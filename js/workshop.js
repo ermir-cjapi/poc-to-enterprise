@@ -374,7 +374,9 @@
       Object.keys(placed).forEach(k => delete placed[k]);
       cards.forEach(c => c.classList.remove('placed'));
       zones.forEach(z => { const d = z.querySelector('.zone-drop'); if (d) d.innerHTML = ''; });
-      if (result) result.innerHTML = '';
+      if (result) { result.innerHTML = ''; result.style.display = 'none'; }
+      const body = document.getElementById('tool-game-body');
+      if (body) body.style.display = '';
     });
 
     submit?.addEventListener('click', () => {
@@ -409,7 +411,12 @@
         </div>`;
       });
       html += `<div style="margin-top:8px;color:${correct===allTools.length?'var(--nv-green)':'var(--accent-orange)'};font-weight:600">${correct}/${allTools.length} correct</div>`;
+
+      // Show results IN PLACE of the cards+zones so content height stays the same
+      const body = document.getElementById('tool-game-body');
+      if (body) body.style.display = 'none';
       result.innerHTML = html;
+      result.style.display = 'block';
       markComplete('tool-game', correct === allTools.length ? 1 : 0);
     });
   }

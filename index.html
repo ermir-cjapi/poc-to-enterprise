@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -336,8 +336,8 @@
             data-label="NeMo Guardrails" data-desc="Colang rules: reject off-topic questions, redact PII, require citation presence, block jailbreak prompts." data-fix="Guardrails run in &lt;50 ms added latency. HR signed off on v1.0 only after seeing guardrails demo."/>
           <text x="230" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Guardrails</text>
           <rect class="svgnode" x="270" y="84" width="65" height="24" rx="3" fill="#21262d" stroke="#76b900"
-            data-label="Observability (Langfuse)" data-desc="Traces every request: retrieval scores, reranker scores, LLM tokens, latency, cost. Feeds offline eval and online drift detection." data-fix="Langfuse is open-source. Takes 2 hours to instrument. Without it, you can't answer any stakeholder question about quality."/>
-          <text x="302" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Langfuse</text>
+            data-label="Observability (LangSmith)" data-desc="Traces every request: retrieval scores, reranker scores, LLM tokens, latency, cost. Feeds offline eval and online drift detection." data-fix="LangSmith is open-source. Takes 2 hours to instrument. Without it, you can't answer any stakeholder question about quality."/>
+          <text x="302" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">LangSmith</text>
           <line x1="60" y1="96" x2="68" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
           <line x1="125" y1="96" x2="133" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
           <line x1="190" y1="96" x2="198" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
@@ -402,7 +402,7 @@
         <button type="button" class="arch-add-btn" data-target="layer-async" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately — no more timeouts.">+ Async worker</button>
         <button type="button" class="arch-add-btn" data-target="layer-reranker" data-explain="Cross-encoder re-scores top-K chunks. NovaAssist precision: 0.61 &rarr; 0.89. No model change needed.">+ Reranker</button>
         <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off after seeing this.">+ Guardrails</button>
-        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="Langfuse traces every request. 30-Q golden set in CI. Online: thumbs rate + cost/query.">+ Eval &amp; Observability</button>
+        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="LangSmith traces every request. 30-Q golden set in CI. Online: thumbs rate + cost/query.">+ Eval &amp; Observability</button>
       </div>
       <div id="arch-explain-panel"></div>
     </div>
@@ -554,47 +554,51 @@
   <!-- TOOL POLICY GAME -->
   <section data-background-color="#0d1117">
     <span class="part-label">PART 3 &mdash; TOOL POLICY GAME</span>
-    <h2>You Are the Policy Engine</h2>
-    <p class="aside" style="margin-bottom:0.4em;font-size:0.78em"><strong>Drag</strong> into a column &mdash; or <strong>click</strong> a card to cycle auto &rarr; gate &rarr; block &rarr; remove. Click a chip in a zone to remove it.</p>
+    <h2 style="margin-bottom:0.2em">You Are the Policy Engine</h2>
+    <p class="aside" style="margin-bottom:0.5em;font-size:0.76em"><strong>Drag</strong> a card into a zone &mdash; or <strong>click</strong> to cycle: auto &rarr; gate &rarr; block &rarr; remove.</p>
 
     <div id="tool-game">
-      <div id="tool-cards">
-        <div class="tool-card" draggable="true" data-tool="search_docs" data-correct="auto">
-          <strong>search_docs</strong><br><span>Reads HR/IT docs. User's dept only.</span>
+      <div id="tool-game-body">
+        <!-- LEFT: tool cards (2 columns × 3 rows) -->
+        <div id="tool-cards">
+          <div class="tool-card" draggable="true" data-tool="search_docs" data-correct="auto">
+            <strong>search_docs</strong><span>Reads HR/IT docs. User&rsquo;s dept only.</span>
+          </div>
+          <div class="tool-card" draggable="true" data-tool="create_ticket" data-correct="gate">
+            <strong>create_ticket</strong><span>Opens ServiceNow incident.</span>
+          </div>
+          <div class="tool-card" draggable="true" data-tool="lookup_asset" data-correct="auto">
+            <strong>lookup_asset</strong><span>Reads user&rsquo;s assigned equipment.</span>
+          </div>
+          <div class="tool-card" draggable="true" data-tool="send_email_all" data-correct="block">
+            <strong>send_email_all</strong><span>Sends email to all 800 employees.</span>
+          </div>
+          <div class="tool-card" draggable="true" data-tool="delete_records" data-correct="block">
+            <strong>delete_records</strong><span>Deletes rows from HR database.</span>
+          </div>
+          <div class="tool-card" draggable="true" data-tool="update_salary" data-correct="gate">
+            <strong>update_salary</strong><span>Changes employee salary in HRIS.</span>
+          </div>
         </div>
-        <div class="tool-card" draggable="true" data-tool="create_ticket" data-correct="gate">
-          <strong>create_ticket</strong><br><span>Opens ServiceNow incident.</span>
-        </div>
-        <div class="tool-card" draggable="true" data-tool="lookup_asset" data-correct="auto">
-          <strong>lookup_asset</strong><br><span>Reads user's assigned equipment.</span>
-        </div>
-        <div class="tool-card" draggable="true" data-tool="send_email_all" data-correct="block">
-          <strong>send_email_all</strong><br><span>Sends email to all 800 employees.</span>
-        </div>
-        <div class="tool-card" draggable="true" data-tool="delete_records" data-correct="block">
-          <strong>delete_records</strong><br><span>Deletes rows from HR database.</span>
-        </div>
-        <div class="tool-card" draggable="true" data-tool="update_salary" data-correct="gate">
-          <strong>update_salary</strong><br><span>Changes employee salary in HRIS.</span>
+
+        <!-- RIGHT: drop zones (stacked vertically) -->
+        <div id="tool-zones">
+          <div class="tool-zone" id="zone-auto" data-zone="auto">
+            <div class="zone-label green">&#9989; Auto-approve</div>
+            <div class="zone-drop"></div>
+          </div>
+          <div class="tool-zone" id="zone-gate" data-zone="gate">
+            <div class="zone-label orange">&#128275; Human gate required</div>
+            <div class="zone-drop"></div>
+          </div>
+          <div class="tool-zone" id="zone-block" data-zone="block">
+            <div class="zone-label red">&#128683; Block entirely</div>
+            <div class="zone-drop"></div>
+          </div>
         </div>
       </div>
 
-      <div id="tool-zones">
-        <div class="tool-zone" id="zone-auto" data-zone="auto">
-          <div class="zone-label green">&#9989; Auto-approve</div>
-          <div class="zone-drop"></div>
-        </div>
-        <div class="tool-zone" id="zone-gate" data-zone="gate">
-          <div class="zone-label orange">&#128275; Human gate required</div>
-          <div class="zone-drop"></div>
-        </div>
-        <div class="tool-zone" id="zone-block" data-zone="block">
-          <div class="zone-label red">&#128683; Block entirely</div>
-          <div class="zone-drop"></div>
-        </div>
-      </div>
-
-      <div id="tool-game-controls">
+      <div id="tool-game-controls" style="margin-top:8px">
         <button type="button" id="tool-game-submit" class="poll-submit">Check my policy</button>
         <button type="button" id="tool-game-reset" style="background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius);padding:7px 14px;cursor:pointer;font-family:inherit;font-size:0.8em;margin-left:8px;">Reset</button>
       </div>
@@ -800,7 +804,7 @@
       <text x="250" y="244" fill="#8b949e" text-anchor="middle" font-size="9">Milvus (dept ns) &middot; Object storage &middot; Structured DB &middot; Feature store</text>
 
       <rect class="svgnode" x="30" y="264" width="440" height="48" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"
-        data-label="Platform Layer" data-desc="Auth (Azure AD/Okta), Observability (Langfuse, Grafana), CI/CD (GitHub Actions), Governance (secrets, policy), Cost mgmt." data-fix="NovaAssist's API key incident is solved here: Key Vault + managed identity + secret scanner in CI. Cost dashboard for CFO lives here."/>
+        data-label="Platform Layer" data-desc="Auth (Azure AD/Okta), Observability (LangSmith, Grafana), CI/CD (GitHub Actions), Governance (secrets, policy), Cost mgmt." data-fix="NovaAssist's API key incident is solved here: Key Vault + managed identity + secret scanner in CI. Cost dashboard for CFO lives here."/>
       <text x="250" y="283" fill="#e6edf3" text-anchor="middle" font-weight="600">Platform Layer</text>
       <text x="250" y="300" fill="#8b949e" text-anchor="middle" font-size="9">Auth &middot; Observability &middot; CI/CD &middot; Governance &middot; Secrets &middot; Cost mgmt</text>
     </svg>
@@ -857,7 +861,7 @@
     <div class="quiz-mcq" data-quiz-id="final-q1" data-correct="platform"
          data-success="Correct. SSO, traces, and CI/CD all live in the Platform Layer — the cross-cutting concerns that every other layer depends on."
          data-failure="Platform Layer: auth, observability, CI/CD, governance, secrets, cost management.">
-      <p class="quiz-question">1. NovaAssist SSO login, Langfuse traces, GitHub Actions deploy. Which platform layer?</p>
+      <p class="quiz-question">1. NovaAssist SSO login, LangSmith traces, GitHub Actions deploy. Which platform layer?</p>
       <div class="quiz-options">
         <button type="button" class="quiz-option" data-value="ai">AI Services Layer</button>
         <button type="button" class="quiz-option" data-value="platform">Platform Layer</button>
@@ -963,6 +967,21 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
 <script>
+  // Measure the real progress-bar height and pin .reveal's top to it.
+  // bottom:0 is set in CSS, so .reveal fills (100vh - barHeight).
+  // Reveal's margin:0.08 then reserves ~8% clearance on every side
+  // (~70px on a 900px viewport) — plenty of room for controls.
+  function fitReveal() {
+    const bar = document.getElementById('workshop-progress');
+    const barH = bar ? Math.ceil(bar.getBoundingClientRect().height) : 42;
+    const r = document.querySelector('.reveal');
+    if (!r) return;
+    r.style.setProperty('top', barH + 'px', 'important');
+    if (typeof Reveal !== 'undefined' && Reveal.isReady()) Reveal.layout();
+  }
+
+  fitReveal(); // run before Reveal boots so it reads the right offsetHeight
+
   Reveal.initialize({
     hash: true,
     slideNumber: 'c/t',
@@ -971,13 +990,12 @@
     backgroundTransition: 'fade',
     width: 1100,
     height: 700,
-    margin: 0.04,
+    margin: 0.08,   // 8% margin — ~70px clearance on a 900px viewport
     minScale: 0.2,
     maxScale: 2.0
   }).then(() => {
-    // Force Reveal to recalculate scale now that CSS has positioned .reveal
-    setTimeout(() => Reveal.layout(), 50);
-    window.addEventListener('resize', () => Reveal.layout());
+    fitReveal();
+    window.addEventListener('resize', fitReveal);
   });
 </script>
 <script src="js/workshop.js"></script>

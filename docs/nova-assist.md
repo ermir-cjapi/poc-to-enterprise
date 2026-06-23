@@ -1,4 +1,4 @@
-# NovaAssist — Full Case Study Reference
+﻿# NovaAssist — Full Case Study Reference
 ### The AI project that threads through every slide
 
 This document gives you everything you need to know about NovaAssist before the workshop. Read it once. Reference it during the session.
@@ -132,19 +132,24 @@ User (browser)
 ---
 
 ### Incident C: Wrong Policy Answer
-**What happened:** An HR employee asked: "How many weeks of parental leave am I entitled to?" NovaAssist answered "8 weeks" based on an older version of the policy PDF. The actual current policy was 12 weeks (updated 2 months earlier, new PDF not yet uploaded by HR). The employee submitted their leave request for 8 weeks. HR manager caught it and had to manually correct it — causing a 2-day delay.
+**What happened:** An HR employee asked: "How many weeks of parental leave am I entitled to?" NovaAssist answered "8 weeks." The correct answer was 12 weeks. The policy had been updated 2 months earlier — and HR had uploaded the new PDF to NovaAssist when they set it up. But they never deleted the original PDF. The employee submitted their leave request for 8 weeks. HR manager caught it and had to manually correct it — causing a 2-day delay.
 
-**Root cause:**
-- No document versioning: old and new PDFs both in Chroma, old chunks surfacing because they had higher embedding similarity
-- No guardrail requiring citation of the source chunk and its upload date
-- No eval: Alex had never tested "what if there are two versions of the same policy?"
-- No confidence threshold: a low-confidence retrieval was treated identically to a high-confidence one
+**The key point:** Both PDFs were in the database — the old one (8 weeks) and the new one (12 weeks). NovaAssist had the right answer. It just did not return it. The old chunk won the similarity search.
+
+**Root cause — why did the old chunk win?**
+The old policy PDF used the exact phrase "entitled to 8 weeks of parental leave." The new policy was rewritten by a lawyer and said "employees are granted a 12-week primary caregiver allowance." The wording changed completely. When the employee asked "How many weeks of parental leave?", the word "parental leave" was an exact term match to the old document's language. The new document used "primary caregiver allowance" — semantically the same, but the cosine similarity score was lower. Old chunk: 0.82. New chunk: 0.71. Old chunk surfaced first. LLM answered based on that.
+
+**Secondary failures:**
+- No document versioning: uploading a new PDF should automatically mark old chunks from the same source as `superseded = true`; queries should filter out superseded chunks
+- No citation requirement: if the answer had included "Source: parental-leave-policy-2023.pdf (uploaded 14 months ago)", the employee or the HR manager would have questioned the date immediately
+- No eval pipeline: a golden test set with the question "current parental leave entitlement" would have caught this discrepancy before go-live
+- No confidence gap detection: old chunk scored 0.82, new chunk scored 0.71 — an 11-point gap that should have flagged "conflicting versions present, do not answer"
 
 **The fix:**
-- Require citation in every answer: guardrail rule blocks responses that don't cite a chunk ID and upload date
-- Document versioning: when a new PDF is uploaded for the same source document, mark old chunks as superseded
-- Offline eval: 30-question golden set in CI that tests answers against known correct policy versions
-- Confidence threshold: if top retrieved chunk score < 0.65, respond "I found relevant documents but my confidence is low — please contact HR directly"
+- Document versioning: when a new PDF is uploaded for the same source name, mark all old chunks with `superseded = true` and filter them out at retrieval time
+- Require citation in every answer: guardrail blocks any response that does not include a chunk ID and its upload date
+- Offline eval: 30-question golden set in CI; "parental leave weeks" must return 12, not 8
+- Conflict detection: if top-2 chunks contain contradictory numerical values on the same topic, return "I found conflicting versions — please contact HR directly" instead of answering
 
 **Gap pillar:** Observability (Pillar 4) + Data & Governance (Pillar 1)
 
@@ -183,8 +188,8 @@ User (browser)
 - Milvus with dept namespace replacing flat Chroma
 - NIM Embed service replacing OpenAI embedding for all chunks
 - Cross-encoder reranker added to query path
-- NeMo Guardrails: require citation, block PII in output, reject off-topic queries
-- Langfuse observability: traces every request
+- NeMo Guardrails: require citation, block PII in output, reject off-topic queries (see Section 10 for full detail)
+- LangSmith observability: traces every request
 - 30-question offline eval golden set in CI
 
 **Result:** Wrong-answer rate halved. Cost reduced from $4,200 to $840/month (same traffic). HR signed off. IT Security signed off. CFO signed off conditionally (cap still required).
@@ -231,7 +236,7 @@ User (browser)
 | **Orchestration** | Agents, workflows, policy, human-in-the-loop | LangGraph + policy engine + Slack approval UI |
 | **AI Services** | RAG pipeline, embeddings, LLM, guardrails | NIM Embed + Milvus retriever + Reranker + NIM LLM + NeMo Guardrails |
 | **Data** | Vector DB, docs, structured data | Milvus (dept namespaces) + Blob storage + SQL (HR/Finance) |
-| **Platform** | Auth, observability, CI/CD, secrets, cost mgmt | Azure Key Vault + Langfuse + GitHub Actions + cost dashboard |
+| **Platform** | Auth, observability, CI/CD, secrets, cost mgmt | Azure Key Vault + LangSmith + GitHub Actions + cost dashboard |
 
 ---
 
@@ -244,7 +249,7 @@ User (browser)
 
 ### IT Security
 - **Concern:** "Finance documents cannot appear in HR queries. Every query must be logged with user identity for 90 days."
-- **What satisfied them:** Milvus dept namespace + JWT dept_id filter in every query + Langfuse audit log
+- **What satisfied them:** Milvus dept namespace + JWT dept_id filter in every query + LangSmith audit log
 - **What would kill the project:** Any cross-department retrieval in production, or logs disappearing
 
 ### CFO
@@ -277,3 +282,123 @@ These are the 3 main decisions Alex documented as ADRs:
 - **Context:** Python while-loop agent ran 47 iterations overnight, created 12 duplicate tickets.
 - **Decision:** Replace with LangGraph state machine. max_steps=8, timeout=30s, cost_cap=$0.50/session.
 - **Consequences:** Learning curve for team. Gain: every step is a logged state transition, bounded cost, clean abort on limit. Eliminates infinite loop risk.
+
+---
+
+## 10. Offline vs Online Eval — What Each One Catches
+
+### The core distinction
+
+| | Offline eval | Online eval |
+|---|---|---|
+| **When it runs** | In CI, before every deploy | Continuously in production |
+| **What it tests** | 30 known questions with known correct answers | Real user queries, real traffic |
+| **What it catches** | Regressions *you introduced* (prompt change, model swap, chunk size change) | Production drift *the world introduced* (updated documents, unexpected query patterns, cost spikes) |
+| **How fast** | Minutes (automated) | Immediate (live signals) |
+| **Tool in NovaAssist** | LangSmith eval datasets + RAGAS faithfulness scorer | LangSmith traces + thumbs-down feedback |
+
+### Offline eval in NovaAssist
+
+HR's HR manager and IT lead contributed 30 questions with verified correct answers — things like "How many vacation days does a senior engineer get?", "What is the VPN reset procedure?", "What is the parental leave entitlement?" (answer must be 12 weeks, not 8).
+
+Before any deploy, the CI pipeline runs all 30 questions through the live RAG stack and checks:
+- **Faithfulness score** (via RAGAS): is every claim in the answer supported by a retrieved chunk? Must be ≥ 0.85 or deploy is blocked.
+- **Citation presence**: does the answer include a source document name and upload date? Checked by NeMo Guardrails rule.
+- **Exact-match for numerical answers**: "12 weeks" not "8 weeks". Catches document versioning failures before go-live.
+
+If any check fails, the GitHub Actions pipeline fails and the deploy does not proceed.
+
+### Online eval in NovaAssist
+
+Three live signals tracked continuously in LangSmith:
+
+**1. Thumbs-down rate (per topic)**
+Every response has a thumbs up/down button. LangSmith aggregates by topic cluster. A spike in thumbs-down on "parental leave" queries before HR files a ticket is an early warning that something has changed. This is how Incident C would be caught *before* an employee acts on a wrong answer in a future version.
+
+**2. Retrieval score drift**
+Every query logs the cosine similarity score of the top retrieved chunk. Normal range: 0.78–0.85. If this drops to 0.61 across many queries, the most common reason is that documents were updated externally (e.g. HR updated a policy in SharePoint) but nobody re-ingested the new PDF into Milvus. The model is fine — the data is stale. A LangSmith alert fires when the 7-day rolling average drops below 0.70.
+
+**3. Cost per query per department**
+Tracked daily, emailed to CFO weekly. If Finance's cost-per-query triples on a Tuesday morning, someone wrote a batch script (Incident B pattern recurring). The API Gateway's rate limiter catches it, but the cost dashboard makes it visible before the monthly bill arrives.
+
+### Why you need both
+
+- **Offline only**: catches your changes, misses the world's changes. The Incident C pattern (stale documents returning wrong answers) would not be caught by offline eval because the golden test set was written against the correct document version — it's the live data that drifted.
+- **Online only**: you wait for users to discover regressions. No gate before deploy. A prompt change that drops faithfulness from 0.88 to 0.72 would only be caught after real users got bad answers.
+- **Both**: offline catches what you broke before it ships; online catches what the world broke after it shipped.
+
+---
+
+## 11. NeMo Guardrails — What It Is and How NovaAssist Uses It
+
+### What is NeMo Guardrails?
+NeMo Guardrails is an open-source framework from NVIDIA that wraps around any LLM call and enforces a set of rules written in a language called **Colang**. Think of it as a policy layer that sits between your application and the model: every prompt goes in, Guardrails checks the rules, and the response either passes through, gets modified, or is blocked entirely.
+
+It adds roughly 30–80 ms of latency. In exchange, you get programmable, auditable control over what the model can and cannot say.
+
+### The three rules NovaAssist uses
+
+**Rule 1 — Require citation**
+
+Every response must reference the exact chunk it retrieved — the source document name and its upload date. If the LLM generates an answer without a citation, Guardrails blocks the response and returns a fallback: *"I found relevant information but could not confirm a source. Please contact HR directly."*
+
+Why this matters: this is what finally got HR to sign off on v1.0. Before this rule, they had no way to verify an answer. After it, every answer in production comes with a traceable source.
+
+```
+define flow check citation
+  if not $response contains "Source:"
+    $response = "I found relevant information but could not confirm a verified source. Please contact HR directly."
+```
+
+**Rule 2 — Block PII in output**
+
+NovaAssist retrieves chunks from HR and Finance PDFs. Those PDFs sometimes contain employee names, salary bands, or NI/SSN numbers in the surrounding context. Guardrails scans the LLM output for patterns matching personal data (names next to salary figures, ID number formats) and redacts them before the response reaches the user.
+
+Why this matters: even if retrieval isolation (Pillar 1) is working correctly, a single chunking edge case could pull a salary band adjacent to an employee's name. Guardrails is the last line of defence before the response leaves the system.
+
+**Rule 3 — Reject off-topic queries**
+
+NovaAssist is scoped to HR, IT, and Finance policies. If a user asks about anything outside that scope — stock prices, personal advice, coding questions, competitor products — Guardrails intercepts the query before it even reaches the LLM and returns: *"I'm only able to answer questions about NovaTech's internal HR, IT, and Finance policies."*
+
+Why this matters: without this rule, the LLM would happily answer off-topic questions using its general training knowledge, burning tokens and API budget, and potentially giving advice the company has not sanctioned.
+
+### How it fits in the v1.0 architecture
+```
+User query
+  → Auth (JWT check, dept_id extracted)
+  → NeMo Guardrails [input check: topic scope, jailbreak patterns]
+  → Milvus retrieval [WHERE dept_id = :user_dept]
+  → Reranker
+  → LLM (gpt-4o-mini)
+  → NeMo Guardrails [output check: citation present, PII scan]
+  → Response to user
+```
+
+Guardrails runs twice — once on the input (topic check) and once on the output (citation + PII check).
+
+### Cloud/non-NVIDIA equivalent
+If the team is not on NVIDIA infrastructure, the equivalent patterns are:
+- **Azure AI Content Safety** — input/output content moderation as a managed service
+- **AWS Bedrock Guardrails** — same concept, native to AWS
+- **LangChain output parsers + custom validators** — code-level equivalent, less structured but fully portable
+- **Prompt injection defence** — any of the above can be combined with a system prompt hardening pattern
+
+---
+
+## 12. Observability — LangSmith vs Langfuse
+
+NovaAssist v1.0+ uses **LangSmith** for observability. This is LangChain's own tracing and evaluation platform, and since NovaAssist already uses LangGraph (LangChain's agent framework), LangSmith requires almost zero additional instrumentation — every chain step, tool call, retrieval, and LLM call is automatically traced.
+
+### What LangSmith gives you in NovaAssist
+
+| Signal | How it's used |
+|--------|--------------|
+| **Retrieval scores per query** | See exactly which chunks surfaced, their similarity scores, and reranker scores. Detect the "old chunk wins" problem (Incident C) before it reaches users. |
+| **LLM token counts + cost per request** | Feeds the CFO cost dashboard. Alerts when $/query drifts above threshold. |
+| **End-to-end latency trace** | Per-step breakdown: embedding ms, retrieval ms, reranker ms, LLM ms. Identify bottlenecks. |
+| **Guardrail block rate** | How often is Guardrails blocking responses? A spike means either a policy issue or a retrieval quality problem. |
+| **Thumbs up/down feedback** | Users rate answers; LangSmith stores these alongside the trace for offline eval review. |
+| **Golden set eval runs** | The 30-question CI eval set runs against LangSmith's eval framework. Faithfulness and citation scores are tracked over time. |
+
+### Why not Langfuse?
+Both tools do the same job. Langfuse is open-source and self-hostable (better for strict data residency). LangSmith has tighter native integration with LangChain/LangGraph and a more polished UI for prompt playground and eval datasets. If NovaTech's data governance team requires that traces never leave their own infrastructure, Langfuse self-hosted is the better choice. For most teams starting out, LangSmith is faster to set up.
