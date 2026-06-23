@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 260" font-family="Segoe UI, sans-serif" font-size="10">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#76b900"/></marker>
+  </defs>
+  <rect width="480" height="260" fill="#161b22" rx="6"/>
+  <text x="240" y="20" fill="#76b900" text-anchor="middle" font-weight="600" font-size="12">Enterprise Agentic</text>
+  <rect x="180" y="40" width="120" height="32" rx="3" fill="#21262d" stroke="#58a6ff"/>
+  <text x="240" y="60" fill="#e6edf3" text-anchor="middle">Orchestrator</text>
+  <rect x="60" y="100" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="105" y="118" fill="#e6edf3" text-anchor="middle">Planner</text>
+  <rect x="170" y="100" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="215" y="118" fill="#e6edf3" text-anchor="middle">Tool registry</text>
+  <rect x="280" y="100" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="325" y="118" fill="#e6edf3" text-anchor="middle">Policy engine</text>
+  <rect x="390" y="100" width="70" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="425" y="118" fill="#e6edf3" text-anchor="middle">Memory</text>
+  <line x1="220" y1="72" x2="105" y2="98" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="240" y1="72" x2="215" y2="98" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="260" y1="72" x2="325" y2="98" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="280" y1="72" x2="425" y2="98" stroke="#76b900" marker-end="url(#arrow)"/>
+  <rect x="40" y="160" width="100" height="28" rx="3" fill="#21262d" stroke="#bc8cff"/>
+  <text x="90" y="178" fill="#e6edf3" text-anchor="middle">Sandboxed tools</text>
+  <rect x="160" y="160" width="100" height="28" rx="3" fill="#21262d" stroke="#bc8cff"/>
+  <text x="210" y="178" fill="#e6edf3" text-anchor="middle">Step logging</text>
+  <rect x="280" y="160" width="100" height="28" rx="3" fill="#21262d" stroke="#bc8cff"/>
+  <text x="330" y="178" fill="#e6edf3" text-anchor="middle">Human approval</text>
+  <rect x="400" y="160" width="60" height="28" rx="3" fill="#21262d" stroke="#bc8cff"/>
+  <text x="430" y="178" fill="#e6edf3" text-anchor="middle">Audit</text>
+  <line x1="215" y1="128" x2="210" y2="158" stroke="#76b900" marker-end="url(#arrow)"/>
+  <rect x="20" y="210" width="440" height="40" rx="4" fill="#21262d" stroke="#30363d"/>
+  <text x="240" y="228" fill="#76b900" text-anchor="middle" font-size="9">NVIDIA agentic: planning · tool use · memory · guardrails</text>
+  <text x="240" y="242" fill="#8b949e" text-anchor="middle" font-size="9">Approve: payments, deletes, external emails · Log everything else</text>
+</svg>

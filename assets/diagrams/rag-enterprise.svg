@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" font-family="Segoe UI, sans-serif" font-size="10">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#76b900"/></marker>
+  </defs>
+  <rect width="480" height="280" fill="#161b22" rx="6"/>
+  <text x="240" y="20" fill="#76b900" text-anchor="middle" font-weight="600" font-size="12">Enterprise RAG</text>
+  <text x="20" y="42" fill="#8b949e" font-size="9">Ingestion path</text>
+  <rect x="20" y="50" width="60" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="50" y="68" fill="#e6edf3" text-anchor="middle">Upload</text>
+  <rect x="90" y="50" width="70" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="125" y="68" fill="#e6edf3" text-anchor="middle">Parser</text>
+  <rect x="170" y="50" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="210" y="68" fill="#e6edf3" text-anchor="middle">Embed svc</text>
+  <rect x="260" y="50" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="305" y="68" fill="#e6edf3" text-anchor="middle">Vector DB</text>
+  <rect x="360" y="50" width="100" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="410" y="68" fill="#e6edf3" text-anchor="middle">tenant ns</text>
+  <line x1="80" y1="64" x2="88" y2="64" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="160" y1="64" x2="168" y2="64" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="250" y1="64" x2="258" y2="64" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="350" y1="64" x2="358" y2="64" stroke="#76b900" marker-end="url(#arrow)"/>
+  <text x="20" y="110" fill="#8b949e" font-size="9">Query path</text>
+  <rect x="20" y="118" width="50" height="28" rx="3" fill="#21262d" stroke="#58a6ff" stroke-width="1"/>
+  <text x="45" y="136" fill="#e6edf3" text-anchor="middle">User</text>
+  <rect x="80" y="118" width="70" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="115" y="136" fill="#e6edf3" text-anchor="middle">Reranker</text>
+  <rect x="160" y="118" width="60" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="190" y="136" fill="#e6edf3" text-anchor="middle">NIM/LLM</text>
+  <rect x="230" y="118" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="270" y="136" fill="#e6edf3" text-anchor="middle">Guardrails</text>
+  <rect x="320" y="118" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900" stroke-width="1"/>
+  <text x="360" y="136" fill="#e6edf3" text-anchor="middle">Observability</text>
+  <line x1="70" y1="132" x2="78" y2="132" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="150" y1="132" x2="158" y2="132" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="220" y1="132" x2="228" y2="132" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="310" y1="132" x2="318" y2="132" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="305" y1="78" x2="190" y2="116" stroke="#76b900" stroke-dasharray="4" marker-end="url(#arrow)"/>
+  <rect x="20" y="180" width="440" height="80" rx="4" fill="#21262d" stroke="#30363d"/>
+  <text x="240" y="200" fill="#76b900" text-anchor="middle" font-size="9">NVIDIA RAG pattern: ingest ’ embed ’ retrieve ’ generate + guardrails</text>
+  <text x="240" y="218" fill="#8b949e" text-anchor="middle" font-size="9">Offline eval (golden set) + online eval (user feedback, drift)</text>
+  <text x="240" y="236" fill="#8b949e" text-anchor="middle" font-size="9">NeMo Retriever · NIM embeddings · NeMo Guardrails</text>
+</svg>

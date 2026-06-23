@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 240" font-family="Segoe UI, sans-serif" font-size="10">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#76b900"/></marker>
+  </defs>
+  <rect width="480" height="240" fill="#161b22" rx="6"/>
+  <text x="240" y="20" fill="#76b900" text-anchor="middle" font-weight="600" font-size="12">Enterprise Inference</text>
+  <rect x="20" y="45" width="80" height="28" rx="3" fill="#21262d" stroke="#58a6ff"/>
+  <text x="60" y="63" fill="#e6edf3" text-anchor="middle">API Gateway</text>
+  <rect x="115" y="45" width="70" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="150" y="63" fill="#e6edf3" text-anchor="middle">Rate limit</text>
+  <rect x="200" y="45" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="240" y="63" fill="#e6edf3" text-anchor="middle">Router</text>
+  <rect x="295" y="45" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="335" y="63" fill="#e6edf3" text-anchor="middle">NIM/Triton</text>
+  <rect x="390" y="45" width="70" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="425" y="63" fill="#e6edf3" text-anchor="middle">GPU pool</text>
+  <line x1="100" y1="59" x2="113" y2="59" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="185" y1="59" x2="198" y2="59" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="280" y1="59" x2="293" y2="59" stroke="#76b900" marker-end="url(#arrow)"/>
+  <line x1="375" y1="59" x2="388" y2="59" stroke="#76b900" marker-end="url(#arrow)"/>
+  <rect x="40" y="100" width="100" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="90" y="118" fill="#e6edf3" text-anchor="middle">Model registry</text>
+  <rect x="160" y="100" width="100" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="210" y="118" fill="#e6edf3" text-anchor="middle">Batching</text>
+  <rect x="280" y="100" width="100" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="330" y="118" fill="#e6edf3" text-anchor="middle">Autoscale</text>
+  <rect x="400" y="100" width="60" height="28" rx="3" fill="#21262d" stroke="#76b900"/>
+  <text x="430" y="118" fill="#e6edf3" text-anchor="middle">Cost DB</text>
+  <line x1="335" y1="73" x2="210" y2="98" stroke="#76b900" stroke-dasharray="3" marker-end="url(#arrow)"/>
+  <rect x="20" y="155" width="440" height="70" rx="4" fill="#21262d" stroke="#30363d"/>
+  <text x="240" y="175" fill="#76b900" text-anchor="middle" font-size="9">SLA: p99 latency · uptime · cost per 1K tokens</text>
+  <text x="240" y="192" fill="#8b949e" text-anchor="middle" font-size="9">Multi-model routing: small model for classify, large for generate</text>
+  <text x="240" y="209" fill="#8b949e" text-anchor="middle" font-size="9">Cloud equivalents: Azure OpenAI PTU · AWS Bedrock · GCP Vertex</text>
+</svg>

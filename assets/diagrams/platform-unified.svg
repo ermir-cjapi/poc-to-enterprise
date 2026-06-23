@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" font-family="Segoe UI, sans-serif" font-size="10">
+  <rect width="500" height="320" fill="#161b22" rx="6"/>
+  <text x="250" y="22" fill="#76b900" text-anchor="middle" font-weight="600" font-size="13">Unified Enterprise AI Platform</text>
+  <rect x="30" y="40" width="440" height="42" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="250" y="58" fill="#58a6ff" text-anchor="middle" font-weight="600">Experience Layer</text>
+  <text x="250" y="72" fill="#8b949e" text-anchor="middle" font-size="9">Chat UI · REST APIs · SDK · Admin portal</text>
+  <rect x="30" y="92" width="440" height="42" rx="4" fill="#21262d" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="250" y="110" fill="#bc8cff" text-anchor="middle" font-weight="600">Orchestration Layer</text>
+  <text x="250" y="124" fill="#8b949e" text-anchor="middle" font-size="9">Agents · Workflows · Human-in-the-loop · Policy</text>
+  <rect x="30" y="144" width="440" height="52" rx="4" fill="#21262d" stroke="#76b900" stroke-width="1.5"/>
+  <text x="250" y="162" fill="#76b900" text-anchor="middle" font-weight="600">AI Services Layer</text>
+  <text x="130" y="182" fill="#8b949e" text-anchor="middle" font-size="9">RAG pipeline</text>
+  <text x="250" y="182" fill="#8b949e" text-anchor="middle" font-size="9">Embeddings (NIM)</text>
+  <text x="370" y="182" fill="#8b949e" text-anchor="middle" font-size="9">LLM inference (NIM/Triton)</text>
+  <rect x="30" y="206" width="440" height="42" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"/>
+  <text x="250" y="224" fill="#f0883e" text-anchor="middle" font-weight="600">Data Layer</text>
+  <text x="250" y="238" fill="#8b949e" text-anchor="middle" font-size="9">Vector DB · Object storage · Structured DB · Feature store</text>
+  <rect x="30" y="258" width="440" height="48" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="250" y="276" fill="#e6edf3" text-anchor="middle" font-weight="600">Platform Layer</text>
+  <text x="250" y="294" fill="#8b949e" text-anchor="middle" font-size="9">Auth · Observability · CI/CD · Governance · Secrets · Cost mgmt</text>
+</svg>

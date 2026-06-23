@@ -1,0 +1,13 @@
+{
+  "name": "poc-to-enterprise-workshop",
+  "version": "1.0.0",
+  "description": "Interactive AI architecture workshop — POC to Enterprise",
+  "private": true,
+  "scripts": {
+    "start": "serve . -p 3456",
+    "dev": "serve . -p 3456"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POC to Enterprise AI Architecture Workshop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+  <link rel="stylesheet" href="css/workshop.css">
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="workshop-progress">
+  <span class="progress-label">0/0 activities &middot; 0%</span>
+  <div class="progress-track"><div class="progress-fill"></div></div>
+  <div class="section-badges">
+    <span class="section-badge" data-section-badge="part0">0 Hook</span>
+    <span class="section-badge" data-section-badge="part1">1 Gap</span>
+    <span class="section-badge" data-section-badge="part2">2 RAG</span>
+    <span class="section-badge" data-section-badge="part3">3 Agent</span>
+    <span class="section-badge" data-section-badge="part4">4 Infer</span>
+    <span class="section-badge" data-section-badge="part5">5 Capstone</span>
+    <span class="section-badge" data-section-badge="part6">6 Quiz</span>
+  </div>
+</div>
+<button id="reset-progress" type="button">Reset progress</button>
+
+<!-- SVG node info panel (shared, moved by JS) -->
+<div id="node-panel" role="tooltip" aria-live="polite">
+  <button id="node-panel-close" type="button">&times;</button>
+  <div id="node-panel-label"></div>
+  <div id="node-panel-desc"></div>
+  <div id="node-panel-fix"></div>
+</div>
+
+<div class="reveal">
+ <div class="slides">
+
+<!-- ??? TITLE ??? -->
+<section class="title-slide" data-background-color="#0d1117">
+  <h1>From POC to Enterprise</h1>
+  <p class="subtitle">AI Architecture Workshop &mdash; one project, three lenses</p>
+  <p class="meta">Case study: <strong>NovaAssist</strong> at NovaTech &middot; RAG &middot; Agentic &middot; Inference</p>
+  <p class="meta" style="font-size:0.7em;margin-top:1em;color:#76b900;">
+    Click any box in the architecture diagrams to learn what it does
+  </p>
+  <aside class="notes">Today we follow one intern project ù NovaAssist ù from Friday demo to enterprise architecture. Not syntax, not APIs ù decisions, trade-offs, and what breaks. Every diagram is clickable: tap any box to see what it does and what fails without it.</aside>
+</section>
+
+<section data-background-color="#0d1117">
+  <h2>Agenda</h2>
+  <ol>
+    <li><strong>Case study</strong> &mdash; meet NovaAssist, Alex's project</li>
+    <li><strong>Part 0</strong> &mdash; Friday demo, Monday incident</li>
+    <li><strong>Part 1</strong> &mdash; Enterprise gap framework (6 pillars)</li>
+    <li><strong>Part 2</strong> &mdash; Lens A: fix NovaAssist RAG + build it yourself</li>
+    <li><strong>Part 3</strong> &mdash; Lens B: agents + tool policy game</li>
+    <li><strong>Part 4</strong> &mdash; Lens C: inference + cost simulator</li>
+    <li><strong>Part 5</strong> &mdash; Capstone: unified platform + worksheet</li>
+    <li><strong>Part 6</strong> &mdash; Final quiz + checklist</li>
+  </ol>
+  <p class="aside">90&ndash;120 min &middot; <kbd>S</kbd> = speaker notes &middot; <kbd>F</kbd> = fullscreen &middot; <kbd>Esc</kbd> = overview</p>
+  <aside class="notes">Diagrams work without a server ù SVGs are embedded inline. No setup needed.</aside>
+</section>
+
+<!-- ??? CASE STUDY INTRO ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">CASE STUDY</span>
+    <h2>Meet NovaAssist</h2>
+    <div class="case-banner">This project threads through every slide in the workshop</div>
+    <div class="project-card">
+      <dl>
+        <dt>Company</dt><dd>NovaTech &mdash; 800 employees, B2B SaaS</dd>
+        <dt>Intern</dt><dd>Alex, 6-week AI placement</dd>
+        <dt>Project</dt><dd><strong>NovaAssist</strong> &mdash; internal Q&amp;A over HR, IT, Finance PDFs</dd>
+        <dt>POC stack</dt><dd>FastAPI + Chroma + OpenAI gpt-4o-mini + 50 HR PDFs</dd>
+        <dt>Week 1</dt><dd>Demo to HR. Standing ovation. "Ship it Monday."</dd>
+        <dt>Week 2</dt><dd>IT and Finance want in. 120 users go live.</dd>
+      </dl>
+    </div>
+    <aside class="notes">Make it feel real. Ask: "Who has built something exactly like this?" Every incident below is based on real production failures.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <h2>What Happened in Week 2</h2>
+    <div class="timeline">
+      <div class="timeline-step active"><span class="week">Week 1</span>POC demo<br>50 HR PDFs</div>
+      <div class="timeline-step"><span class="week">Week 2</span>Pilot live<br>3 depts, 120 users</div>
+      <div class="timeline-step"><span class="week">Week 3</span>4 incidents<br>Alex's worst week</div>
+      <div class="timeline-step"><span class="week">Week 4&ndash;6</span>Enterprise<br>evolution</div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-chip"><span class="value">$4,200</span><span class="label">API bill in 72 h</span></div>
+      <div class="metric-chip"><span class="value">1</span><span class="label">cross-dept data leak</span></div>
+      <div class="metric-chip"><span class="value">1</span><span class="label">wrong policy answer</span></div>
+      <div class="metric-chip"><span class="value">1</span><span class="label">API key in GitHub</span></div>
+    </div>
+    <div class="insight-box">
+      <div class="insight-label">Core message</div>
+      Enterprise architecture is not a checklist you memorise &mdash; it is a <strong>sequence of decisions triggered by real failures</strong> and stakeholder pressure.
+    </div>
+    <aside class="notes">Pause on each metric. Different stakeholders see different problems: HR = wrong answer, Security = leak, CFO = cost. Enterprise needs to address all simultaneously.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <h2>Who Cares About What?</h2>
+    <div class="stakeholder-grid">
+      <div class="stakeholder-card"><h4>HR sponsor</h4>"One wrong parental-leave answer is a reputational crisis. Every answer must cite its source."</div>
+      <div class="stakeholder-card"><h4>IT Security</h4>"Finance docs must never surface in HR queries. Log every retrieval, 90-day retention."</div>
+      <div class="stakeholder-card"><h4>CFO</h4>"Cap AI spend at $2K/month until we prove ROI. I don't care about GPUs ù I care about the bill."</div>
+      <div class="stakeholder-card"><h4>Platform team</h4>"Build a pattern we can reuse for the next 5 AI features, not a one-off script Alex maintains."</div>
+    </div>
+    <aside class="notes">Architecture meetings are stakeholder trade-off sessions, not technology debates. Write down what each person optimises for ù you design differently for each.</aside>
+  </section>
+</section>
+
+<!-- ??? PART 0 ù HOOK ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 0</span>
+    <div class="case-banner">NovaAssist v0.1 &mdash; Alex's POC &middot; Click any box</div>
+    <h2>Friday Demo: Everyone Claps</h2>
+
+    <!-- INLINE SVG: POC RAG ù all nodes clickable -->
+    <div class="diagram-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" font-family="Segoe UI,sans-serif" font-size="11">
+        <defs><marker id="a0" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b949e"/></marker></defs>
+        <rect width="440" height="230" fill="#161b22" rx="6"/>
+        <text x="220" y="20" fill="#f0883e" text-anchor="middle" font-weight="600" font-size="12">NovaAssist v0.1 ù POC RAG</text>
+
+        <rect class="svgnode" x="10" y="80" width="70" height="36" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"
+          data-label="User (browser)" data-desc="HR employee uploads PDFs and asks questions via a basic FastAPI HTML page." data-fix="In enterprise: SSO login, authN on every request, department claim in JWT."/>
+        <text x="45" y="102" fill="#e6edf3" text-anchor="middle" pointer-events="none">User</text>
+
+        <rect class="svgnode" x="110" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"
+          data-label="FastAPI (sync)" data-desc="Handles uploads AND embedding AND retrieval AND generation ù all in one synchronous HTTP handler." data-fix="Split into async ingestion worker (upload?embed) and separate query API. Never block the HTTP thread on embedding."/>
+        <text x="150" y="102" fill="#e6edf3" text-anchor="middle" pointer-events="none">FastAPI</text>
+
+        <rect class="svgnode" x="220" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"
+          data-label="OpenAI API" data-desc="Shared API key stored in .env file ù committed to GitHub. NovaAssist burned $4,200 in 72 hours with no rate limit." data-fix="Key Vault + managed identity. Per-service API key. Rate limit: 100 req/min per user. Cost alerts at 80% of budget."/>
+        <text x="260" y="102" fill="#e6edf3" text-anchor="middle" pointer-events="none">OpenAI</text>
+
+        <rect class="svgnode" x="340" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"
+          data-label="Chroma (local, flat)" data-desc="Single Chroma collection on disk. No tenant filter. HR query retrieved IT runbook ù the cross-department data leak." data-fix="Milvus or Qdrant with one collection per department. Every chunk tagged department_id. Retrieval query ALWAYS passes dept filter from JWT."/>
+        <text x="380" y="102" fill="#e6edf3" text-anchor="middle" pointer-events="none">Chroma</text>
+
+        <line x1="80" y1="98" x2="108" y2="98" stroke="#8b949e" marker-end="url(#a0)"/>
+        <line x1="190" y1="98" x2="218" y2="98" stroke="#8b949e" marker-end="url(#a0)"/>
+        <line x1="300" y1="98" x2="338" y2="98" stroke="#8b949e" marker-end="url(#a0)"/>
+
+        <text x="220" y="150" fill="#f85149" text-anchor="middle" font-size="10">No auth &middot; no tenant isolation &middot; no rate limit &middot; no eval &middot; no guardrails</text>
+        <text x="220" y="168" fill="#8b949e" text-anchor="middle" font-size="9">Works perfectly for a Friday demo with 1 user and 1 department</text>
+        <text x="220" y="210" fill="#76b900" text-anchor="middle" font-size="9">&#9660; Click any box above to see what it does and what breaks without the enterprise version</text>
+      </svg>
+    </div>
+    <aside class="notes">Walk the diagram. This architecture is CORRECT for a POC. The mistake is calling it production on Monday.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 0</span>
+    <div class="case-banner">NovaAssist &mdash; Monday morning</div>
+    <h2>Then 120 Users Show Up</h2>
+    <div class="war-story">
+      <span class="label">Incident A &mdash; Tuesday 9:14 AM</span><br>
+      HR employee asks about "remote work policy." Returns a chunk from <strong>IT&rsquo;s internal server-access runbook</strong>. IT Security is on the phone by 10 AM.
+    </div>
+    <div class="war-story">
+      <span class="label">Incident B &mdash; Wednesday (same week)</span><br>
+      OpenAI dashboard shows <strong>$4,200</strong> in 72 hours. Re-embedding on every query. No rate limits. Finance kills the card.
+    </div>
+    <aside class="notes">Don't rush. Let students react. "Which pillar failed first?" (Data/governance for A, scale/cost for B.) Both were invisible in the Friday demo because the demo had 1 user and 1 department.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 0 &mdash; INTERACTIVE POLL</span>
+    <h2>You Are Alex's Advisor &mdash; Pick Top 3 Risks</h2>
+    <div class="poll-block" id="poll-risks" data-max-select="3">
+      <p class="quiz-question">120 users, 3 departments, shared API key, no auth. What do you fix first?</p>
+      <div class="poll-options">
+        <button type="button" class="poll-option" data-value="cost">$4K+ API bill / no quotas (already happening)</button>
+        <button type="button" class="poll-option" data-value="security">Cross-department doc leak (already happened)</button>
+        <button type="button" class="poll-option" data-value="hallucination">Wrong HR policy answer &rarr; employee acts on it</button>
+        <button type="button" class="poll-option" data-value="injection">Prompt injection via a crafted uploaded PDF</button>
+        <button type="button" class="poll-option" data-value="latency">8 s p99 latency at 9 AM Monday</button>
+        <button type="button" class="poll-option" data-value="ops">Can't debug anything &mdash; no traces, no eval</button>
+      </div>
+      <button type="button" class="poll-submit" disabled>Submit my top 3</button>
+      <p class="poll-feedback"></p>
+    </div>
+    <aside class="notes">After poll: "All six are real. Enterprise assigns an explicit owner and mitigation to each BEFORE go-live, not after the incident." Transition: "Let's name the 6 levers."</aside>
+  </section>
+</section>
+
+<!-- ??? PART 1 ù GAP FRAMEWORK ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 1</span>
+    <div class="case-banner">Every NovaAssist incident maps to a pillar</div>
+    <h2>The Enterprise Gap Framework</h2>
+    <div class="gap-grid">
+      <div class="gap-card"><span class="num">1</span><h4>Data &amp; Governance</h4><em>NovaAssist:</em> no dept_id on vectors &rarr; IT leak</div>
+      <div class="gap-card"><span class="num">2</span><h4>Security</h4><em>NovaAssist:</em> API key in GitHub, no auth on API</div>
+      <div class="gap-card"><span class="num">3</span><h4>Reliability</h4><em>NovaAssist:</em> OpenAI timeout = 500 error, no fallback</div>
+      <div class="gap-card"><span class="num">4</span><h4>Observability</h4><em>NovaAssist:</em> "it feels worse" &mdash; no eval data to prove or disprove</div>
+      <div class="gap-card"><span class="num">5</span><h4>Scale &amp; Cost</h4><em>NovaAssist:</em> $4,200 / 72 h &mdash; sync embed per query</div>
+      <div class="gap-card"><span class="num">6</span><h4>MLOps / LLMOps</h4><em>NovaAssist:</em> prompt changes via copy-paste, no version history</div>
+    </div>
+    <aside class="notes">This is the reusable framework. Every cell has a NovaAssist example. Students should copy this grid ù it is what they use to evaluate their own projects in Part 5.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 1 &mdash; Q&amp;A</span>
+    <h2>Symptom &rarr; Pillar</h2>
+    <div class="quiz-mcq" data-quiz-id="gap-q1" data-correct="isolation"
+         data-success="Correct. HR retrieved IT's runbook because Chroma had no department filter. Fix: namespace per dept + JWT claim in every query."
+         data-failure="Cross-department retrieval = Data &amp; Governance failure (pillar 1). The vector DB had no isolation layer.">
+      <p class="quiz-question">HR employee retrieves IT&rsquo;s server-access runbook via NovaAssist. Root cause?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="latency">Scale &amp; Cost &mdash; add Redis cache</button>
+        <button type="button" class="quiz-option" data-value="isolation">Data &amp; Governance &mdash; no dept_id namespace in vector DB</button>
+        <button type="button" class="quiz-option" data-value="mlops">MLOps &mdash; wrong model version deployed</button>
+      </div>
+      <p class="quiz-feedback"></p>
+      <p class="quiz-hint">Hint: which pillar is about who is allowed to see which data?</p>
+    </div>
+    <aside class="notes">Deep-dive: ingestion must tag every chunk with dept_id. Query must filter on JWT claim. Without this, ONE wrong retrieval call exposes everything.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="gap-q2" data-correct="observability"
+         data-success="Right. HR asked 'did quality drop after the prompt change?' Alex had zero eval data. Build an offline golden set before you touch prompts."
+         data-failure="No data to answer stakeholders = Observability gap (pillar 4). You can't improve what you can't measure.">
+      <p class="quiz-question">HR: "Did quality drop after Alex changed the system prompt last Tuesday?" No data exists. Which gap?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="security">Security &mdash; add guardrails</button>
+        <button type="button" class="quiz-option" data-value="observability">Observability &mdash; no offline eval set, no production feedback loop</button>
+        <button type="button" class="quiz-option" data-value="reliability">Reliability &mdash; retries needed</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+    <div class="insight-box">
+      <div class="insight-label">Interview talking point</div>
+      "We gate every prompt change on a 50-question golden set; faithfulness must stay &gt;0.85 before deploy" says more than "we use RAG."
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="gap-q3" data-correct="security"
+         data-success="Correct. Alex committed .env to GitHub; scrapers found the key in 4 hours. Rotate immediately, use Key Vault, never commit secrets."
+         data-failure="API key scraped from git = Security pillar (pillar 2). Secrets management: Key Vault, managed identity, pre-commit scanner.">
+      <p class="quiz-question">NovaAssist OpenAI key scraped from public GitHub repo. First mitigation?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="scale">Switch to a cheaper model</button>
+        <button type="button" class="quiz-option" data-value="security">Rotate key + Key Vault + secret scanner in CI + no keys in code ever</button>
+        <button type="button" class="quiz-option" data-value="governance">Delete all uploaded PDFs</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+</section>
+
+<!-- ??? PART 2 ù RAG LENS ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 2 &mdash; LENS A</span>
+    <div class="case-banner">NovaAssist v0.1 &rarr; v1.0 &middot; Click any box in either diagram</div>
+    <h2>RAG: What Alex Must Change</h2>
+    <div class="diagram-container">
+
+      <div class="diagram-box poc">
+        <h4>v0.1 POC</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" font-family="Segoe UI,sans-serif" font-size="10">
+          <defs><marker id="a2p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b949e"/></marker></defs>
+          <rect width="400" height="180" fill="#161b22" rx="4"/>
+          <rect class="svgnode" x="10" y="70" width="55" height="30" rx="3" fill="#21262d" stroke="#58a6ff"
+            data-label="User" data-desc="Single user. No login. No department context." data-fix="SSO + JWT with dept claim on every request."/>
+          <text x="37" y="89" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">User</text>
+          <rect class="svgnode" x="85" y="70" width="70" height="30" rx="3" fill="#21262d" stroke="#f0883e"
+            data-label="FastAPI (monolith)" data-desc="Ingest + embed + retrieve + generate all in one synchronous function. Timeout = 500 error for every user." data-fix="Split: async worker handles ingestion. API only handles query path."/>
+          <text x="120" y="89" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">FastAPI</text>
+          <rect class="svgnode" x="175" y="70" width="65" height="30" rx="3" fill="#21262d" stroke="#f0883e"
+            data-label="OpenAI gpt-4o-mini" data-desc="Shared API key. No rate limit. $4,200 in 72 h because every query re-embeds ALL documents." data-fix="Separate embedding service (NIM). Cache query embeddings. Rate limit per user. Cost alert at 80% budget."/>
+          <text x="207" y="89" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">OpenAI</text>
+          <rect class="svgnode" x="260" y="70" width="65" height="30" rx="3" fill="#21262d" stroke="#f0883e"
+            data-label="Chroma (flat)" data-desc="One collection, no filters. IT runbook was stored here next to HR docs. One missing WHERE clause exposed everything." data-fix="Milvus collection per dept. dept_id on every chunk. Filter on JWT claim in every query. No exceptions."/>
+          <text x="292" y="89" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">Chroma</text>
+          <rect class="svgnode" x="340" y="70" width="50" height="30" rx="3" fill="#21262d" stroke="#8b949e"
+            data-label="Response (raw)" data-desc="Raw LLM output, no citation, no PII check, no topic boundary. HR employee got a hallucinated parental-leave duration." data-fix="Require citation of source chunks. NeMo Guardrails for topic + PII. Confidence threshold."/>
+          <text x="365" y="89" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">Response</text>
+          <line x1="65" y1="85" x2="83" y2="85" stroke="#8b949e" marker-end="url(#a2p)"/>
+          <line x1="155" y1="85" x2="173" y2="85" stroke="#8b949e" marker-end="url(#a2p)"/>
+          <line x1="240" y1="85" x2="258" y2="85" stroke="#8b949e" marker-end="url(#a2p)"/>
+          <line x1="325" y1="85" x2="338" y2="85" stroke="#8b949e" marker-end="url(#a2p)"/>
+          <text x="200" y="148" fill="#f85149" text-anchor="middle" font-size="9">No isolation &middot; no reranker &middot; no citation &middot; no eval &middot; sync embed</text>
+          <text x="200" y="163" fill="#76b900" text-anchor="middle" font-size="8">&#9660; Click any box</text>
+        </svg>
+      </div>
+
+      <div class="diagram-box enterprise">
+        <h4>v1.0 Enterprise RAG</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 200" font-family="Segoe UI,sans-serif" font-size="9">
+          <defs><marker id="a2e" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#76b900"/></marker></defs>
+          <rect width="420" height="200" fill="#161b22" rx="4"/>
+          <!-- ingestion row -->
+          <text x="10" y="22" fill="#8b949e" font-size="8">Ingestion (async)</text>
+          <rect class="svgnode" x="10" y="28" width="55" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Async worker" data-desc="Celery/RQ worker handles PDF ingestion out-of-band. HTTP request returns immediately ù no timeout." data-fix="This is the pattern. Never block HTTP thread on embedding."/>
+          <text x="37" y="44" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Worker</text>
+          <rect class="svgnode" x="75" y="28" width="55" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="PDF parser + chunker" data-desc="Docling or LangChain splitter. Chunk size and overlap are tuned against NovaAssist's 30-question eval set." data-fix="Chunk strategy is not set-and-forget. Run eval on different chunk sizes and overlap before going live."/>
+          <text x="102" y="44" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Parser</text>
+          <rect class="svgnode" x="140" y="28" width="65" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="NIM Embed service" data-desc="Dedicated NVIDIA NIM embedding model (e.g. nv-embed-v2). Runs on GPU, not shared with the LLM." data-fix="Self-hosted NIM reduces cost 60-80% vs cloud embedding API for high volume. Worth the GPU for &gt;100K chunks/day."/>
+          <text x="172" y="44" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">NIM Embed</text>
+          <rect class="svgnode" x="215" y="28" width="70" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Milvus Vector DB (namespaced)" data-desc="One collection per department. Every chunk has dept_id, doc_id, chunk_idx, timestamp. Retrieval ALWAYS passes dept_id filter from JWT." data-fix="This single change prevents the IT/HR leak. One WHERE clause saves NovaTech from a GDPR audit."/>
+          <text x="250" y="40" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Milvus</text>
+          <text x="250" y="49" fill="#76b900" text-anchor="middle" font-size="7" pointer-events="none">dept ns</text>
+          <line x1="65" y1="40" x2="73" y2="40" stroke="#76b900" marker-end="url(#a2e)"/>
+          <line x1="130" y1="40" x2="138" y2="40" stroke="#76b900" marker-end="url(#a2e)"/>
+          <line x1="205" y1="40" x2="213" y2="40" stroke="#76b900" marker-end="url(#a2e)"/>
+          <!-- query row -->
+          <text x="10" y="78" fill="#8b949e" font-size="8">Query path</text>
+          <rect class="svgnode" x="10" y="84" width="50" height="24" rx="3" fill="#21262d" stroke="#58a6ff"
+            data-label="Authenticated user" data-desc="SSO via Azure AD / Okta. JWT contains sub + dept_id + roles. Every downstream call passes dept_id." data-fix="Auth is not optional. Every request without a valid JWT = 401. No exceptions for 'internal tools'."/>
+          <text x="35" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">AuthN</text>
+          <rect class="svgnode" x="70" y="84" width="55" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Cross-encoder reranker" data-desc="Re-scores top-K retrieved chunks for relevance before passing to LLM. Dramatically reduces 'wrong department' confusions." data-fix="NovaAssist improved precision from 0.61 to 0.89 by adding a reranker. LLM model size had no effect on this metric."/>
+          <text x="97" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Reranker</text>
+          <rect class="svgnode" x="135" y="84" width="55" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="NIM LLM (gpt-4o-mini or Llama)" data-desc="Same model as POC, but only called AFTER reranking. Prompt requires citation of source chunk IDs." data-fix="Model upgrade is rarely the first fix. Fix retrieval first. NovaAssist v1.0 kept the same model but halved wrong-answer rate."/>
+          <text x="162" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">NIM LLM</text>
+          <rect class="svgnode" x="200" y="84" width="60" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="NeMo Guardrails" data-desc="Colang rules: reject off-topic questions, redact PII, require citation presence, block jailbreak prompts." data-fix="Guardrails run in &lt;50 ms added latency. HR signed off on v1.0 only after seeing guardrails demo."/>
+          <text x="230" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Guardrails</text>
+          <rect class="svgnode" x="270" y="84" width="65" height="24" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Observability (Langfuse)" data-desc="Traces every request: retrieval scores, reranker scores, LLM tokens, latency, cost. Feeds offline eval and online drift detection." data-fix="Langfuse is open-source. Takes 2 hours to instrument. Without it, you can't answer any stakeholder question about quality."/>
+          <text x="302" y="100" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Langfuse</text>
+          <line x1="60" y1="96" x2="68" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
+          <line x1="125" y1="96" x2="133" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
+          <line x1="190" y1="96" x2="198" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
+          <line x1="260" y1="96" x2="268" y2="96" stroke="#76b900" marker-end="url(#a2e)"/>
+          <!-- vector to reranker dashed -->
+          <line x1="250" y1="52" x2="97" y2="82" stroke="#76b900" stroke-dasharray="3" marker-end="url(#a2e)"/>
+          <!-- nvidia ref -->
+          <rect x="10" y="124" width="400" height="66" rx="3" fill="#21262d" stroke="#30363d"/>
+          <text x="210" y="140" fill="#76b900" text-anchor="middle" font-size="8">NVIDIA reference: NeMo Curator &rarr; NIM Embed &rarr; NeMo Retriever &rarr; NIM LLM &rarr; NeMo Guardrails</text>
+          <text x="210" y="155" fill="#8b949e" text-anchor="middle" font-size="8">Offline eval: faithfulness + citation accuracy on 30-Q golden set (CI gate)</text>
+          <text x="210" y="170" fill="#8b949e" text-anchor="middle" font-size="8">Online: thumbs-down rate &middot; retrieval score drift &middot; $/query dashboard</text>
+          <text x="210" y="185" fill="#8b949e" text-anchor="middle" font-size="8">Cloud equiv: Azure AI Search &middot; AWS Bedrock KB &middot; GCP Vertex AI Search</text>
+        </svg>
+      </div>
+
+    </div>
+    <aside class="notes">Key message: Fix retrieval BEFORE upgrading the model. NovaAssist v1.0 stays on gpt-4o-mini ù wrong-answer rate halved from retrieval improvements alone.</aside>
+  </section>
+
+  <!-- ARCHITECTURE BUILDER -->
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 2 &mdash; BUILD IT YOURSELF</span>
+    <div class="case-banner">Add the 5 missing enterprise layers to NovaAssist v0.1</div>
+    <h2>Architecture Builder</h2>
+    <div id="arch-builder">
+      <div id="arch-builder-diagram">
+        <div class="arch-base">
+          <div class="arch-node always">User</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-node always">FastAPI</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-node always">OpenAI</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-node always">Chroma</div>
+        </div>
+        <div id="arch-layers">
+          <div class="arch-layer" id="layer-auth" data-layer="auth">
+            <span class="layer-icon">&#128274;</span> Auth + dept JWT
+          </div>
+          <div class="arch-layer" id="layer-namespace" data-layer="namespace">
+            <span class="layer-icon">&#128218;</span> Dept namespace (Milvus)
+          </div>
+          <div class="arch-layer" id="layer-async" data-layer="async">
+            <span class="layer-icon">&#9889;</span> Async ingestion worker
+          </div>
+          <div class="arch-layer" id="layer-reranker" data-layer="reranker">
+            <span class="layer-icon">&#127919;</span> Reranker
+          </div>
+          <div class="arch-layer" id="layer-guardrails" data-layer="guardrails">
+            <span class="layer-icon">&#128737;</span> Guardrails
+          </div>
+          <div class="arch-layer" id="layer-eval" data-layer="eval">
+            <span class="layer-icon">&#128200;</span> Eval + observability
+          </div>
+        </div>
+        <div id="arch-complete-msg">&#9989; NovaAssist v1.0 complete! Now HR Security &amp; CFO are all satisfied.</div>
+      </div>
+      <div id="arch-builder-buttons">
+        <p style="color:#8b949e;font-size:0.75em;margin:0 0 10px;">Click each to add it to the architecture:</p>
+        <button type="button" class="arch-add-btn" data-target="layer-auth" data-explain="SSO + JWT with dept_id claim. Without this, anyone can query anyone's documents.">+ Auth &amp; JWT</button>
+        <button type="button" class="arch-add-btn" data-target="layer-namespace" data-explain="Milvus collection per dept. Every chunk tagged dept_id. One WHERE clause prevents the IT/HR leak.">+ Dept namespace</button>
+        <button type="button" class="arch-add-btn" data-target="layer-async" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately ù no more timeouts.">+ Async worker</button>
+        <button type="button" class="arch-add-btn" data-target="layer-reranker" data-explain="Cross-encoder re-scores top-K chunks. NovaAssist precision: 0.61 &rarr; 0.89. No model change needed.">+ Reranker</button>
+        <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off after seeing this.">+ Guardrails</button>
+        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="Langfuse traces every request. 30-Q golden set in CI. Online: thumbs rate + cost/query.">+ Eval &amp; Observability</button>
+      </div>
+      <div id="arch-explain-panel"></div>
+    </div>
+  </section>
+
+  <!-- SPOT THE GAP -->
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 2 &mdash; SPOT THE GAP</span>
+    <h2>Three Bugs Hidden in v0.1</h2>
+    <p class="aside" style="margin-bottom:0.5em">Click the glowing circles on the diagram &mdash; each maps to a NovaAssist incident</p>
+    <div class="spot-gap" data-quiz-id="rag-spot">
+      <div class="poc-side" style="position:relative;display:inline-block;max-width:440px;width:100%">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" font-family="Segoe UI,sans-serif" font-size="11" style="width:100%">
+          <defs><marker id="a2sg" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b949e"/></marker></defs>
+          <rect width="440" height="230" fill="#161b22" rx="6"/>
+          <text x="220" y="20" fill="#f0883e" text-anchor="middle" font-weight="600" font-size="12">NovaAssist v0.1 ù find the 3 gaps</text>
+          <rect x="10" y="80" width="70" height="36" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"/>
+          <text x="45" y="102" fill="#e6edf3" text-anchor="middle">User</text>
+          <rect x="110" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+          <text x="150" y="102" fill="#e6edf3" text-anchor="middle">FastAPI</text>
+          <rect x="220" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+          <text x="260" y="102" fill="#e6edf3" text-anchor="middle">OpenAI</text>
+          <rect x="330" y="80" width="80" height="36" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+          <text x="370" y="102" fill="#e6edf3" text-anchor="middle">Chroma</text>
+          <line x1="80" y1="98" x2="108" y2="98" stroke="#8b949e" marker-end="url(#a2sg)"/>
+          <line x1="190" y1="98" x2="218" y2="98" stroke="#8b949e" marker-end="url(#a2sg)"/>
+          <line x1="300" y1="98" x2="328" y2="98" stroke="#8b949e" marker-end="url(#a2sg)"/>
+          <text x="220" y="200" fill="#76b900" text-anchor="middle" font-size="9">Click the 3 glowing circles to find missing enterprise components</text>
+        </svg>
+        <button type="button" class="hotspot" style="top:57%;left:77%" data-gap="No guardrails" data-desc="Alex returned raw LLM output. No citation check, no PII redaction, no topic boundary. An HR employee received a wrong parental-leave duration and acted on it.">1</button>
+        <button type="button" class="hotspot" style="top:57%;left:50%" data-gap="No department isolation" data-desc="Chroma had one flat collection for all three departments. IT's server-access runbook was indexed next to HR docs. One retrieval call exposed it.">2</button>
+        <button type="button" class="hotspot" style="top:20%;left:25%" data-gap="No observability" data-desc="No request traces, no retrieval scores, no cost-per-query. When HR asked 'is it getting worse?' Alex had no data to answer.">3</button>
+      </div>
+      <div class="gap-panel"><em>Click each numbered circle above to reveal the gap it represents&hellip;</em></div>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="discussion-block" data-quiz-id="rag-discussion" data-duration="120">
+      <span class="discussion-label">Think &middot; Pair &middot; Share</span>
+      <p class="discussion-question">HR gives you 30 real questions employees asked. How do you build an eval pipeline? What metrics do you track offline vs online?</p>
+      <div class="timer-row">
+        <button type="button" class="timer-start">Start 2:00</button>
+        <span class="timer-display">2:00</span>
+        <button type="button" class="timer-done">Mark discussed</button>
+      </div>
+    </div>
+    <p class="aside"><strong>Target:</strong> Offline (CI gate): faithfulness &gt;0.85 + citation accuracy on 30 Qs. Online: thumbs-down rate, retrieval score drift, $/query.</p>
+    <aside class="notes">Push back if students say "accuracy" without defining it. RAG eval = faithfulness, answer relevance, context precision ù not generic ML accuracy.</aside>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="rag-q1" data-correct="both"
+         data-success="Correct. NovaAssist gates prompt changes on 30-Q offline set and monitors thumbs-down in production."
+         data-failure="Both. Offline catches regressions before deploy. Online catches real-world drift you didn't anticipate.">
+      <p class="quiz-question">NovaAssist v1.0 release process &mdash; eval strategy?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="offline">Offline only &mdash; 30 HR questions before every deploy</button>
+        <button type="button" class="quiz-option" data-value="online">Online only &mdash; wait for HR to complain</button>
+        <button type="button" class="quiz-option" data-value="both">Offline CI gate (faithfulness) + online monitoring (drift, cost, thumbs)</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+</section>
+
+<!-- ??? PART 3 ù AGENTIC LENS ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 3 &mdash; LENS B</span>
+    <div class="case-banner">NovaAssist v1.5 &mdash; IT asks for ticket creation &middot; Click any box</div>
+    <h2>Agents: New Powers, New Risks</h2>
+    <div class="diagram-container">
+      <div class="diagram-box poc">
+        <h4>v1.5 POC agent</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 190" font-family="Segoe UI,sans-serif" font-size="10">
+          <defs><marker id="a3p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b949e"/></marker></defs>
+          <rect width="380" height="190" fill="#161b22" rx="4"/>
+          <rect class="svgnode" x="130" y="40" width="120" height="40" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"
+            data-label="Python while-loop agent" data-desc="while True: call LLM, parse tool, call tool, repeat. Alex set no max_steps, no timeout, no cost cap." data-fix="max_steps=8, timeout=30s, cost_cap=$0.50/session. Always. Before any tool goes live."/>
+          <text x="190" y="58" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">Python script</text>
+          <text x="190" y="72" fill="#8b949e" text-anchor="middle" font-size="8" pointer-events="none">while True + LLM</text>
+          <rect class="svgnode" x="20" y="120" width="80" height="30" rx="3" fill="#21262d" stroke="#8b949e"
+            data-label="search_docs tool" data-desc="Reads from vector DB. Read-only. Safe to auto-approve. No enterprise risk here." data-fix="Auto-approve. Read-only tools with scoped access are fine without human gate."/>
+          <text x="60" y="138" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">search_docs</text>
+          <rect class="svgnode" x="150" y="120" width="80" height="30" rx="3" fill="#21262d" stroke="#f0883e" stroke-width="1.5"
+            data-label="create_ticket (no guard)" data-desc="Called 47 times in one overnight loop. Created 12 duplicate ServiceNow tickets. $180 in tokens. No idempotency key, no approval, no dedup." data-fix="Require human approval. Add idempotency key (hash of intent). max_retries=1. Block if same ticket created in last 5 min."/>
+          <text x="190" y="138" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">create_ticket ?</text>
+          <rect class="svgnode" x="280" y="120" width="80" height="30" rx="3" fill="#21262d" stroke="#8b949e"
+            data-label="lookup_asset" data-desc="Queries IT asset database for a user's assigned equipment. Read-only, scoped to requesting user." data-fix="Auto-approve with user scope. No enterprise risk if properly scoped."/>
+          <text x="320" y="138" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">lookup_asset</text>
+          <line x1="175" y1="80" x2="60" y2="118" stroke="#8b949e" marker-end="url(#a3p)"/>
+          <line x1="190" y1="80" x2="190" y2="118" stroke="#8b949e" marker-end="url(#a3p)"/>
+          <line x1="205" y1="80" x2="320" y2="118" stroke="#8b949e" marker-end="url(#a3p)"/>
+          <text x="190" y="175" fill="#f85149" text-anchor="middle" font-size="9">No max_steps &middot; no approval &middot; no audit &middot; no idempotency</text>
+        </svg>
+      </div>
+
+      <div class="diagram-box enterprise">
+        <h4>v1.5 Enterprise agent</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210" font-family="Segoe UI,sans-serif" font-size="9">
+          <defs><marker id="a3e" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#76b900"/></marker></defs>
+          <rect width="400" height="210" fill="#161b22" rx="4"/>
+          <rect class="svgnode" x="140" y="10" width="120" height="30" rx="3" fill="#21262d" stroke="#58a6ff"
+            data-label="LangGraph Orchestrator" data-desc="State machine: plan &rarr; tool_call &rarr; observe &rarr; plan. max_steps=8, timeout=30s, cost_cap=$0.50." data-fix="LangGraph or NVIDIA Agent Framework. Every step is a logged state transition ù no silent loops."/>
+          <text x="200" y="28" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">Orchestrator (LangGraph)</text>
+          <rect class="svgnode" x="10" y="60" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Planner (LLM)" data-desc="Decides which tool to call and why. Output is structured JSON, validated against tool schema before execution." data-fix="Structured outputs (JSON mode) prevent 'creative' tool calls that bypass policy."/>
+          <text x="50" y="78" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Planner</text>
+          <rect class="svgnode" x="100" y="60" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Tool registry" data-desc="JSON Schema for every tool. Input validated before call. Tools are versioned. Registry is the only source of truth for available tools." data-fix="Never pass raw Python functions to the LLM. Schema validation catches hallucinated params."/>
+          <text x="140" y="78" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Tool registry</text>
+          <rect class="svgnode" x="190" y="60" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Policy engine" data-desc="Per-tool policy: auto-approve, require-human, or block. Evaluated before any tool call. Cannot be bypassed by the LLM." data-fix="Policy is code, not a prompt. Even if the LLM is jailbroken, policy engine still runs."/>
+          <text x="230" y="78" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Policy engine</text>
+          <rect class="svgnode" x="280" y="60" width="80" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Step logger / audit" data-desc="Every plan step, tool call, input params, output, and decision reason is logged. 90-day retention. Used for compliance and debugging." data-fix="Without audit logs, you cannot investigate the 12-ticket incident or prove to IT Security what happened."/>
+          <text x="320" y="78" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Audit log</text>
+          <line x1="200" y1="40" x2="50" y2="58" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="210" y1="40" x2="140" y2="58" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="220" y1="40" x2="230" y2="58" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="230" y1="40" x2="320" y2="58" stroke="#76b900" marker-end="url(#a3e)"/>
+          <!-- tools row -->
+          <rect class="svgnode" x="10" y="115" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="search_docs (auto)" data-desc="Read-only. Scoped to user's dept. Auto-approved by policy engine. No human needed." data-fix="This is the correct policy for read-only, scoped tools. Human gates add friction without safety benefit."/>
+          <text x="55" y="133" fill="#76b900" text-anchor="middle" font-size="8" pointer-events="none">search_docs ? auto</text>
+          <rect class="svgnode" x="115" y="115" width="90" height="28" rx="3" fill="#21262d" stroke="#f0883e"
+            data-label="create_ticket (human gate)" data-desc="Policy: requires human approval. Shows intent to user: 'Create ticket: VPN reset for Alex. Approve?' Idempotency key prevents duplicate if approved twice." data-fix="This single gate would have prevented the 12 duplicate tickets. The gate adds 10 seconds. The incident cost 4 hours of IT time."/>
+          <text x="160" y="129" fill="#f0883e" text-anchor="middle" font-size="8" pointer-events="none">create_ticket</text>
+          <text x="160" y="139" fill="#f0883e" text-anchor="middle" font-size="7" pointer-events="none">&#128275; human gate</text>
+          <rect class="svgnode" x="220" y="115" width="90" height="28" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="lookup_asset (auto)" data-desc="Read-only, scoped to requesting user. Auto-approved. Returns user's assigned equipment from ServiceNow." data-fix="Auto-approve for scoped read-only. Match policy to actual risk, not blanket rules."/>
+          <text x="265" y="133" fill="#76b900" text-anchor="middle" font-size="8" pointer-events="none">lookup_asset ? auto</text>
+          <rect class="svgnode" x="315" y="115" width="75" height="28" rx="3" fill="#21262d" stroke="#bc8cff"
+            data-label="Human approval UI" data-desc="Slack or web popup: 'Agent wants to: create_ticket(VPN reset, Alex). Approve / Reject / Modify'. 30-second timeout = auto-reject." data-fix="Human-in-the-loop is not email. It must be synchronous and surfaced in the user's workflow."/>
+          <text x="352" y="129" fill="#bc8cff" text-anchor="middle" font-size="8" pointer-events="none">Human</text>
+          <text x="352" y="139" fill="#bc8cff" text-anchor="middle" font-size="7" pointer-events="none">approval UI</text>
+          <line x1="230" y1="88" x2="55" y2="113" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="230" y1="88" x2="160" y2="113" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="230" y1="88" x2="265" y2="113" stroke="#76b900" marker-end="url(#a3e)"/>
+          <line x1="160" y1="143" x2="352" y2="143" stroke="#bc8cff" stroke-dasharray="3" marker-end="url(#a3e)"/>
+          <text x="200" y="194" fill="#8b949e" text-anchor="middle" font-size="8">NVIDIA: planning &rarr; tool use &rarr; memory &rarr; guardrails</text>
+        </svg>
+      </div>
+    </div>
+    <aside class="notes">Key insight: agents fail with ACTIONS, not wrong text. 12 duplicate tickets vs wrong paragraph ù completely different failure mode requiring completely different controls.</aside>
+  </section>
+
+  <!-- TOOL POLICY GAME -->
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 3 &mdash; TOOL POLICY GAME</span>
+    <h2>You Are the Policy Engine</h2>
+    <p class="aside" style="margin-bottom:0.4em;font-size:0.78em"><strong>Drag</strong> into a column &mdash; or <strong>click</strong> a card to cycle auto &rarr; gate &rarr; block &rarr; remove. Click a chip in a zone to remove it.</p>
+
+    <div id="tool-game">
+      <div id="tool-cards">
+        <div class="tool-card" draggable="true" data-tool="search_docs" data-correct="auto">
+          <strong>search_docs</strong><br><span>Reads HR/IT docs. User's dept only.</span>
+        </div>
+        <div class="tool-card" draggable="true" data-tool="create_ticket" data-correct="gate">
+          <strong>create_ticket</strong><br><span>Opens ServiceNow incident.</span>
+        </div>
+        <div class="tool-card" draggable="true" data-tool="lookup_asset" data-correct="auto">
+          <strong>lookup_asset</strong><br><span>Reads user's assigned equipment.</span>
+        </div>
+        <div class="tool-card" draggable="true" data-tool="send_email_all" data-correct="block">
+          <strong>send_email_all</strong><br><span>Sends email to all 800 employees.</span>
+        </div>
+        <div class="tool-card" draggable="true" data-tool="delete_records" data-correct="block">
+          <strong>delete_records</strong><br><span>Deletes rows from HR database.</span>
+        </div>
+        <div class="tool-card" draggable="true" data-tool="update_salary" data-correct="gate">
+          <strong>update_salary</strong><br><span>Changes employee salary in HRIS.</span>
+        </div>
+      </div>
+
+      <div id="tool-zones">
+        <div class="tool-zone" id="zone-auto" data-zone="auto">
+          <div class="zone-label green">&#9989; Auto-approve</div>
+          <div class="zone-drop"></div>
+        </div>
+        <div class="tool-zone" id="zone-gate" data-zone="gate">
+          <div class="zone-label orange">&#128275; Human gate required</div>
+          <div class="zone-drop"></div>
+        </div>
+        <div class="tool-zone" id="zone-block" data-zone="block">
+          <div class="zone-label red">&#128683; Block entirely</div>
+          <div class="zone-drop"></div>
+        </div>
+      </div>
+
+      <div id="tool-game-controls">
+        <button type="button" id="tool-game-submit" class="poll-submit">Check my policy</button>
+        <button type="button" id="tool-game-reset" style="background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius);padding:7px 14px;cursor:pointer;font-family:inherit;font-size:0.8em;margin-left:8px;">Reset</button>
+      </div>
+      <div id="tool-game-result"></div>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="discussion-block" data-quiz-id="agent-discussion" data-duration="120">
+      <span class="discussion-label">Think &middot; Pair &middot; Share</span>
+      <p class="discussion-question">NovaAssist v2.0 wants to add <code>refund_payment</code> for Finance (up to $500). Auto, gate, or block?</p>
+      <div class="timer-row">
+        <button type="button" class="timer-start">Start 2:00</button>
+        <span class="timer-display">2:00</span>
+        <button type="button" class="timer-done">Mark discussed</button>
+      </div>
+    </div>
+    <p class="aside"><strong>Target:</strong> Human gate + amount threshold (&lt;$50 auto, $50ù$500 gate, &gt;$500 block). Two-factor approval if &gt;$200. Never auto-approve financial writes.</p>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="agent-q1" data-correct="approval"
+         data-success="Correct. Policy engine + idempotency key. That single gate would have prevented NovaAssist's 12 duplicate tickets."
+         data-failure="Without a gate, autonomous agents create actions in the real world. Duplicates, deletes, emails ù these are not wrong paragraphs. They are real events.">
+      <p class="quiz-question">After 12 duplicate ServiceNow tickets, NovaAssist's fix for create_ticket?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="allow">Keep autonomous &mdash; agents should act freely</button>
+        <button type="button" class="quiz-option" data-value="approval">Policy: human approval + idempotency key + max_steps=8 + timeout</button>
+        <button type="button" class="quiz-option" data-value="disable">Remove all tools &mdash; chat only</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+</section>
+
+<!-- ??? PART 4 ù INFERENCE LENS ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 4 &mdash; LENS C</span>
+    <div class="case-banner">CFO mandate: &lt;$2K/month &middot; Click any box</div>
+    <h2>Inference: Cost and Scale</h2>
+    <div class="diagram-container">
+      <div class="diagram-box poc">
+        <h4>v0.1 direct API</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 170" font-family="Segoe UI,sans-serif" font-size="10">
+          <defs><marker id="a4p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b949e"/></marker></defs>
+          <rect width="380" height="170" fill="#161b22" rx="4"/>
+          <rect class="svgnode" x="20" y="60" width="80" height="36" rx="4" fill="#21262d" stroke="#58a6ff"
+            data-label="NovaAssist app" data-desc="Single FastAPI app. No routing, no caching, no rate limit. Every request hits OpenAI directly." data-fix="Add API gateway with rate limiting. Cache frequent FAQ embeddings. Route by complexity."/>
+          <text x="60" y="82" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">NovaAssist app</text>
+          <rect class="svgnode" x="160" y="60" width="180" height="36" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"
+            data-label="openai.chat.completions (shared key)" data-desc="Shared API key in .env. Re-embeds query on every single request ù 62% of the $4,200 bill was embedding, not generation." data-fix="Self-hosted NIM embeddings: $0 per embed after GPU cost. Cache top-200 FAQ embeddings. Separate embedding from generation."/>
+          <text x="250" y="75" fill="#e6edf3" text-anchor="middle" font-size="9" pointer-events="none">openai.chat.completions</text>
+          <text x="250" y="89" fill="#8b949e" text-anchor="middle" font-size="8" pointer-events="none">shared key &middot; re-embeds every call</text>
+          <line x1="100" y1="78" x2="158" y2="78" stroke="#8b949e" marker-end="url(#a4p)"/>
+          <text x="190" y="135" fill="#f85149" text-anchor="middle" font-size="9">No SLA &middot; no rate limit &middot; no cost tracking &middot; no routing</text>
+          <text x="190" y="152" fill="#8b949e" text-anchor="middle" font-size="8">Works for 1 user. Fails at 120.</text>
+        </svg>
+      </div>
+      <div class="diagram-box enterprise">
+        <h4>v2.0 NIM + routing</h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" font-family="Segoe UI,sans-serif" font-size="9">
+          <defs><marker id="a4e" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#76b900"/></marker></defs>
+          <rect width="400" height="200" fill="#161b22" rx="4"/>
+          <rect class="svgnode" x="10" y="20" width="70" height="26" rx="3" fill="#21262d" stroke="#58a6ff"
+            data-label="API Gateway + rate limit" data-desc="100 req/min per user. $2K/month hard cap. Alert at 80%." data-fix="One line of config. Without this, one runaway process or looping agent can exceed the monthly budget in hours."/>
+          <text x="45" y="36" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Gateway</text>
+          <rect class="svgnode" x="90" y="20" width="70" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Complexity router" data-desc="Classifies query as simple (FAQ) or complex (multi-step reasoning). Routes to different model tiers." data-fix="80% of NovaAssist queries are FAQ: 'How many vacation days?' Route these to Llama-8B NIM (free after GPU). Keep expensive model for agent reasoning."/>
+          <text x="125" y="36" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Router</text>
+          <rect class="svgnode" x="170" y="10" width="70" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Llama-8B NIM (self-hosted)" data-desc="Handles 80% of queries: FAQ lookup, intent classify, simple retrieval. $0 marginal cost after GPU." data-fix="Self-hosted NIM: latency 0.3s, cost $0 per query (sunk GPU cost). Replaces cloud API for FAQ tier."/>
+          <text x="205" y="26" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Llama-8B</text>
+          <text x="205" y="34" fill="#76b900" text-anchor="middle" font-size="7" pointer-events="none">NIM (GPU)</text>
+          <rect class="svgnode" x="170" y="44" width="70" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="gpt-4o-mini (cloud)" data-desc="Handles 20% of queries: complex reasoning, agent steps, low-confidence retrieval. Billed per token." data-fix="Only call cloud LLM for queries that need it. NovaAssist reduced cloud API calls from 100% to 20% of traffic."/>
+          <text x="205" y="60" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">gpt-4o-mini</text>
+          <text x="205" y="68" fill="#8b949e" text-anchor="middle" font-size="7" pointer-events="none">cloud (20%)</text>
+          <rect class="svgnode" x="255" y="20" width="65" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="NIM Embed (self-hosted)" data-desc="Dedicated embedding model on GPU. Query embeddings cached for top-200 FAQs. 62% of original cost eliminated." data-fix="This one change reduces NovaAssist's bill from $4,200 to under $1,000 per month at same traffic."/>
+          <text x="287" y="36" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">NIM Embed</text>
+          <rect class="svgnode" x="330" y="20" width="60" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Cost dashboard" data-desc="$/query per team, per feature. Daily email: yesterday's cost vs budget. Alert at 80% of monthly cap." data-fix="CFO sees this dashboard. No dashboard = no trust = no budget for v3.0."/>
+          <text x="360" y="36" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Cost DB</text>
+          <line x1="80" y1="33" x2="88" y2="33" stroke="#76b900" marker-end="url(#a4e)"/>
+          <line x1="160" y1="28" x2="168" y2="23" stroke="#76b900" marker-end="url(#a4e)"/>
+          <line x1="160" y1="36" x2="168" y2="57" stroke="#76b900" marker-end="url(#a4e)"/>
+          <line x1="240" y1="33" x2="253" y2="33" stroke="#76b900" marker-end="url(#a4e)"/>
+          <line x1="320" y1="33" x2="328" y2="33" stroke="#76b900" marker-end="url(#a4e)"/>
+          <!-- model registry -->
+          <rect class="svgnode" x="10" y="80" width="100" height="26" rx="3" fill="#21262d" stroke="#76b900"
+            data-label="Model registry" data-desc="Versioned model artifacts with rollback. Prompt templates versioned alongside models." data-fix="When gpt-4o-mini answer quality drops after a model update, rollback takes 1 command vs 3 hours of debugging."/>
+          <text x="60" y="96" fill="#e6edf3" text-anchor="middle" font-size="8" pointer-events="none">Model registry + rollback</text>
+          <!-- sla box -->
+          <rect x="10" y="118" width="380" height="72" rx="3" fill="#21262d" stroke="#30363d"/>
+          <text x="200" y="136" fill="#76b900" text-anchor="middle" font-size="8">SLA: p99 &lt;1.2s &middot; uptime 99.5% &middot; &lt;$2K/month</text>
+          <text x="200" y="152" fill="#8b949e" text-anchor="middle" font-size="8">Router: Llama-8B for FAQ/classify &rarr; gpt-4o-mini for agent/reasoning</text>
+          <text x="200" y="167" fill="#8b949e" text-anchor="middle" font-size="8">Cloud equiv: Azure PTU &middot; AWS Bedrock &middot; GCP Vertex AI</text>
+          <text x="200" y="182" fill="#8b949e" text-anchor="middle" font-size="8">NVIDIA: NIM microservices &middot; Triton Inference Server &middot; GPU autoscaling</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST SIMULATOR -->
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 4 &mdash; COST SIMULATOR</span>
+    <h2>NovaAssist Cost Impact Calculator</h2>
+    <p class="aside" style="margin-bottom:0.8em">Move the sliders to see what each architecture choice costs per month</p>
+    <div id="cost-sim">
+      <div class="cost-control">
+        <label>Daily queries: <strong id="val-queries">1000</strong></label>
+        <input type="range" id="slider-queries" min="100" max="5000" value="1000" step="100">
+      </div>
+      <div class="cost-control">
+        <label>% queries routed to cloud LLM: <strong id="val-cloud">100</strong>%</label>
+        <input type="range" id="slider-cloud" min="0" max="100" value="100" step="5">
+      </div>
+      <div class="cost-control">
+        <label>Embed cached (top FAQs): <strong id="val-cache">0</strong>%</label>
+        <input type="range" id="slider-cache" min="0" max="90" value="0" step="5">
+      </div>
+      <div class="cost-results">
+        <div class="cost-card" id="cost-embed">
+          <div class="cost-label">Embedding cost / month</div>
+          <div class="cost-value" id="val-embed-cost">ù</div>
+        </div>
+        <div class="cost-card" id="cost-gen">
+          <div class="cost-label">Generation cost / month</div>
+          <div class="cost-value" id="val-gen-cost">ù</div>
+        </div>
+        <div class="cost-card" id="cost-total" style="border-color:var(--accent-orange)">
+          <div class="cost-label">Total / month</div>
+          <div class="cost-value" id="val-total-cost">ù</div>
+        </div>
+        <div class="cost-card" id="cost-cfo">
+          <div class="cost-label">CFO verdict</div>
+          <div class="cost-value" id="val-cfo">ù</div>
+        </div>
+      </div>
+      <p class="aside" style="margin-top:0.5em">Hint: try 1000 queries/day, 20% cloud, 70% cache &mdash; that's NovaAssist v2.0</p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="discussion-block" data-quiz-id="infer-discussion" data-duration="90">
+      <span class="discussion-label">Think &middot; Pair &middot; Share</span>
+      <p class="discussion-question">NovaAssist uses gpt-4o-mini for everything. Platform has a self-hosted Llama-8B NIM. What queries go where, and how do you decide at runtime?</p>
+      <div class="timer-row">
+        <button type="button" class="timer-start">Start 1:30</button>
+        <span class="timer-display">1:30</span>
+        <button type="button" class="timer-done">Mark discussed</button>
+      </div>
+    </div>
+    <p class="aside"><strong>Target:</strong> Intent classifier (Llama-8B, $0) decides: FAQ &rarr; Llama-8B; multi-step agent/low-confidence RAG &rarr; gpt-4o-mini. Routing decision itself is cheap.</p>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="infer-q1" data-correct="rag"
+         data-success="Correct. Weekly PDF updates make RAG + ingestion pipeline the right choice. Fine-tuning on docs that change weekly is expensive and always stale."
+         data-failure="Weekly doc updates = RAG. Fine-tuning is for stable style/format, not volatile document stores.">
+      <p class="quiz-question">NovaAssist: 2,000 policy PDFs updated weekly. Best foundation?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="finetune">Monthly fine-tune on all 2,000 PDFs</button>
+        <button type="button" class="quiz-option" data-value="rag">RAG ingestion pipeline + routing + eval</button>
+        <button type="button" class="quiz-option" data-value="bigger">Use the largest available cloud model for every query</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+</section>
+
+<!-- ??? PART 5 ù CAPSTONE ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 5</span>
+    <div class="case-banner">NovaAssist v2.0 &mdash; all three lenses on one platform &middot; Click any layer</div>
+    <h2>Unified Enterprise Platform</h2>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" font-family="Segoe UI,sans-serif" font-size="10" style="max-width:520px;display:block;margin:0 auto">
+      <rect width="500" height="320" fill="#161b22" rx="6"/>
+      <text x="250" y="22" fill="#76b900" text-anchor="middle" font-weight="600" font-size="13">NovaAssist v2.0 &mdash; Unified Platform</text>
+
+      <rect class="svgnode" x="30" y="38" width="440" height="44" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"
+        data-label="Experience Layer" data-desc="Chat UI, REST APIs, SDK, admin portal. This is what users see. Auth happens HERE ù every request must carry a valid JWT before it reaches any other layer." data-fix="NovaAssist: React chat UI + FastAPI endpoint. Auth via Azure AD. No unauthenticated path into the system."/>
+      <text x="250" y="57" fill="#58a6ff" text-anchor="middle" font-weight="600">Experience Layer</text>
+      <text x="250" y="72" fill="#8b949e" text-anchor="middle" font-size="9">Chat UI &middot; REST API &middot; SDK &middot; Admin portal</text>
+
+      <rect class="svgnode" x="30" y="92" width="440" height="44" rx="4" fill="#21262d" stroke="#bc8cff" stroke-width="1.5"
+        data-label="Orchestration Layer" data-desc="Agents, workflows, human-in-the-loop, policy engine. NovaAssist v1.5+ lives here. This is where create_ticket approval gates run." data-fix="LangGraph orchestrator + NVIDIA agent patterns. Policy engine is code, not a prompt. Audit log is mandatory."/>
+      <text x="250" y="111" fill="#bc8cff" text-anchor="middle" font-weight="600">Orchestration Layer</text>
+      <text x="250" y="126" fill="#8b949e" text-anchor="middle" font-size="9">Agents &middot; Workflows &middot; Human-in-the-loop &middot; Policy engine</text>
+
+      <rect class="svgnode" x="30" y="146" width="440" height="54" rx="4" fill="#21262d" stroke="#76b900" stroke-width="1.5"
+        data-label="AI Services Layer" data-desc="RAG pipeline, NIM embeddings, NIM/Triton LLM serving, reranker, guardrails. All three NovaAssist lenses live here." data-fix="NVIDIA NIM microservices: one container per model, optimised for GPU. NeMo Guardrails wraps every LLM call."/>
+      <text x="250" y="165" fill="#76b900" text-anchor="middle" font-weight="600">AI Services Layer</text>
+      <text x="130" y="184" fill="#8b949e" text-anchor="middle" font-size="9">RAG pipeline</text>
+      <text x="250" y="184" fill="#8b949e" text-anchor="middle" font-size="9">NIM Embeddings</text>
+      <text x="375" y="184" fill="#8b949e" text-anchor="middle" font-size="9">NIM/Triton LLM</text>
+
+      <rect class="svgnode" x="30" y="210" width="440" height="44" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"
+        data-label="Data Layer" data-desc="Vector DB (Milvus, namespaced by dept), object storage (PDFs), structured DB (HR/Finance), feature store." data-fix="NovaAssist's IT/HR leak fix is entirely here: one namespace per dept in Milvus, query filter mandatory. No data layer = no isolation."/>
+      <text x="250" y="229" fill="#f0883e" text-anchor="middle" font-weight="600">Data Layer</text>
+      <text x="250" y="244" fill="#8b949e" text-anchor="middle" font-size="9">Milvus (dept ns) &middot; Object storage &middot; Structured DB &middot; Feature store</text>
+
+      <rect class="svgnode" x="30" y="264" width="440" height="48" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"
+        data-label="Platform Layer" data-desc="Auth (Azure AD/Okta), Observability (Langfuse, Grafana), CI/CD (GitHub Actions), Governance (secrets, policy), Cost mgmt." data-fix="NovaAssist's API key incident is solved here: Key Vault + managed identity + secret scanner in CI. Cost dashboard for CFO lives here."/>
+      <text x="250" y="283" fill="#e6edf3" text-anchor="middle" font-weight="600">Platform Layer</text>
+      <text x="250" y="300" fill="#8b949e" text-anchor="middle" font-size="9">Auth &middot; Observability &middot; CI/CD &middot; Governance &middot; Secrets &middot; Cost mgmt</text>
+    </svg>
+    <p class="aside" style="font-size:0.65em;margin-top:0.3em">Click any layer &mdash; trace "Reset my VPN": Experience &rarr; Orchestration (agent plans) &rarr; AI Services (RAG doc) &rarr; Data (Milvus IT ns) &rarr; Platform (audit + cost)</p>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 5 &mdash; WORKSHEET</span>
+    <h2>Your Project: Apply the NovaAssist Pattern</h2>
+    <div class="upgrade-worksheet" id="upgrade-worksheet">
+      <div class="field-group">
+        <label for="ws-project">Your "NovaAssist" &mdash; project name + one line</label>
+        <input type="text" name="project" id="ws-project" placeholder="e.g. Lab Q&amp;A bot over research papers">
+      </div>
+      <div class="field-group">
+        <label for="ws-poc">What does your v0.1 POC do? Stack?</label>
+        <textarea name="poc" id="ws-poc" rows="2"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="ws-gaps">What incident would happen first at 100 users?</label>
+        <textarea name="gaps" id="ws-gaps" rows="2" placeholder="Like NovaAssist: cross-dept leak, cost spike, wrong answer..."></textarea>
+      </div>
+      <div class="field-group">
+        <label for="ws-rag">RAG upgrades needed (isolation, eval, guardrails)</label>
+        <textarea name="rag" id="ws-rag" rows="2"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="ws-agent">Agent tool policy (if using agents)</label>
+        <textarea name="agent" id="ws-agent" rows="2" placeholder="e.g. search = auto, write = gate, delete = block"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="ws-infer">Inference cost plan (routing, caching, SLA)</label>
+        <textarea name="infer" id="ws-infer" rows="2"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="ws-readme">NFRs + ADRs to add to your README</label>
+        <textarea name="readme" id="ws-readme" rows="2" placeholder="e.g. p99 &lt;2s, &lt;$200/mo, zero cross-user retrieval, all tool calls audited"></textarea>
+      </div>
+      <button type="button" class="worksheet-save">Save worksheet</button>
+      <p class="worksheet-msg"></p>
+    </div>
+  </section>
+</section>
+
+<!-- ??? PART 6 ù QUIZ + CHECKLIST ??? -->
+<section>
+  <section data-background-color="#0d1117">
+    <span class="part-label">PART 6</span>
+    <h2>Final Quiz &mdash; NovaAssist Scenarios</h2>
+    <p>Answer as Alex's architecture advisor.</p>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="final-q1" data-correct="platform"
+         data-success="Correct. SSO, traces, and CI/CD all live in the Platform Layer ù the cross-cutting concerns that every other layer depends on."
+         data-failure="Platform Layer: auth, observability, CI/CD, governance, secrets, cost management.">
+      <p class="quiz-question">1. NovaAssist SSO login, Langfuse traces, GitHub Actions deploy. Which platform layer?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="ai">AI Services Layer</button>
+        <button type="button" class="quiz-option" data-value="platform">Platform Layer</button>
+        <button type="button" class="quiz-option" data-value="data">Data Layer</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="final-q2" data-correct="rerank"
+         data-success="Right. Fix retrieval before touching the model. NovaAssist v1.0: same model, better chunking + reranker, precision 0.61 &rarr; 0.89."
+         data-failure="Fluent prose + wrong chunks = retrieval problem. Fix chunking + add reranker. Model upgrade is expensive and rarely the root cause.">
+      <p class="quiz-question">2. NovaAssist returns wrong HR chunks but LLM text is fluent. First fix?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="bigger">Upgrade to GPT-4</button>
+        <button type="button" class="quiz-option" data-value="rerank">Fix chunking + add reranker + run 30-Q eval</button>
+        <button type="button" class="quiz-option" data-value="finetune">Fine-tune on HR PDFs</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="final-q3" data-correct="gate"
+         data-success="Correct. Approval gate + idempotency key + max_steps. That single gate prevents 12 duplicate tickets."
+         data-failure="Agents act in the real world. create_ticket without a gate = 12 duplicates = 4 hours IT cleanup.">
+      <p class="quiz-question">3. NovaAssist creates 12 duplicate ServiceNow tickets overnight. What was missing?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="embed">Better embedding model</button>
+        <button type="button" class="quiz-option" data-value="gate">max_steps + idempotency key + human approval gate on create_ticket</button>
+        <button type="button" class="quiz-option" data-value="cache">Response caching</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="final-q4" data-correct="route"
+         data-success="Correct. 80% of NovaAssist queries are simple FAQ. Route them to self-hosted Llama-8B NIM ($0 marginal). Cloud LLM for the 20% that need it."
+         data-failure="Route by query complexity: FAQ/intent to self-hosted NIM, complex reasoning to cloud LLM. Cache top FAQ embeddings. This alone gets NovaAssist under $2K/month.">
+      <p class="quiz-question">4. NovaAssist 8 s p99, $4K/month bill. CFO wants &lt;$2K and &lt;1.2 s. Best lever?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="remove">Remove all rate limits</button>
+        <button type="button" class="quiz-option" data-value="route">FAQ cache + NIM Llama-8B for 80% of queries + cache embeddings</button>
+        <button type="button" class="quiz-option" data-value="prompt">Longer system prompts</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <div class="quiz-mcq" data-quiz-id="final-q5" data-correct="governance"
+         data-success="Correct. Cross-department data retrieval = Data &amp; Governance failure (pillar 1). Fix: Milvus namespace + dept_id filter mandatory."
+         data-failure="The IT/HR leak is a data isolation failure ù pillar 1 (Data &amp; Governance). The vector DB had no tenant boundary.">
+      <p class="quiz-question">5. NovaAssist's IT/HR doc leak ù which gap framework pillar?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" data-value="mlops">MLOps / LLMOps (pillar 6)</button>
+        <button type="button" class="quiz-option" data-value="governance">Data &amp; Governance (pillar 1)</button>
+        <button type="button" class="quiz-option" data-value="scale">Scale &amp; Cost (pillar 5)</button>
+      </div>
+      <p class="quiz-feedback"></p>
+    </div>
+  </section>
+
+  <section data-background-color="#0d1117">
+    <h2>NovaAssist Enterprise Checklist</h2>
+    <ul id="enterprise-checklist">
+      <li>Dept namespace on every vector query (Milvus / Qdrant)</li>
+      <li>JWT with dept_id claim ù mandatory on every request</li>
+      <li>Secrets in Key Vault ù never in git or .env</li>
+      <li>Citation required in every RAG answer (guardrail)</li>
+      <li>Async ingestion worker ù never embed inside HTTP handler</li>
+      <li>Reranker tuned against golden eval set before deploy</li>
+      <li>30-Q offline eval in CI (faithfulness gate)</li>
+      <li>Online: thumbs-down, retrieval drift, $/query</li>
+      <li>Agent: max_steps=8, timeout, cost cap per session</li>
+      <li>Policy engine: auto / gate / block per tool</li>
+      <li>Human approval on every write/irreversible tool</li>
+      <li>Idempotency key on create_ticket and all write tools</li>
+      <li>Model router: Llama-8B NIM for FAQ, cloud LLM for reasoning</li>
+      <li>FAQ embedding cache (top-200 queries)</li>
+      <li>Monthly cost cap with alert at 80%</li>
+      <li>Architecture diagram + NFRs + ADR links in README</li>
+    </ul>
+    <div class="checklist-actions">
+      <button type="button" id="export-checklist">Copy checklist to clipboard</button>
+      <button type="button" id="print-checklist">Print checklist</button>
+    </div>
+  </section>
+
+  <section class="title-slide" data-background-color="#0d1117">
+    <h1>Alex's Lesson</h1>
+    <p class="subtitle">The demo that wins applause is not the architecture that survives Monday.</p>
+    <p class="meta">Take your worksheet. Redraw NovaAssist v2.0 from memory tonight.<br>If you can trace one request through 5 layers, you understand enterprise AI.</p>
+    <aside class="notes">Close: "POC proves feasibility. Enterprise proves reliability. Write one ADR for your project this week. That's the habit that separates junior from senior."</aside>
+  </section>
+</section>
+
+ </div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    plugins: [RevealNotes],
+    transition: 'slide',
+    backgroundTransition: 'fade',
+    width: 1100,
+    height: 700,
+    margin: 0.04,
+    minScale: 0.2,
+    maxScale: 2.0
+  }).then(() => {
+    // Force Reveal to recalculate scale now that CSS has positioned .reveal
+    setTimeout(() => Reveal.layout(), 50);
+    window.addEventListener('resize', () => Reveal.layout());
+  });
+</script>
+<script src="js/workshop.js"></script>
+</body>
+</html>
