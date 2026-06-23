@@ -1,4 +1,4 @@
-# POC to Enterprise AI Architecture Workshop
+﻿# POC to Enterprise AI Architecture Workshop
 
 Interactive workshop for AI university interns — **one case study (NovaAssist)**, three architecture lenses (RAG, agentic, inference), NVIDIA reference patterns.
 
@@ -38,9 +38,9 @@ Every quiz, diagram, and discussion is tied to Alex's project.
 | **? / Space** | Next slide |
 | **Esc** | Slide overview |
 
-**Read first:** [FACILITATOR.md](FACILITATOR.md) — timing, insights, expected answers  
-**Prep guide:** [PRESENTER-PREP.md](PRESENTER-PREP.md) — terms, quiz answers, self-check  
-**Case study:** [case-study/nova-assist.md](case-study/nova-assist.md)
+**Read first:** [docs/FACILITATOR.md](docs/FACILITATOR.md) — timing, insights, expected answers  
+**Prep guide:** [docs/PRESENTER-PREP.md](docs/PRESENTER-PREP.md) — terms, quiz answers, self-check  
+**Case study:** [docs/nova-assist.md](docs/nova-assist.md)
 
 ## Project layout
 
@@ -49,9 +49,9 @@ poc-to-enterprice/
 ??? index.html                   # Slides + NovaAssist narrative + quizzes
 ??? package.json                 # npm start ? local server
 ??? .github/workflows/deploy.yml # GitHub Actions ? GitHub Pages
-??? FACILITATOR.md               # Presenter guide (timing, insights, Q&A)
-??? PRESENTER-PREP.md            # What to read before presenting
-??? case-study/
+??? docs/
+?   ??? FACILITATOR.md           # Presenter guide (timing, insights, Q&A)
+?   ??? PRESENTER-PREP.md        # What to read before presenting
 ?   ??? nova-assist.md           # Full case study reference
 ??? css/workshop.css
 ??? js/workshop.js

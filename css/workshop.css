@@ -160,7 +160,7 @@
 }
 
 .reveal .slides {
-  top: 28px;
+  top: 0;
 }
 
 .reveal .slides section {
@@ -678,8 +678,13 @@
   margin: 0;
 }
 
-.project-card dt { color: var(--text-muted); }
-.project-card dd { margin: 0; }
+.project-card dt {
+  color: var(--text-muted);
+  font-weight: 600;
+  padding-right: 10px;
+  align-self: baseline;
+}
+.project-card dd { margin: 0; align-self: baseline; }
 
 .timeline {
   display: flex;
