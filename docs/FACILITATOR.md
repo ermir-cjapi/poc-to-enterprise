@@ -73,7 +73,9 @@ Point at each metric card as you read it. Let the numbers land:
 - **1 wrong policy answer** — "An employee took wrong parental-leave guidance and acted on it."
 - **1 API key in GitHub** — "Scrapers found it in 4 hours."
 
-**Say:** *"Enterprise architecture is not a checklist you memorise. It is a sequence of decisions triggered by real failures, under stakeholder pressure. That's what we're practising today."*
+**Say:** *"Enterprise architecture is not a checklist you memorise. Some of it is designed upfront — before a single user touches the system. You decide on auth, data isolation, and a cost ceiling before go-live, not after the first incident. The rest is refined under pressure, when real failures reveal what you missed. Both matter. Today we practise both: what good upfront decisions look like, and how to course-correct when the unexpected hits."*
+
+**If a student asks "shouldn't architecture be decided at the start?"** — yes, and that's the point. Some pillars (security, data isolation, cost controls) should be non-negotiable before any real users arrive. What the NovaAssist story shows is what happens when that upfront design is skipped. The incidents are not random — every one is a predictable consequence of a decision that was deferred.
 
 ---
 
@@ -187,9 +189,19 @@ Common answers and how to respond:
 3. **Reliability:** *"OpenAI times out — FastAPI returns a 500. No fallback, no retry. Every user sees an error."*
 4. **Observability:** *"HR asks 'is it getting worse?' Alex cannot answer. No traces, no eval, no metrics."*
 5. **Scale & Cost:** *"$4,200 in 72 hours. Synchronous embedding in the HTTP handler, no caching."*
-6. **MLOps / LLMOps:** *"Prompt is changed by copying text in the file. No version, no rollback, no test."*
+6. **MLOps / LLMOps:** *"Alex edits the system prompt directly in a file, copies the new text in, saves it — and deploys immediately. There is no version in git, no automated test run, no way to roll back if quality drops. Two days later HR notices answers are worse. Alex cannot tell what changed or when."*
 
-**Say:** *"Keep this grid. Every AI project you build for the rest of your career goes through this checklist before it touches users."*
+**Unpacking pillar 6 for students who ask:** MLOps (Machine Learning Operations) and LLMOps (its LLM-specific extension) is the engineering discipline that treats your prompt, model version, and evaluation pipeline like production software. Concretely it means:
+- **Version control for prompts** — every prompt change is a git commit, so you can see who changed what and roll back
+- **CI gate before deploy** — a prompt change only ships if the golden-question test suite passes (faithfulness ≥ 0.85). No passing, no deploy.
+- **Reproducibility** — you can always answer "what exact prompt + model version was running at 14:00 on Tuesday?" from logs
+- **Safe rollback** — if production quality drops after a deploy, you can revert in one command, not by trying to remember what you typed last week
+
+*"Think of it this way: you wouldn't push code to production without a PR review and CI. MLOps says your prompt is code. Treat it the same way."*
+
+**Say to close this section:** *"Keep this grid. Every AI project you build for the rest of your career goes through this checklist before it touches users."*
+
+**On whether these 6 pillars are universal — say this explicitly:** *"These six pillars are not NovaAssist-specific. They describe the gap between any AI POC and any enterprise-grade AI system. Different companies use different names, but every enterprise AI app you'll ever build will need to answer for data governance, security, reliability, observability, cost discipline, and operational control over your models and prompts. The NovaAssist story is just one concrete path through all six."*
 
 **Interview tip to say aloud:** *"Interviewers ask 'how did you evaluate your RAG system?' A junior answer: 'it worked.' A senior answer: 'we gated prompt changes on a 50-question golden set; faithfulness score must stay above 0.85 before any deploy.' That second answer comes from pillar 4."*
 

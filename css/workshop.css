@@ -1,18 +1,29 @@
-/* POC-to-Enterprise Workshop Theme */
+/* POC-to-Enterprise Workshop Theme — Computacenter Brand */
+
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --nv-green: #76b900;
-  --nv-green-dim: #5a8f00;
-  --bg-dark: #0d1117;
-  --bg-card: #161b22;
-  --bg-elevated: #21262d;
-  --text-primary: #e6edf3;
-  --text-muted: #8b949e;
-  --accent-blue: #58a6ff;
-  --accent-orange: #f0883e;
-  --accent-red: #f85149;
-  --accent-purple: #bc8cff;
-  --border: #30363d;
+  /* Computacenter Brand Palette */
+  --cc-horizon: #49ABEB;          /* Horizon Blue — accents, badges, highlights */
+  --cc-horizon-dim: #3a8abb;      /* Horizon Blue dimmed */
+  --cc-secondary: #7EB8D4;        /* Soft secondary blue (replaces purple) */
+
+  /* Background surfaces — Foundation Blue family */
+  --bg-dark: #011749;             /* Foundation Blue — slide backgrounds */
+  --bg-card: #06204D;             /* Cards — slightly lighter surface */
+  --bg-elevated: #0D2A5C;         /* Elevated UI elements */
+
+  /* Text */
+  --text-primary: #FAFAFF;        /* Cloud White — all body/title text on dark */
+  --text-muted: #8CAFD0;          /* Muted blue-white for captions */
+
+  /* Functional accent colors (semantic use only) */
+  --accent-blue: #49ABEB;         /* Horizon Blue */
+  --accent-orange: #f0883e;       /* POC / warning states */
+  --accent-red: #f85149;          /* Errors / incidents / danger */
+
+  /* Structural */
+  --border: #0E2D6E;              /* Blue-tinted border */
   --radius: 8px;
 }
 
@@ -60,7 +71,7 @@
 
 .howto-card h4 {
   margin: 0 0 8px;
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-size: 1em;
 }
 
@@ -131,7 +142,7 @@
 
 #workshop-progress .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--nv-green), var(--accent-blue));
+  background: var(--cc-horizon);
   width: 0%;
   transition: width 0.4s ease;
 }
@@ -151,14 +162,28 @@
 }
 
 .section-badge.completed {
-  background: rgba(118, 185, 0, 0.2);
-  border-color: var(--nv-green);
-  color: var(--nv-green);
+  background: rgba(73, 171, 235, 0.2);
+  border-color: var(--cc-horizon);
+  color: var(--cc-horizon);
+}
+
+/* Font override — ensure Albert Sans wins over Reveal.js theme defaults */
+body {
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Override Reveal.js CSS custom property for font */
+:root {
+  --r-main-font: 'Albert Sans', system-ui, -apple-system, sans-serif;
+  --r-heading-font: 'Albert Sans', system-ui, -apple-system, sans-serif;
+  --r-main-color: #FAFAFF;
+  --r-heading-color: #FAFAFF;
+  --r-background-color: #011749;
 }
 
 /* Reveal overrides */
 .reveal {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
   color: var(--text-primary);
 }
 
@@ -168,13 +193,13 @@
 
 .reveal h1, .reveal h2, .reveal h3 {
   text-transform: none;
-  font-weight: 600;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
   color: var(--text-primary);
 }
 
-.reveal h1 { font-size: 2em; }
-.reveal h2 { font-size: 1.5em; color: var(--nv-green); }
-.reveal h3 { font-size: 1.1em; color: var(--accent-blue); }
+.reveal h1 { font-size: 2em; font-weight: 700; }
+.reveal h2 { font-size: 1.5em; font-weight: 600; color: var(--text-primary); }
+.reveal h3 { font-size: 1.1em; font-weight: 500; color: var(--cc-horizon); }
 
 .reveal .subtitle {
   color: var(--text-muted);
@@ -184,28 +209,28 @@
 
 .reveal .part-label {
   display: inline-block;
-  background: var(--nv-green);
-  color: #000;
+  background: var(--cc-horizon);
+  color: #FAFAFF;
   padding: 4px 12px;
   border-radius: 4px;
   font-size: 0.7em;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.05em;
   margin-bottom: 0.5em;
 }
 
 .reveal ul, .reveal ol {
-  font-size: 0.85em;
-  line-height: 1.6;
+  font-size: 0.78em;
+  line-height: 1.55;
 }
 
-.reveal li { margin-bottom: 0.4em; }
+.reveal li { margin-bottom: 0.3em; }
 
-.reveal strong { color: var(--accent-orange); }
+.reveal strong { color: var(--cc-horizon); }
 
 .reveal blockquote {
   background: var(--bg-card);
-  border-left: 4px solid var(--nv-green);
+  border-left: 4px solid var(--cc-horizon);
   padding: 0.8em 1.2em;
   font-style: normal;
   box-shadow: none;
@@ -236,17 +261,18 @@
 }
 
 .diagram-box.poc { border-color: var(--accent-orange); }
-.diagram-box.enterprise { border-color: var(--nv-green); }
+.diagram-box.enterprise { border-color: var(--cc-horizon); }
 
 .diagram-box h4 {
   margin: 0 0 8px;
   font-size: 0.8em;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .diagram-box.poc h4 { color: var(--accent-orange); }
-.diagram-box.enterprise h4 { color: var(--nv-green); }
+.diagram-box.enterprise h4 { color: var(--cc-horizon); }
 
 .diagram-box img, .diagram-box svg {
   width: 100%;
@@ -266,12 +292,12 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px;
-  font-size: 0.75em;
+  padding: 10px;
+  font-size: 0.68em;
 }
 
 .gap-card .num {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 700;
   font-size: 1.2em;
 }
@@ -279,7 +305,7 @@
 .gap-card h4 {
   margin: 4px 0;
   font-size: 1em;
-  color: var(--accent-blue);
+  color: var(--cc-horizon);
 }
 
 /* Intern mistake callout */
@@ -304,14 +330,14 @@
 /* NVIDIA mapping */
 .nvidia-map {
   background: var(--bg-elevated);
-  border-left: 3px solid var(--nv-green);
+  border-left: 3px solid var(--cc-horizon);
   padding: 10px 14px;
   margin: 0.8em 0;
   font-size: 0.75em;
 }
 
 .nvidia-map .label {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 600;
   font-size: 0.85em;
 }
@@ -347,12 +373,12 @@
   text-align: left;
   transition: border-color 0.2s, background 0.2s;
   color: var(--text-primary);
-  font-family: inherit;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
 }
 
 .quiz-option:hover:not(:disabled), .poll-option:hover {
-  border-color: var(--accent-blue);
-  background: rgba(88, 166, 255, 0.08);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.08);
 }
 
 .quiz-option:disabled, .poll-option.selected {
@@ -360,8 +386,8 @@
 }
 
 .quiz-option.correct, .poll-option.selected {
-  border-color: var(--nv-green);
-  background: rgba(118, 185, 0, 0.15);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.15);
 }
 
 .quiz-option.incorrect {
@@ -379,14 +405,14 @@
   display: block;
 }
 
-.quiz-feedback.success { color: var(--nv-green); }
+.quiz-feedback.success { color: var(--cc-horizon); }
 .quiz-feedback.error { color: var(--accent-red); }
-.quiz-hint { color: var(--accent-orange); }
+.quiz-hint { color: var(--cc-horizon); }
 
 .poll-submit, .timer-start, .timer-done, .worksheet-save,
 #export-checklist, #print-checklist, #reset-progress {
-  background: var(--nv-green);
-  color: #000;
+  background: var(--cc-horizon);
+  color: var(--bg-dark);
   border: none;
   border-radius: var(--radius);
   padding: 8px 16px;
@@ -394,13 +420,13 @@
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
-  font-family: inherit;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
 }
 
 .poll-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .timer-start, .timer-done { margin-right: 8px; }
-.timer-done { background: var(--accent-blue); color: #fff; }
+.timer-done { background: var(--cc-secondary); color: var(--bg-dark); }
 
 #export-checklist, #print-checklist {
   background: var(--bg-elevated);
@@ -441,8 +467,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(118, 185, 0, 0.3);
-  border: 2px solid var(--nv-green);
+  background: rgba(73, 171, 235, 0.3);
+  border: 2px solid var(--cc-horizon);
   cursor: pointer;
   animation: pulse 2s infinite;
   display: flex;
@@ -450,13 +476,13 @@
   justify-content: center;
   font-size: 0.7em;
   font-weight: 700;
-  color: var(--nv-green);
+  color: var(--cc-horizon);
 }
 
 .hotspot.found {
   animation: none;
-  background: var(--nv-green);
-  color: #000;
+  background: var(--cc-horizon);
+  color: var(--bg-dark);
 }
 
 @keyframes pulse {
@@ -485,13 +511,13 @@
 
 .gap-item:last-child { border-bottom: none; }
 
-.gap-item strong { color: var(--nv-green); }
+.gap-item strong { color: var(--cc-horizon); }
 .gap-num { color: var(--text-muted) !important; margin-right: 2px; }
 
 .spot-gap.all-found .gap-panel::after {
   content: 'All gaps found ✓';
   display: block;
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   margin-top: 8px;
   font-weight: 600;
 }
@@ -499,14 +525,14 @@
 /* Discussion blocks */
 .discussion-block {
   background: var(--bg-card);
-  border: 1px solid var(--accent-purple);
+  border: 1px solid var(--cc-secondary);
   border-radius: var(--radius);
   padding: 16px;
   margin: 1em 0;
 }
 
 .discussion-block .discussion-label {
-  color: var(--accent-purple);
+  color: var(--cc-secondary);
   font-weight: 700;
   font-size: 0.75em;
   text-transform: uppercase;
@@ -528,14 +554,14 @@
 .timer-display {
   font-size: 1.4em;
   font-weight: 700;
-  color: var(--accent-blue);
+  color: var(--cc-horizon);
   font-variant-numeric: tabular-nums;
 }
 
 .discussion-done { opacity: 0.85; }
 .discussion-done::after {
   content: ' ✓ Discussed';
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 600;
 }
 
@@ -546,7 +572,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-family: 'JetBrains Mono', monospace;
   line-height: 1.8;
   white-space: pre-wrap;
 }
@@ -573,7 +599,7 @@
 
 .upgrade-worksheet label {
   display: block;
-  color: var(--accent-blue);
+  color: var(--cc-horizon);
   margin-bottom: 3px;
   font-weight: 600;
   font-size: 0.95em;
@@ -587,7 +613,7 @@
   border-radius: var(--radius);
   color: var(--text-primary);
   padding: 6px 8px;
-  font-family: inherit;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
   font-size: 1em;
   box-sizing: border-box;
   resize: vertical;
@@ -596,7 +622,7 @@
 .upgrade-worksheet textarea { min-height: 38px; resize: vertical; }
 
 .worksheet-msg {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-size: 0.85em;
   margin-top: 8px;
   display: none;
@@ -633,10 +659,8 @@
 
 .title-slide h1 {
   font-size: 2.2em;
-  background: linear-gradient(135deg, var(--nv-green), var(--accent-blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 700;
+  color: var(--cc-horizon);
 }
 
 .title-slide .meta {
@@ -650,13 +674,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(88, 166, 255, 0.12);
-  border: 1px solid var(--accent-blue);
+  background: rgba(73, 171, 235, 0.12);
+  border: 1px solid var(--cc-horizon);
   border-radius: var(--radius);
   padding: 6px 12px;
   font-size: 0.72em;
   margin-bottom: 0.6em;
-  color: var(--accent-blue);
+  color: var(--cc-horizon);
 }
 
 .case-banner strong { color: var(--text-primary); }
@@ -702,20 +726,20 @@
 }
 
 .timeline-step.active {
-  border-color: var(--nv-green);
-  background: rgba(118, 185, 0, 0.08);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.08);
 }
 
 .timeline-step .week {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 700;
   display: block;
   margin-bottom: 4px;
 }
 
 .insight-box {
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.08), rgba(88, 166, 255, 0.06));
-  border: 1px solid var(--nv-green);
+  background: rgba(73, 171, 235, 0.07);
+  border: 1px solid var(--cc-horizon);
   border-radius: var(--radius);
   padding: 10px 14px;
   margin: 0.4em 0;
@@ -723,7 +747,7 @@
 }
 
 .insight-box .insight-label {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 700;
   font-size: 0.85em;
   text-transform: uppercase;
@@ -761,7 +785,7 @@
 
 .stakeholder-card h4 {
   margin: 0 0 6px;
-  color: var(--accent-purple);
+  color: var(--cc-secondary);
   font-size: 1em;
 }
 
@@ -771,11 +795,11 @@
   border-radius: var(--radius);
   padding: 12px 14px;
   font-size: 0.72em;
-  font-family: 'Cascadia Code', Consolas, monospace;
+  font-family: 'JetBrains Mono', monospace;
   line-height: 1.6;
 }
 
-.adr-box .adr-title { color: var(--accent-orange); font-weight: 600; }
+.adr-box .adr-title { color: var(--cc-horizon); font-weight: 600; }
 
 .metrics-row {
   display: flex;
@@ -800,7 +824,7 @@
   display: block;
 }
 
-.metric-chip .value.good { color: var(--nv-green); }
+.metric-chip .value.good { color: var(--cc-horizon); }
 
 .metric-chip .label {
   font-size: 0.75em;
@@ -817,7 +841,7 @@
 }
 
 .evolution-compare .arrow {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-size: 1.5em;
   font-weight: 700;
 }
@@ -829,7 +853,7 @@
   border: 1px solid var(--border);
 }
 
-.evolution-col.after { border-color: var(--nv-green); }
+.evolution-col.after { border-color: var(--cc-horizon); }
 
 /* Speaker notes styling in presenter view handled by Reveal */
 
@@ -838,7 +862,7 @@
   position: fixed;
   z-index: 500;
   background: var(--bg-elevated);
-  border: 1px solid var(--accent-blue);
+  border: 1px solid var(--cc-horizon);
   border-radius: var(--radius);
   padding: 14px 16px 12px;
   max-width: 320px;
@@ -847,6 +871,7 @@
   font-size: 0.78em;
   display: none;
   pointer-events: auto;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
 }
 
 #node-panel.visible { display: block; }
@@ -863,7 +888,7 @@
 }
 
 #node-panel-label {
-  color: var(--accent-blue);
+  color: var(--cc-horizon);
   font-weight: 700;
   margin-bottom: 6px;
   font-size: 1em;
@@ -876,7 +901,7 @@
 }
 
 #node-panel-fix {
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   border-top: 1px solid var(--border);
   padding-top: 6px;
   line-height: 1.5;
@@ -951,14 +976,14 @@
 
 .arch-layer.active {
   opacity: 1;
-  border-color: var(--nv-green);
-  background: rgba(118,185,0,0.1);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.1);
   color: var(--text-primary);
 }
 
 #arch-complete-msg {
   margin-top: 10px;
-  color: var(--nv-green);
+  color: var(--cc-horizon);
   font-weight: 600;
   display: none;
   font-size: 0.85em;
@@ -977,15 +1002,15 @@
   color: var(--text-primary);
   padding: 8px 12px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
   font-size: 0.85em;
   text-align: left;
   transition: border-color 0.2s, background 0.2s;
 }
 
 .arch-add-btn:hover:not(:disabled) {
-  border-color: var(--nv-green);
-  background: rgba(118,185,0,0.08);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.08);
 }
 
 .arch-add-btn:disabled {
@@ -1007,8 +1032,8 @@
 }
 
 #arch-explain-panel.visible {
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
+  color: var(--cc-horizon);
+  border-color: var(--cc-horizon);
 }
 
 /* ── Tool Policy Game ── */
@@ -1043,7 +1068,7 @@
 .tool-card:active { cursor: grabbing; }
 .tool-card.placed { opacity: 0.45; cursor: pointer; }
 .tool-card.placed:hover { opacity: 0.7; }
-.tool-card strong { display: block; color: var(--accent-orange); margin-bottom: 2px; font-size: 1em; }
+.tool-card strong { display: block; color: var(--cc-horizon); margin-bottom: 2px; font-size: 1em; }
 .tool-card span { display: block; color: var(--text-muted); font-size: 0.85em; line-height: 1.3; }
 
 /* Zones: stacked vertically on the right */
@@ -1062,8 +1087,8 @@
 }
 
 .tool-zone.drag-over {
-  border-color: var(--accent-blue);
-  background: rgba(88,166,255,0.06);
+  border-color: var(--cc-horizon);
+  background: rgba(73, 171, 235, 0.06);
 }
 
 .zone-label {
@@ -1072,7 +1097,7 @@
   margin-bottom: 4px;
   white-space: nowrap;
 }
-.zone-label.green  { color: var(--nv-green); }
+.zone-label.green  { color: var(--cc-horizon); }
 .zone-label.orange { color: var(--accent-orange); }
 .zone-label.red    { color: var(--accent-red); }
 
@@ -1105,7 +1130,7 @@
   border-bottom: 1px solid var(--border);
 }
 
-.tool-result-row.correct { color: var(--nv-green); }
+.tool-result-row.correct { color: var(--cc-horizon); }
 .tool-result-row.wrong { color: var(--accent-red); }
 
 /* ── Cost Simulator ── */
@@ -1125,7 +1150,7 @@
 
 .cost-control input[type="range"] {
   width: 100%;
-  accent-color: var(--nv-green);
+  accent-color: var(--cc-horizon);
 }
 
 .cost-results {
@@ -1155,13 +1180,173 @@
   color: var(--text-primary);
 }
 
-.cost-value.good { color: var(--nv-green); }
+.cost-value.good { color: var(--cc-horizon); }
 .cost-value.warn { color: var(--accent-orange); }
 .cost-value.bad  { color: var(--accent-red); }
 
+/* ── Metric chips: force single row ── */
+.metrics-row {
+  flex-wrap: nowrap;
+}
+
+.metric-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 8px;
+}
+
+.metric-chip .value {
+  font-size: 1.25em;
+}
+
+/* ── compact-section: slides with a lot of content ── */
+
+/* Slide heading + badge */
+.compact-section h2 {
+  font-size: 1.1em !important;
+  margin-top: 0.1em;
+  margin-bottom: 0.2em;
+}
+
+.compact-section .part-label {
+  margin-bottom: 0.3em;
+}
+
+.compact-section .case-banner {
+  margin-bottom: 0.3em;
+  padding: 4px 10px;
+  font-size: 0.65em;
+}
+
+/* Poll (slide 8) */
+.compact-section .poll-block,
+.compact-section .quiz-mcq {
+  padding: 10px 12px;
+  margin: 0.4em 0;
+}
+
+.compact-section .quiz-question,
+.compact-section .poll-block p.quiz-question {
+  font-size: 0.8em;
+  margin-bottom: 8px;
+}
+
+.compact-section .poll-options,
+.compact-section .quiz-options {
+  gap: 5px;
+}
+
+.compact-section .poll-option,
+.compact-section .quiz-option {
+  padding: 6px 10px;
+  font-size: 0.76em;
+}
+
+/* Architecture Builder (slide 14) */
+.compact-section #arch-builder {
+  font-size: 0.65em;
+  gap: 12px;
+}
+
+.compact-section #arch-layers {
+  gap: 3px;
+}
+
+.compact-section .arch-layer {
+  padding: 5px 8px;
+}
+
+.compact-section #arch-builder-buttons {
+  gap: 4px;
+}
+
+.compact-section .arch-add-btn {
+  padding: 5px 10px;
+}
+
+.compact-section #arch-explain-panel {
+  min-height: 28px;
+  padding: 5px 8px;
+  margin-bottom: 5px;
+  font-size: 0.8em;
+}
+
+.compact-section #arch-complete-msg {
+  font-size: 0.8em;
+  margin-top: 6px;
+}
+
+/* Worksheet (slide 27) */
+.compact-section .upgrade-worksheet {
+  font-size: 0.60em;
+  gap: 4px 10px;
+}
+
+.compact-section .upgrade-worksheet textarea {
+  min-height: 22px;
+}
+
+.compact-section .upgrade-worksheet input[type="text"] {
+  padding: 4px 6px;
+}
+
+.compact-section .upgrade-worksheet label {
+  margin-bottom: 1px;
+  font-size: 0.95em;
+}
+
+/* ── Computacenter branding mark ── */
+.cc-logo-overlay {
+  position: fixed;
+  z-index: 50;
+  /* Align with the slide content area — below the progress bar, left edge */
+  top: 48px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cc-logo-label {
+  font-family: 'Albert Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Stakeholder / dense slide reductions ── */
+.stakeholder-card {
+  font-size: 0.7em;
+}
+
+.project-card {
+  font-size: 0.74em;
+}
+
+/* Tighter quiz and discussion blocks */
+.quiz-mcq .quiz-question,
+.poll-block .poll-question {
+  font-size: 0.85em;
+  margin-bottom: 10px;
+}
+
+.quiz-option, .poll-option {
+  padding: 8px 12px;
+  font-size: 0.78em;
+}
+
+/* Discussion question tighter */
+.discussion-block .discussion-question {
+  font-size: 0.88em;
+}
+
 @media print {
   #workshop-progress, #reset-progress, .reveal .controls,
-  .reveal .progress, #node-panel { display: none !important; }
+  .reveal .progress, #node-panel, .cc-logo-overlay { display: none !important; }
   .reveal .slides section { page-break-inside: avoid; }
 }
 
