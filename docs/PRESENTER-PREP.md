@@ -9,10 +9,10 @@ This document tells you exactly what to read, what to understand, and what to pr
 
 | Document | What you get |
 |----------|-------------|
-| `case-study/nova-assist.md` | The full NovaAssist story: company, intern, stack, all 4 incidents with root causes and fixes, the evolution arc, stakeholder concerns, ADRs |
-| `FACILITATOR.md` | Slide-by-slide script: what to say, what to ask, what answers to expect, timing |
+| `docs/nova-assist.md` | The full NovaAssist story: company, intern, stack, all 4 incidents with root causes and fixes, the evolution arc, stakeholder concerns, ADRs |
+| `docs/FACILITATOR.md` | Simple running guide: what to do, what to say, key points, timing |
 
-Read them in that order. The case study first so you understand the material; the facilitator guide second so you understand how to use it.
+Read them in that order. The case study first gives you the full story; the facilitator guide then gives you the simple version to use in the room.
 
 ---
 
