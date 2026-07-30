@@ -71,7 +71,7 @@
     <li><strong>Part 2</strong> &mdash; Lens A: fix NovaAssist RAG + build it yourself</li>
     <li><strong>Part 3</strong> &mdash; Lens B: agents + tool policy game</li>
     <li><strong>Part 4</strong> &mdash; Lens C: inference + cost simulator</li>
-    <li><strong>Part 5</strong> &mdash; Capstone: unified platform + worksheet</li>
+    <li><strong>Part 5</strong> &mdash; Capstone: unified platform + ADR trade-off</li>
     <li><strong>Part 6</strong> &mdash; Final quiz + checklist</li>
   </ol>
   <p class="aside">90&ndash;120 min &middot; <kbd>S</kbd> = speaker notes &middot; <kbd>F</kbd> = fullscreen &middot; <kbd>Esc</kbd> = overview</p>
@@ -188,22 +188,86 @@
   </section>
 
   <section data-background-color="#011749" class="compact-section">
-    <span class="part-label">PART 0 &mdash; INTERACTIVE POLL</span>
-    <h2>You Are Alex's Advisor &mdash; Pick Top 3 Risks</h2>
-    <div class="poll-block" id="poll-risks" data-max-select="3">
-      <p class="quiz-question">120 users, 3 departments, shared API key, no auth. What do you fix first?</p>
-      <div class="poll-options">
-        <button type="button" class="poll-option" data-value="cost">$4K+ API bill / no quotas (already happening)</button>
-        <button type="button" class="poll-option" data-value="security">Cross-department doc leak (already happened)</button>
-        <button type="button" class="poll-option" data-value="hallucination">Wrong HR policy answer &rarr; employee acts on it</button>
-        <button type="button" class="poll-option" data-value="injection">Prompt injection via a crafted uploaded PDF</button>
-        <button type="button" class="poll-option" data-value="latency">8 s p99 latency at 9 AM Monday</button>
-        <button type="button" class="poll-option" data-value="ops">Can't debug anything &mdash; no traces, no eval</button>
+    <span class="part-label">PART 0 &mdash; WAR ROOM</span>
+    <h2>You Are Alex&rsquo;s On-Call Engineer &mdash; 2:14 AM</h2>
+    <div class="incident-tree" id="incident-tree">
+
+      <!-- Step 1 -->
+      <div class="tree-step active" id="tree-step-1">
+        <div class="tree-scenario">
+          <span class="tree-step-badge">Step 1 of 3</span>
+          <p class="tree-question">OpenAI dashboard: $1,400 in 48 hours, still climbing. You get paged. <strong>What do you do right now?</strong></p>
+        </div>
+        <div class="tree-choices">
+          <button type="button" class="tree-choice" data-next="2a" data-outcome="good">A &mdash; Revoke the shared API key immediately</button>
+          <button type="button" class="tree-choice" data-next="2b" data-outcome="warn">B &mdash; Set a rate limit to 100 req/min and monitor</button>
+          <button type="button" class="tree-choice" data-next="2c" data-outcome="bad">C &mdash; It&rsquo;s 2 AM &mdash; log it and handle at 9 AM stand-up</button>
+        </div>
       </div>
-      <button type="button" class="poll-submit" disabled>Submit my top 3</button>
-      <p class="poll-feedback"></p>
+
+      <!-- Step 2a — good path -->
+      <div class="tree-step" id="tree-step-2a">
+        <div class="tree-consequence good">&check; Key revoked in 3 min. Bill stops at $1,700. 12 users get a 503 &mdash; on-call #2 opens war-room Slack thread.</div>
+        <div class="tree-scenario">
+          <span class="tree-step-badge">Step 2 of 3 &mdash; 2:19 AM</span>
+          <p class="tree-question">Service is down but spend is stopped. A new key is issued. <strong>How do you redeploy?</strong></p>
+        </div>
+        <div class="tree-choices">
+          <button type="button" class="tree-choice" data-next="3-good" data-outcome="good">A &mdash; New key &rarr; Key Vault &rarr; managed identity &rarr; cost alert at 80%</button>
+          <button type="button" class="tree-choice" data-next="3-partial" data-outcome="warn">B &mdash; New key to .env, redeploy now, fix secrets hygiene tomorrow</button>
+        </div>
+      </div>
+
+      <!-- Step 2b — partial path -->
+      <div class="tree-step" id="tree-step-2b">
+        <div class="tree-consequence warn">&#9888; Rate limited. Spend slows but key stays live. 4 h later: $2,900. Finance pings at 6 AM.</div>
+        <div class="tree-scenario">
+          <span class="tree-step-badge">Step 2 of 3 &mdash; 6:00 AM</span>
+          <p class="tree-question">Security DMs you: the shared key appears in a GitHub commit from 3 weeks ago &mdash; repo was briefly public. <strong>What now?</strong></p>
+        </div>
+        <div class="tree-choices">
+          <button type="button" class="tree-choice" data-next="3-partial" data-outcome="warn">A &mdash; Rotate key, scrub git history, add pre-commit secret scanner</button>
+          <button type="button" class="tree-choice" data-next="3-bad" data-outcome="bad">B &mdash; Make the repo private &mdash; that should be enough</button>
+        </div>
+      </div>
+
+      <!-- Step 2c — bad path -->
+      <div class="tree-step" id="tree-step-2c">
+        <div class="tree-consequence bad">&#10007; Ignored. By 8 AM the bill is $4,200. Finance cancels the card. All 120 users are down. CFO schedules a post-mortem for 5 PM.</div>
+        <div class="tree-scenario">
+          <span class="tree-step-badge">Step 2 of 3 &mdash; 8:02 AM</span>
+          <p class="tree-question">Post-mortem starts. CFO asks: &ldquo;What were the root causes?&rdquo; <strong>What do you list?</strong></p>
+        </div>
+        <div class="tree-choices">
+          <button type="button" class="tree-choice" data-next="3-bad-a" data-outcome="warn">A &mdash; No rate limits, no cost alerts, shared key, re-embed on every query</button>
+          <button type="button" class="tree-choice" data-next="3-bad-b" data-outcome="bad">B &mdash; OpenAI raised prices unexpectedly; this was unforeseeable</button>
+        </div>
+      </div>
+
+      <!-- Step 3 outcomes -->
+      <div class="tree-step" id="tree-step-3-good">
+        <div class="tree-consequence good">&check; Bill: $1,700. Key in vault. Budget alert live. Re-embed fixed next morning. CFO signs off v1.0 budget.</div>
+        <div class="tree-debrief"><strong>Enterprise pattern:</strong> Revoke &rarr; Isolate &rarr; Alert &rarr; Document. An automated cost alert at 80% budget would have caught this at $100, not $1,400.</div>
+      </div>
+      <div class="tree-step" id="tree-step-3-partial">
+        <div class="tree-consequence warn">&#9888; Bill: ~$2,900. Key rotated but .env habit persists. One more git push will repeat this. CFO approves v1.0 with conditions.</div>
+        <div class="tree-debrief"><strong>The fix that solves the symptom &ne; the fix that prevents recurrence.</strong> Key Vault + CI pre-commit scanner is the permanent fix.</div>
+      </div>
+      <div class="tree-step" id="tree-step-3-bad-a">
+        <div class="tree-consequence warn">&#9888; Correct root causes. CFO is satisfied with the analysis. But none of it is fixed yet &mdash; this only buys trust for 48 h.</div>
+        <div class="tree-debrief">Good post-mortem analysis; bad runtime response. Enterprise = automated alerts + immediate revocation protocol. You named the problem; now build the system that prevents the 2 AM page.</div>
+      </div>
+      <div class="tree-step" id="tree-step-3-bad-b">
+        <div class="tree-consequence bad">&#10007; CFO is not satisfied. Prices did not change. This was entirely preventable with a $2K/month budget alert and async ingestion. v1.0 budget denied.</div>
+        <div class="tree-debrief"><strong>Never blame the vendor for your architecture gaps.</strong> No rate limit + sync embed + shared key = this exact failure mode. Write the ADR before v1.0.</div>
+      </div>
+
+      <div class="tree-nav" id="tree-nav" style="display:none">
+        <button type="button" id="tree-restart-btn">&#8635; Restart scenario</button>
+        <span class="tree-outcome-label"></span>
+      </div>
     </div>
-    <aside class="notes">After poll: "All six are real. Enterprise assigns an explicit owner and mitigation to each BEFORE go-live, not after the incident." Transition: "Let's name the 6 levers."</aside>
+    <aside class="notes">Don't reveal the correct path. Let students choose. After an outcome: "What automated system would have caught this at 2 AM?" (cost alert at 80% threshold + Key Vault). Then: "Let's name the 6 pillars that explain why this happened."</aside>
   </section>
 </section>
 
@@ -412,12 +476,12 @@
       <div id="arch-builder-buttons">
         <div id="arch-explain-panel">Click a button to see what it fixes &rarr;</div>
         <p style="color:#8CAFD0;font-size:0.75em;margin:8px 0 6px;">Click each to add it to the architecture:</p>
-        <button type="button" class="arch-add-btn" data-target="layer-auth" data-explain="SSO + JWT with dept_id claim. Without this, anyone can query anyone&rsquo;s documents.">+ Auth &amp; JWT</button>
-        <button type="button" class="arch-add-btn" data-target="layer-namespace" data-explain="Milvus collection per dept. Every chunk tagged dept_id. One WHERE clause prevents the IT/HR leak.">+ Dept namespace</button>
-        <button type="button" class="arch-add-btn" data-target="layer-async" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately &mdash; no more timeouts or $4,200 re-embedding bills.">+ Async worker</button>
-        <button type="button" class="arch-add-btn" data-target="layer-reranker" data-explain="Cross-encoder re-scores top-K chunks. NovaAssist precision: 0.61 &rarr; 0.89. No model change needed.">+ Reranker</button>
-        <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off on v1.0 only after seeing this.">+ Guardrails</button>
-        <button type="button" class="arch-add-btn" data-target="layer-eval" data-explain="LangSmith traces every request. 30-question golden set in CI blocks bad deploys. Online: thumbs-down rate + retrieval score drift + cost/query.">+ Eval &amp; Observability</button>
+        <button type="button" class="arch-add-btn" data-target="layer-auth" data-requires="" data-explain="SSO + JWT with dept_id claim. Without this, anyone can query anyone&rsquo;s documents. First layer &mdash; everything else depends on identity.">+ Auth &amp; JWT</button>
+        <button type="button" class="arch-add-btn" data-target="layer-namespace" data-requires="layer-auth" data-explain="Milvus collection per dept. Every chunk tagged dept_id. One WHERE clause prevents the IT/HR leak. Requires auth so the JWT dept claim exists.">+ Dept namespace</button>
+        <button type="button" class="arch-add-btn" data-target="layer-async" data-requires="layer-auth" data-explain="Celery worker handles embed out-of-band. HTTP thread returns immediately &mdash; no more timeouts or $4,200 re-embedding bills. Requires auth to tag chunks with dept_id during ingestion.">+ Async worker</button>
+        <button type="button" class="arch-add-btn" data-target="layer-reranker" data-requires="layer-namespace" data-explain="Cross-encoder re-scores top-K chunks. NovaAssist precision: 0.61 &rarr; 0.89. Requires namespace so the reranker only sees dept-scoped chunks.">+ Reranker</button>
+        <button type="button" class="arch-add-btn" data-target="layer-guardrails" data-requires="layer-namespace" data-explain="NeMo Guardrails: require citation, block off-topic, redact PII. HR signed off on v1.0 only after seeing this. Requires namespace &mdash; you cannot guard what isn&rsquo;t isolated.">+ Guardrails</button>
+        <button type="button" class="arch-add-btn" data-target="layer-eval" data-requires="layer-guardrails" data-explain="LangSmith traces every request. 30-question golden set in CI blocks bad deploys. Online: thumbs-down rate + retrieval score drift + cost/query. Requires guardrails to measure guardrail effectiveness in eval.">+ Eval &amp; Observability</button>
       </div>
     </div>
   </section>
@@ -446,9 +510,21 @@
           <line x1="300" y1="98" x2="328" y2="98" stroke="#1A3575" marker-end="url(#a2sg)"/>
           <text x="220" y="200" fill="#49ABEB" text-anchor="middle" font-size="9">Click the 3 glowing circles to find missing enterprise components</text>
         </svg>
-        <button type="button" class="hotspot" style="top:57%;left:77%" data-gap="No guardrails" data-desc="Alex returned raw LLM output. No citation check, no PII redaction, no topic boundary. An HR employee received a wrong parental-leave duration and acted on it.">1</button>
-        <button type="button" class="hotspot" style="top:57%;left:50%" data-gap="No department isolation" data-desc="Chroma had one flat collection for all three departments. IT's server-access runbook was indexed next to HR docs. One retrieval call exposed it.">2</button>
-        <button type="button" class="hotspot" style="top:20%;left:25%" data-gap="No observability" data-desc="No request traces, no retrieval scores, no cost-per-query. When HR asked 'is it getting worse?' Alex had no data to answer.">3</button>
+        <button type="button" class="hotspot" style="top:57%;left:77%"
+          data-gap="No guardrails"
+          data-desc="Alex returned raw LLM output. No citation check, no PII redaction, no topic boundary. An HR employee received a wrong parental-leave duration and acted on it."
+          data-fix-correct="0"
+          data-fix-options='["Add NeMo Guardrails: require citation in every response, block off-topic queries, redact PII before returning","Add a rate limit on all API calls — 100 req/min per user","Upgrade to GPT-4o to improve self-moderation without explicit guardrails"]'>1</button>
+        <button type="button" class="hotspot" style="top:57%;left:50%"
+          data-gap="No department isolation"
+          data-desc="Chroma had one flat collection for all three departments. IT's server-access runbook was indexed next to HR docs. One retrieval call exposed it."
+          data-fix-correct="0"
+          data-fix-options='["Add Milvus namespace per dept + mandatory dept_id filter from JWT on every query","Add a Redis caching layer to speed up retrieval across departments","Filter results by username instead of department — users only see their own docs"]'>2</button>
+        <button type="button" class="hotspot" style="top:20%;left:25%"
+          data-gap="No observability"
+          data-desc="No request traces, no retrieval scores, no cost-per-query. When HR asked 'is it getting worse?' Alex had no data to answer."
+          data-fix-correct="0"
+          data-fix-options='["LangSmith tracing + 30-question golden eval set in CI as a faithfulness gate","Add more unit tests to the FastAPI handler and increase log verbosity","Add a Sentry error tracker to catch API exceptions in production"]'>3</button>
       </div>
       <div class="gap-panel"><em>Click each numbered circle above to reveal the gap it represents&hellip;</em></div>
     </div>
@@ -620,6 +696,40 @@
     </div>
   </section>
 
+  <!-- OBSERVABILITY TRIAGE -->
+  <section data-background-color="#011749">
+    <span class="part-label">PART 3 &mdash; OBSERVABILITY TRIAGE</span>
+    <h2 style="margin-bottom:0.15em">Find the Bug in the Agent Trace</h2>
+    <p class="aside" style="margin-bottom:0.4em;font-size:0.75em">This is a real LangSmith-style trace from NovaAssist v1.5. <strong>Click the anomalous row.</strong></p>
+
+    <div class="obs-triage" id="obs-triage" data-quiz-id="obs-triage">
+      <div class="trace-table">
+        <div class="trace-row trace-header">
+          <span>#</span><span>Tool</span><span>Input params</span><span>Tokens</span><span>Latency</span><span>Status</span>
+        </div>
+        <div class="trace-row" data-idx="0">
+          <span>1</span><span class="tc-name">search_docs</span><span class="tc-params">dept=HR, q=&ldquo;parental leave policy&rdquo;</span><span>847</span><span>312 ms</span><span class="trace-ok">OK</span>
+        </div>
+        <div class="trace-row" data-idx="1">
+          <span>2</span><span class="tc-name">lookup_asset</span><span class="tc-params">user_id=alex-001</span><span>412</span><span>89 ms</span><span class="trace-ok">OK</span>
+        </div>
+        <div class="trace-row" data-anomaly="true" data-idx="2">
+          <span>3</span><span class="tc-name tc-write">create_ticket</span><span class="tc-params">title=&ldquo;VPN reset&rdquo;, dept=IT, priority=low</span><span>1,204</span><span>2,310 ms</span><span class="trace-warn">APPROVED</span>
+        </div>
+        <div class="trace-row" data-anomaly="true" data-idx="3">
+          <span>4</span><span class="tc-name tc-write">create_ticket</span><span class="tc-params">title=&ldquo;VPN reset&rdquo;, dept=IT, priority=low</span><span>1,204</span><span>438 ms</span><span class="trace-warn">APPROVED</span>
+        </div>
+        <div class="trace-row" data-idx="4">
+          <span>5</span><span class="tc-name">search_docs</span><span class="tc-params">dept=IT, q=&ldquo;VPN reset steps&rdquo;</span><span>623</span><span>201 ms</span><span class="trace-ok">OK</span>
+        </div>
+      </div>
+      <div class="obs-panel" id="obs-triage-panel">
+        <em>Click the row that looks wrong&hellip;</em>
+      </div>
+    </div>
+    <aside class="notes">Anomaly: rows 3+4 — create_ticket called twice with identical params. No idempotency key. This is how NovaAssist generated 12 duplicate tickets. Key question: "What single field on the tool call prevents this?" (idempotency_key = hash(tool + params + session_id))</aside>
+  </section>
+
   <section data-background-color="#011749">
     <div class="discussion-block" data-quiz-id="agent-discussion" data-duration="120">
       <span class="discussion-label">Think &middot; Pair &middot; Share</span>
@@ -717,43 +827,99 @@
     </div>
   </section>
 
-  <!-- COST SIMULATOR -->
+  <!-- COST SIMULATOR + SLO TAB -->
   <section data-background-color="#011749">
-    <span class="part-label">PART 4 &mdash; COST SIMULATOR</span>
-    <h2>NovaAssist Cost Impact Calculator</h2>
-    <p class="aside" style="margin-bottom:0.8em">Move the sliders to see what each architecture choice costs per month</p>
+    <span class="part-label">PART 4 &mdash; COST &amp; SLO SIMULATOR</span>
+    <h2 style="margin-bottom:0.2em">NovaAssist: Cost Impact &amp; Reliability Calculator</h2>
     <div id="cost-sim">
-      <div class="cost-control">
-        <label>Daily queries: <strong id="val-queries">1000</strong></label>
-        <input type="range" id="slider-queries" min="100" max="5000" value="1000" step="100">
+      <div class="cost-tabs">
+        <button type="button" id="tab-cost" class="cost-tab active">Cost calculator</button>
+        <button type="button" id="tab-slo"  class="cost-tab">SLO budget</button>
       </div>
-      <div class="cost-control">
-        <label>% queries routed to cloud LLM: <strong id="val-cloud">100</strong>%</label>
-        <input type="range" id="slider-cloud" min="0" max="100" value="100" step="5">
+
+      <!-- Cost tab -->
+      <div id="panel-cost">
+        <p class="aside" style="margin-bottom:0.5em;font-size:0.74em">Target: <strong>cost &lt; $2K</strong> AND <strong>p99 &lt; 500 ms</strong> to get CFO approval.</p>
+        <div class="cost-controls-grid">
+          <div class="cost-control">
+            <label>Daily queries: <strong id="val-queries">1,000</strong></label>
+            <input type="range" id="slider-queries" min="100" max="5000" value="1000" step="100">
+          </div>
+          <div class="cost-control">
+            <label>% routed to cloud LLM: <strong id="val-cloud">100</strong>%</label>
+            <input type="range" id="slider-cloud" min="0" max="100" value="100" step="5">
+          </div>
+          <div class="cost-control">
+            <label>Embed cache hit rate: <strong id="val-cache">0</strong>%</label>
+            <input type="range" id="slider-cache" min="0" max="90" value="0" step="5">
+          </div>
+          <div class="cost-control">
+            <label>Cache hit latency: <strong id="val-latency">400</strong> ms</label>
+            <input type="range" id="slider-latency" min="20" max="800" value="400" step="20">
+          </div>
+        </div>
+        <div class="cost-results">
+          <div class="cost-card" id="cost-embed">
+            <div class="cost-label">Embed / month</div>
+            <div class="cost-value" id="val-embed-cost">—</div>
+          </div>
+          <div class="cost-card" id="cost-gen">
+            <div class="cost-label">Generation / month</div>
+            <div class="cost-value" id="val-gen-cost">—</div>
+          </div>
+          <div class="cost-card" id="cost-total">
+            <div class="cost-label">Total / month</div>
+            <div class="cost-value" id="val-total-cost">—</div>
+          </div>
+          <div class="cost-card" id="cost-p99">
+            <div class="cost-label">Est. p99 latency</div>
+            <div class="cost-value" id="val-p99">—</div>
+          </div>
+          <div class="cost-card" id="cost-cfo" style="grid-column:1/-1;padding:8px 12px;display:flex;align-items:center;gap:12px;text-align:left">
+            <div class="cost-label" style="margin:0;white-space:nowrap">CFO verdict</div>
+            <div class="cost-value" id="val-cfo" style="font-size:1.1em">—</div>
+          </div>
+        </div>
+        <p class="aside" style="margin-top:0.4em;font-size:0.72em">Default (100% cloud, 0% cache, 400 ms cache latency) = ~$4,200/month, ~850 ms p99. Try 20% cloud + 70% cache + 50 ms cache latency &rarr; CFO approved.</p>
       </div>
-      <div class="cost-control">
-        <label>Embed cached (top FAQs): <strong id="val-cache">0</strong>%</label>
-        <input type="range" id="slider-cache" min="0" max="90" value="0" step="5">
+
+      <!-- SLO tab -->
+      <div id="panel-slo" style="display:none">
+        <p class="aside" style="margin-bottom:0.5em;font-size:0.74em">Model your error budget and redundancy tier. How much downtime is acceptable?</p>
+        <div class="cost-controls-grid">
+          <div class="cost-control">
+            <label>SLO target: <strong id="val-slo">99.9</strong>%</label>
+            <input type="range" id="slider-slo" min="99" max="99.99" value="99.9" step="0.01">
+          </div>
+          <div class="cost-control">
+            <label>Avg query latency: <strong id="val-avg-lat">400</strong> ms</label>
+            <input type="range" id="slider-avg-lat" min="50" max="2000" value="400" step="50">
+          </div>
+          <div class="cost-control">
+            <label>p99 / p50 multiplier: <strong id="val-p99-mult">3</strong>x</label>
+            <input type="range" id="slider-p99-mult" min="1.5" max="8" value="3" step="0.5">
+          </div>
+        </div>
+        <div class="slo-results">
+          <div class="cost-card" id="slo-budget-card">
+            <div class="cost-label">Error budget / month</div>
+            <div class="cost-value" id="val-error-budget">—</div>
+          </div>
+          <div class="cost-card">
+            <div class="cost-label">Est. p99 latency</div>
+            <div class="cost-value" id="val-slo-p99">—</div>
+          </div>
+          <div class="cost-card">
+            <div class="cost-label">Max incident budget</div>
+            <div class="cost-value" id="val-blast-radius">—</div>
+          </div>
+          <div class="cost-card" style="grid-column:1/-1;text-align:left;padding:8px 12px">
+            <div class="cost-label">Required redundancy tier</div>
+            <div style="font-size:0.85em;color:var(--cc-horizon);margin-top:2px" id="val-redundancy">—</div>
+          </div>
+        </div>
+        <p class="aside" style="margin-top:0.4em;font-size:0.72em">NovaAssist v2.0 SLA: p99 &lt; 1.2 s &middot; uptime 99.5% (= 3.6 h error budget/month) &middot; &lt;$2K/month. Cost and reliability are always in tension &mdash; pick two and fight for the third.</p>
       </div>
-      <div class="cost-results">
-        <div class="cost-card" id="cost-embed">
-          <div class="cost-label">Embedding cost / month</div>
-          <div class="cost-value" id="val-embed-cost">—</div>
-        </div>
-        <div class="cost-card" id="cost-gen">
-          <div class="cost-label">Generation cost / month</div>
-          <div class="cost-value" id="val-gen-cost">—</div>
-        </div>
-        <div class="cost-card" id="cost-total" style="border-color:var(--cc-horizon)">
-          <div class="cost-label">Total / month</div>
-          <div class="cost-value" id="val-total-cost">—</div>
-        </div>
-        <div class="cost-card" id="cost-cfo">
-          <div class="cost-label">CFO verdict</div>
-          <div class="cost-value" id="val-cfo">—</div>
-        </div>
-      </div>
-      <p class="aside" style="margin-top:0.5em">Hint: default settings (100% cloud, 0% cache) = ~$4,200/month &mdash; Incident B. Try 1,000/day, 20% cloud, 70% cache to reach NovaAssist v2.0 (~$1,824/month, CFO approved).</p>
     </div>
   </section>
 
@@ -826,40 +992,88 @@
   </section>
 
   <section data-background-color="#011749" class="compact-section">
-    <span class="part-label">PART 5 &mdash; WORKSHEET</span>
-    <h2>Your Project: Apply the NovaAssist Pattern</h2>
-    <div class="upgrade-worksheet" id="upgrade-worksheet">
-      <div class="field-group">
-        <label for="ws-project">Your "NovaAssist" &mdash; project name + one line</label>
-        <input type="text" name="project" id="ws-project" placeholder="e.g. Lab Q&amp;A bot over research papers">
+    <span class="part-label">PART 5 &mdash; ADR TRADE-OFF</span>
+    <h2>Choose NovaAssist&rsquo;s Vector Store &mdash; Write the ADR</h2>
+    <div class="adr-editor" id="adr-editor">
+      <div class="adr-context">
+        <strong>Context:</strong> NovaAssist needs a vector store for 3 departments, ~800 users, weekly doc updates. Multi-tenant isolation is a hard requirement.
+        Adjust the <strong>importance weights</strong> (1&ndash;5) for each criterion to reflect your architecture priorities. The winner updates live.
       </div>
-      <div class="field-group">
-        <label for="ws-poc">What does your v0.1 POC do? Stack?</label>
-        <textarea name="poc" id="ws-poc" rows="2"></textarea>
+      <div class="adr-grid">
+        <!-- Header row -->
+        <div class="adr-header">Criterion</div>
+        <div class="adr-header">Importance (1&ndash;5)</div>
+        <div class="adr-header">Chroma</div>
+        <div class="adr-header">Milvus</div>
+        <div class="adr-header">pgvector</div>
+
+        <!-- Ops cost -->
+        <div class="adr-crit-label">Ops cost &amp; simplicity<span class="adr-crit-note">Chroma: zero-ops · Milvus: needs infra · pg: runs on existing DB</span></div>
+        <div class="adr-weight-cell">
+          <input type="range" data-weight="ops-cost" min="1" max="5" value="3" step="0.5">
+          <span data-weight-label="ops-cost">3.0</span>
+        </div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">5</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">2</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">4</span></div>
+
+        <!-- Multi-tenancy -->
+        <div class="adr-crit-label">Multi-tenancy isolation<span class="adr-crit-note">Chroma: none · Milvus: namespaces · pg: Row-Level Security</span></div>
+        <div class="adr-weight-cell">
+          <input type="range" data-weight="multi-tenancy" min="1" max="5" value="3" step="0.5">
+          <span data-weight-label="multi-tenancy">3.0</span>
+        </div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">1</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">5</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">3</span></div>
+
+        <!-- Latency at scale -->
+        <div class="adr-crit-label">Query latency at scale<span class="adr-crit-note">Chroma: ok for 1K · Milvus: optimised · pg: slows past 10M vecs</span></div>
+        <div class="adr-weight-cell">
+          <input type="range" data-weight="latency" min="1" max="5" value="3" step="0.5">
+          <span data-weight-label="latency">3.0</span>
+        </div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">3</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">5</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">2</span></div>
+
+        <!-- Team familiarity -->
+        <div class="adr-crit-label">Team familiarity<span class="adr-crit-note">Chroma: Python native · Milvus: new stack · pg: everyone knows SQL</span></div>
+        <div class="adr-weight-cell">
+          <input type="range" data-weight="familiarity" min="1" max="5" value="3" step="0.5">
+          <span data-weight-label="familiarity">3.0</span>
+        </div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">4</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">2</span></div>
+        <div class="adr-score-cell"><span class="adr-score-fixed">5</span></div>
       </div>
-      <div class="field-group">
-        <label for="ws-gaps">What incident would happen first at 100 users?</label>
-        <textarea name="gaps" id="ws-gaps" rows="2" placeholder="Like NovaAssist: cross-dept leak, cost spike, wrong answer..."></textarea>
+
+      <!-- Weighted totals -->
+      <div class="adr-totals">
+        <div class="adr-total-row">
+          <span class="adr-total-label">Chroma</span>
+          <div class="adr-total-bar-wrap"><div class="adr-total-bar" data-bar="chroma"></div></div>
+          <span class="adr-score" data-total="chroma">—</span>
+        </div>
+        <div class="adr-total-row">
+          <span class="adr-total-label">Milvus</span>
+          <div class="adr-total-bar-wrap"><div class="adr-total-bar" data-bar="milvus"></div></div>
+          <span class="adr-score" data-total="milvus">—</span>
+        </div>
+        <div class="adr-total-row">
+          <span class="adr-total-label">pgvector</span>
+          <div class="adr-total-bar-wrap"><div class="adr-total-bar" data-bar="pgvector"></div></div>
+          <span class="adr-score" data-total="pgvector">—</span>
+        </div>
       </div>
-      <div class="field-group">
-        <label for="ws-rag">RAG upgrades needed (isolation, eval, guardrails)</label>
-        <textarea name="rag" id="ws-rag" rows="2"></textarea>
+
+      <div class="adr-recommendation"></div>
+      <div class="adr-footer">
+        <button type="button" class="adr-lock-btn">Lock in my decision</button>
+        <p class="adr-save-msg"></p>
       </div>
-      <div class="field-group">
-        <label for="ws-agent">Agent tool policy (if using agents)</label>
-        <textarea name="agent" id="ws-agent" rows="2" placeholder="e.g. search = auto, write = gate, delete = block"></textarea>
-      </div>
-      <div class="field-group">
-        <label for="ws-infer">Inference cost plan (routing, caching, SLA)</label>
-        <textarea name="infer" id="ws-infer" rows="2"></textarea>
-      </div>
-      <div class="field-group">
-        <label for="ws-readme">NFRs + ADRs to add to your README</label>
-        <textarea name="readme" id="ws-readme" rows="2" placeholder="e.g. p99 &lt;2s, &lt;$200/mo, zero cross-user retrieval, all tool calls audited"></textarea>
-      </div>
-      <button type="button" class="worksheet-save">Save worksheet</button>
-      <p class="worksheet-msg"></p>
     </div>
+    <aside class="notes">There is no single right answer — the winner depends on priorities. If multi-tenancy is critical (it is for NovaAssist), Milvus wins. If the team only knows Postgres and volume is low, pgvector is defensible. This is the conversation every ADR represents.</aside>
   </section>
 </section>
 
@@ -872,15 +1086,18 @@
   </section>
 
   <section data-background-color="#011749">
-    <div class="quiz-mcq" data-quiz-id="final-q1" data-correct="platform"
-         data-success="Correct. SSO, traces, and CI/CD all live in the Platform Layer — the cross-cutting concerns that every other layer depends on."
-         data-failure="Platform Layer: auth, observability, CI/CD, governance, secrets, cost management.">
-      <p class="quiz-question">1. NovaAssist SSO login, LangSmith traces, GitHub Actions deploy. Which platform layer?</p>
+    <div class="quiz-mcq quiz-multiselect" data-quiz-id="final-q1" data-correct="namespace,cache"
+         data-success="Correct. Milvus namespace (dept_id filter) prevents the data leak. Embedding cache + NIM routing cuts cost below $2K. These two changes target different pillars simultaneously."
+         data-failure="Namespace isolation fixes the data leak (Governance). Embedding cache + NIM routing fixes cost (Scale). The other options target only one pillar or neither.">
+      <p class="quiz-question">1. NovaAssist must achieve <strong>both</strong>: zero cross-dept leaks AND &lt;$2K/month. Select the <strong>two</strong> changes that together achieve this. (Select 2)</p>
       <div class="quiz-options">
-        <button type="button" class="quiz-option" data-value="ai">AI Services Layer</button>
-        <button type="button" class="quiz-option" data-value="platform">Platform Layer</button>
-        <button type="button" class="quiz-option" data-value="data">Data Layer</button>
+        <button type="button" class="quiz-option" data-value="namespace">Add Milvus namespace per dept + dept_id filter mandatory on every query</button>
+        <button type="button" class="quiz-option" data-value="gpt4">Upgrade from gpt-4o-mini to gpt-4o for better self-moderation</button>
+        <button type="button" class="quiz-option" data-value="cache">Embedding cache (top-200 FAQs) + route 80% of queries to self-hosted NIM Llama-8B</button>
+        <button type="button" class="quiz-option" data-value="finetune">Fine-tune the LLM monthly on all HR + IT + Finance PDFs</button>
+        <button type="button" class="quiz-option" data-value="audit">Add full audit log for every retrieval call</button>
       </div>
+      <button type="button" class="quiz-multiselect-submit poll-submit" disabled style="margin-top:8px">Check my selection</button>
       <p class="quiz-feedback"></p>
     </div>
   </section>
@@ -900,14 +1117,15 @@
   </section>
 
   <section data-background-color="#011749">
-    <div class="quiz-mcq" data-quiz-id="final-q3" data-correct="gate"
-         data-success="Correct. Approval gate + idempotency key + max_steps. That single gate prevents 12 duplicate tickets."
-         data-failure="Agents act in the real world. create_ticket without a gate = 12 duplicates = 4 hours IT cleanup.">
-      <p class="quiz-question">3. NovaAssist creates 12 duplicate ServiceNow tickets overnight. What was missing?</p>
+    <div class="quiz-mcq" data-quiz-id="final-q3" data-correct="nim-route"
+         data-success="Correct. Routing 80% of queries to self-hosted Llama-8B NIM at $0 marginal cost, plus caching top-200 FAQ embeddings, cuts spend from $4,200 to ~$1,700 — under both cost AND latency targets simultaneously."
+         data-failure="NIM routing + embed cache attack cost at the source (most queries are simple FAQ). Bigger model raises cost. Async worker helps latency but not cost. Audit logs add cost. The question asks for the single highest-leverage change.">
+      <p class="quiz-question">3. CFO: &ldquo;&lt;$1,500/month AND p99 &lt; 1 s.&rdquo; Platform: self-hosted NIM available. Which <strong>single</strong> change has the most leverage?</p>
       <div class="quiz-options">
-        <button type="button" class="quiz-option" data-value="embed">Better embedding model</button>
-        <button type="button" class="quiz-option" data-value="gate">max_steps + idempotency key + human approval gate on create_ticket</button>
-        <button type="button" class="quiz-option" data-value="cache">Response caching</button>
+        <button type="button" class="quiz-option" data-value="bigger">Switch all queries to the largest available cloud LLM for higher quality</button>
+        <button type="button" class="quiz-option" data-value="nim-route">Route 80% of queries to self-hosted Llama-8B NIM + cache top-200 FAQ embeddings</button>
+        <button type="button" class="quiz-option" data-value="async">Add async ingestion worker to free up the HTTP thread</button>
+        <button type="button" class="quiz-option" data-value="audit">Add full audit trail on all LLM calls for compliance</button>
       </div>
       <p class="quiz-feedback"></p>
     </div>
