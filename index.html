@@ -59,7 +59,15 @@
   <p class="meta" style="font-size:0.7em;margin-top:1em;color:#49ABEB;">
     Click any box in the architecture diagrams to learn what it does
   </p>
-  <aside class="notes">Say: "Today we are not going to talk about APIs, syntax, or which model to use. We follow one project � built by one intern, in one week � and watch it grow into a system 800 people depend on. Every decision we make today is a decision real teams make. The question is always the same: can this demo survive Monday?" Point at the sub-line: RAG � Agentic � Inference � three lenses, one story. Let the title sit for a few seconds before advancing.</aside>
+  <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Setup</strong></p>
+<p>Open with energy. Do not describe the agenda � that is the next slide.</p>
+<p><strong>Say:</strong><br>
+"Today we are not going to talk about APIs, syntax, or which model to use.<br>
+We follow one project � built by one intern, in one week � and watch it grow into a system 800 people depend on.<br>
+Every decision we make today is a decision real teams make.<br>
+The question is always the same: <em>can this demo survive Monday?</em>"</p>
+<p>Point at the sub-line: <strong>RAG � Agentic � Inference</strong> � three lenses, one story.<br>
+Let the title sit for a few seconds before advancing.</p></aside>
 </section>
 
 <section data-background-color="#011749">
@@ -75,7 +83,15 @@
     <li><strong>Part 6</strong> &mdash; Final quiz + checklist</li>
   </ol>
   <p class="aside">90&ndash;120 min &middot; <kbd>S</kbd> = speaker notes &middot; <kbd>F</kbd> = fullscreen &middot; <kbd>Esc</kbd> = overview</p>
-  <aside class="notes">Say: "Eight parts, 90 minutes, one project. By the end you will know NovaAssist better than Alex did when it went to production. Then you will apply the same pattern to your own project." Point out keyboard shortcuts at the bottom: S = speaker notes, F = fullscreen, Esc = slide overview. If students have laptops, tell them now to open the same HTML file so they can interact themselves.</aside>
+  <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Agenda</strong></p>
+<p>Move through quickly � its only purpose is to show the shape of the session.</p>
+<p><strong>Say:</strong><br>
+"Eight parts, 90 minutes, one project.<br>
+By the end you will know NovaAssist better than Alex did when it went to production.<br>
+Then you apply the same pattern to your own project."</p>
+<p><strong>Point out keyboard shortcuts (bottom of slide):</strong><br>
+&nbsp;� <code>S</code> = speaker notes &nbsp;� <code>F</code> = fullscreen &nbsp;� <code>Esc</code> = slide overview</p>
+<p>If students have their own laptops � tell them now to open the same HTML file so they can interact.</p></aside>
 </section>
 
 <!-- ??? CASE STUDY INTRO ??? -->
@@ -94,7 +110,17 @@
         <dt>Week 2</dt><dd>IT and Finance want in. 120 users go live.</dd>
       </dl>
     </div>
-    <aside class="notes">Read the project card row by row � do not rush. Key setup line: "NovaTech is 800 people. Not a startup, not a tech giant. A completely normal company with no AI team, no GPU budget, and no AI governance policy. When Alex's project became popular, the company had nothing to support it." Then ask: "Who has built something like this? Chatbot, RAG app, LLM wrapper, document Q&A?" Wait for hands. If shy: "It doesn't have to be production � a hackathon project counts. You have a working demo. What happens when real people try it?"</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Case Study intro</strong></p>
+<p>Read the project card <strong>row by row</strong> � do not rush.</p>
+<p><strong>Key setup line:</strong><br>
+"NovaTech is 800 people. Not a startup, not a tech giant.<br>
+A completely normal company with no AI team, no GPU budget, no AI governance policy.<br>
+When Alex's project became popular, the company had nothing to support it."</p>
+<p><strong>Ask the room:</strong><br>
+"Who has built something like this? Chatbot, RAG app, LLM wrapper, document Q&amp;A?"<br>
+Wait for hands. If shy: "It doesn't have to be production � a hackathon project counts.<br>
+You have a working demo. What happens when real people try it?"</p>
+<p><strong>Leave students with:</strong> This is a real, recognisable project. When Alex's system breaks, it will feel familiar.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -115,7 +141,18 @@
       <div class="insight-label">Core message</div>
       Enterprise architecture is not a checklist you memorise. <strong>Some of it is designed upfront</strong> &mdash; before a single user touches the system. The rest is <strong>refined under pressure</strong>, when real failures reveal what you missed. Both matter. Today we practise both.
     </div>
-    <aside class="notes">Walk the timeline slowly: Week 1 ? Week 2 ? Week 2 cont. ? Week 4-6. Then stop at each metric. $4,200: "Three days. Finance cancels the card. Alex didn't know until the morning." Data leak: "HR asked about remote work. Got back an IT runbook with internal IPs and SSH keys." Wrong answer: "Employee got parental leave duration from the OLD policy. Filed wrong leave request." API key: "Repo was briefly public. Scrapers found the key in four hours." Critical point to say out loud: "Every single one of these failures was visible in the code on Friday afternoon, before a single user logged in. None were surprises. The difference between a POC team and an enterprise team is that the enterprise team runs this list before opening to users � assigns a name to each risk, decides: fix it now or accept it and document why."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Emotional weight slide � do not rush</strong></p>
+<p>Walk the timeline: <strong>Week 1 ? Week 2 ? Week 2 cont. ? Week 4-6</strong><br>
+Then stop at each metric and pause:</p>
+<p>&nbsp;� <strong>$4,200</strong> � "Three days. Finance cancels the card. Alex didn't know until the morning."<br>
+&nbsp;� <strong>Data leak</strong> � "HR asked about remote work. Got back an IT runbook with internal IPs and SSH keys."<br>
+&nbsp;� <strong>Wrong answer</strong> � "Employee got parental leave duration from the OLD policy. Filed a wrong leave request."<br>
+&nbsp;� <strong>API key</strong> � "Repo was briefly public. Automated scrapers found the key in four hours."</p>
+<p><strong>Critical line to say out loud:</strong><br>
+"Every single one of these failures was visible in the code on Friday afternoon, before a single user logged in.<br>
+None were surprises.<br>
+The difference between a POC team and an enterprise team is that the enterprise team runs this list before opening to users �<br>
+assigns a name to each risk, decides: fix it now, or accept it and document why."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -126,7 +163,18 @@
       <div class="stakeholder-card"><h4>CFO</h4>"Cap AI spend at $2K/month until we prove ROI. I don't care about GPUs — I care about the bill."</div>
       <div class="stakeholder-card"><h4>Platform team</h4>"Build a pattern we can reuse for the next 5 AI features, not a one-off script Alex maintains."</div>
     </div>
-    <aside class="notes">Ask students to predict each person's complaint before reading. "Same four incidents. Four people in the room. What is each most angry about?" HR sponsor: correct + cited answers � wrong answer is a reputational crisis. IT Security: isolation + 90-day logs � compliance requirement, not preference. CFO: cap at $2K is a HARD constraint, not a suggestion. Platform team: maintainability after Alex leaves in 6 weeks � if only Alex understands it, it is not a product, it is a liability. Key line: "Architecture is not a technical debate. It is a negotiation between these four people's constraints. Your job is to satisfy all of them simultaneously. That is why it is hard."</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Stakeholder framing</strong></p>
+<p><strong>Ask students to predict</strong> each person's complaint before you read it:<br>
+"Same four incidents. Four people in the room. What is each most angry about?"</p>
+<p><strong>Walk through:</strong><br>
+&nbsp;� <strong>HR sponsor</strong> � correct + cited answers. A wrong answer is a reputational crisis.<br>
+&nbsp;� <strong>IT Security</strong> � isolation + 90-day logs. Compliance requirement, not a preference.<br>
+&nbsp;� <strong>CFO</strong> � cap at $2K is a <em>hard constraint</em>, not a suggestion.<br>
+&nbsp;� <strong>Platform team</strong> � maintainability after Alex leaves in 6 weeks. If only Alex understands it, it is a liability, not a product.</p>
+<p><strong>Key line:</strong><br>
+"Architecture is not a technical debate.<br>
+It is a negotiation between these four people's constraints.<br>
+Your job is to satisfy all of them simultaneously. That is why it is hard."</p></aside>
   </section>
 </section>
 
@@ -169,7 +217,21 @@
         <text x="220" y="210" fill="#49ABEB" text-anchor="middle" font-size="9">&#9660; Click any box above to see what it does and what breaks without the enterprise version</text>
       </svg>
     </div>
-    <aside class="notes">Click at least two boxes before speaking so students see how tooltips work. Say: "This is Alex's v0.1 stack. Built in 3 days. On Friday with one user and one department, this works perfectly. There is nothing wrong with this architecture for a proof of concept." Click FastAPI box: "One function does four things � upload, embed, retrieve, generate � all synchronous. Fine for a demo. Ticking clock for 120 users." Click Chroma box: "One flat collection, no filter. When IT uploaded runbooks on Monday, they landed next to HR PDFs with no barrier between them." Transition: "This architecture is correct for a POC. The mistake is treating Friday performance with 1 user as proof of Monday readiness with 120."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; First interactive diagram</strong></p>
+<p>Click at least <strong>two boxes before speaking</strong> so students see how tooltips work.</p>
+<p><strong>Say:</strong><br>
+"This is Alex's v0.1 stack. Built in 3 days.<br>
+On Friday with one user and one department, this works perfectly.<br>
+There is nothing wrong with this architecture for a proof of concept."</p>
+<p><strong>Click FastAPI box:</strong><br>
+"One function does four things � upload, embed, retrieve, generate � all synchronous.<br>
+Fine for a demo. Ticking clock for 120 users."</p>
+<p><strong>Click Chroma box:</strong><br>
+"One flat collection, no filter.<br>
+When IT uploaded runbooks on Monday, they landed next to HR PDFs with no barrier between them."</p>
+<p><strong>Transition:</strong><br>
+"This architecture is correct for a POC.<br>
+The mistake is treating 'it works on Friday with 1 user' as proof of Monday readiness with 120."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -184,7 +246,19 @@
       <span class="label">Incident B &mdash; Wednesday (same week)</span><br>
       OpenAI dashboard shows <strong>$4,200</strong> in 72 hours. Re-embedding on every query. No rate limits. Finance kills the card.
     </div>
-    <aside class="notes">No activity on this slide � pure story. Read slowly. Incident A: "Tuesday 9:14 AM. HR employee types 'remote work policy.' Gets back an IT server-access runbook � internal IPs, VPN config, SSH key instructions. IT Security on the phone before 10 AM." Let the room react. Incident B: "Wednesday same week. OpenAI dashboard shows $4,200 in 72 hours. Finance batch script ran 2,000 queries. No rate limit. Finance cancels the card." Ask: "Who is hurt � the user, HR, Security, Finance, or Platform team?" Wait for answers. Then: "All of them. For different reasons. We spend the next 90 minutes building the architecture that satisfies all of them."</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Pure story � no interaction</strong></p>
+<p>Read <strong>slowly</strong>. Let the incidents land.</p>
+<p><strong>Incident A:</strong><br>
+"Tuesday 9:14 AM. HR employee types 'remote work policy.'<br>
+Gets back an IT server-access runbook � internal IPs, VPN config, SSH key instructions.<br>
+IT Security is on the phone before 10 AM."</p>
+<p>Let the room react. Then:</p>
+<p><strong>Incident B:</strong><br>
+"Wednesday same week. OpenAI dashboard: $4,200 in 72 hours.<br>
+A Finance user ran a batch script � 2,000 queries in 3 hours. No rate limit. Finance cancels the card."</p>
+<p><strong>Ask:</strong> "Who is hurt � the user, HR, Security, Finance, or the Platform team?"<br>
+Wait for answers. Then: "All of them. For different reasons.<br>
+We spend the next 90 minutes building the architecture that satisfies all of them."</p></aside>
   </section>
 
   <section data-background-color="#011749" class="compact-section">
@@ -267,7 +341,21 @@
         <span class="tree-outcome-label"></span>
       </div>
     </div>
-    <aside class="notes">Introduce: "You are Alex's on-call engineer. It is 2:14 AM. OpenAI dashboard: $1,400 in 48 hours and climbing." Read the three options and ask the room to vote. Click the chosen option and follow the consequence tree. If A (revoke): bill stops at $1,700 � Step 2, Key Vault = enterprise pattern (Revoke, Isolate, Alert, Document). If B (rate limit): spend slows, key stays live, $2,900 by 6 AM, then Security reveals key was in a public commit 3 weeks ago. If C (ignore): by 8 AM $4,200, Finance cancels card, CFO post-mortem at 5 PM. After any Step 3 outcome: "An automated cost alert at 80% budget would have caught this at $100, not $1,400. Enterprise does not rely on engineers waking up � it relies on systems alerting in advance." Hit Restart if time allows and take a different path.</aside>
+    <aside class="notes"><p><strong>? 4 min &nbsp;|&nbsp; First interactive exercise</strong></p>
+<p><strong>Introduce:</strong><br>
+"You are Alex's on-call engineer. It is 2:14 AM.<br>
+OpenAI dashboard: $1,400 in 48 hours and climbing. You have just been paged."</p>
+<p>Read the three options aloud � ask the room to vote. Then click the chosen option.</p>
+<p><strong>Path A (revoke key):</strong> Bill stops at $1,700.<br>
+&nbsp;� Step 2 ? Key Vault = enterprise pattern: Revoke, Isolate, Alert, Document.<br>
+&nbsp;� Step 2 ? .env again = symptom solved, habit persists. One more git push repeats this.</p>
+<p><strong>Path B (rate limit):</strong> Spend slows, key stays live. By 6 AM: $2,900.<br>
+Security reveals the key was in a public commit 3 weeks ago.</p>
+<p><strong>Path C (ignore it):</strong> By 8 AM: $4,200. Finance cancels card. CFO post-mortem at 5 PM.</p>
+<p><strong>After any outcome:</strong><br>
+"An automated cost alert at 80% budget would have caught this at $100, not $1,400.<br>
+Enterprise does not rely on engineers waking up � it relies on systems alerting in advance."</p>
+<p>Hit <strong>Restart</strong> if time allows and take a different path with the group.</p></aside>
   </section>
 </section>
 
@@ -285,7 +373,21 @@
       <div class="gap-card"><span class="num">5</span><h4>Scale &amp; Cost</h4><em>NovaAssist:</em> $4,200 / 72 h &mdash; sync embed per query</div>
       <div class="gap-card"><span class="num">6</span><h4>MLOps / LLMOps</h4><em>NovaAssist:</em> prompt edited by hand in a file &mdash; no version control, no automated test, no rollback if quality drops</div>
     </div>
-    <aside class="notes">Introduce: "Every incident Alex faced maps to one of six pillars. These are the usual gaps between an AI demo and a real AI product. If you can name all six and explain what breaks in each, you are thinking like an enterprise architect." Walk each card: (1) Data & Governance � who sees which data? NovaAssist: no dept_id. (2) Security � secrets, auth, attack paths. NovaAssist: API key in GitHub. (3) Reliability � works under failure and traffic. NovaAssist: OpenAI timeout = 500 error. (4) Observability � see quality, cost, latency. NovaAssist: no eval data when HR asked if quality dropped. (5) Scale & Cost � afford growth. NovaAssist: $4,200 in 72 hours. (6) MLOps/LLMOps � version, test, deploy, rollback. NovaAssist: prompt edited by hand, no tests, no rollback. Say: "From here on, every quiz, diagram, and discussion maps to one of these six. By the end, categorise any AI failure in seconds."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; The organising framework</strong></p>
+<p><strong>Introduce:</strong><br>
+"Every incident Alex faced maps to one of six pillars.<br>
+These are the usual gaps between an AI demo and a real AI product.<br>
+If you can name all six and explain what breaks in each, you are thinking like an enterprise architect."</p>
+<p><strong>Walk each card:</strong><br>
+&nbsp;1. <strong>Data &amp; Governance</strong> � who sees which data? NovaAssist: no dept_id on any chunk.<br>
+&nbsp;2. <strong>Security</strong> � secrets, auth, attack paths. NovaAssist: API key in GitHub.<br>
+&nbsp;3. <strong>Reliability</strong> � works under failure and traffic. NovaAssist: OpenAI timeout = 500 error for every user.<br>
+&nbsp;4. <strong>Observability</strong> � measure quality, cost, latency. NovaAssist: no eval data when HR asked if quality dropped.<br>
+&nbsp;5. <strong>Scale &amp; Cost</strong> � afford growth. NovaAssist: $4,200 in 72 hours.<br>
+&nbsp;6. <strong>MLOps / LLMOps</strong> � version, test, deploy, rollback. NovaAssist: prompt edited by hand, no tests, no rollback.</p>
+<p><strong>Close with:</strong><br>
+"From here on, every quiz, diagram, and discussion maps to one of these six.<br>
+By the end, you should be able to categorise any AI system failure in seconds."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -303,7 +405,16 @@
       <p class="quiz-feedback"></p>
       <p class="quiz-hint">Hint: which pillar is about who is allowed to see which data?</p>
     </div>
-    <aside class="notes">Correct: Data & Governance (Pillar 1) � no dept_id namespace in the vector DB. Students often say Security � wrong. Auth was not the problem: even a logged-in user should NOT see IT's runbooks. The isolation layer was missing entirely. That is Pillar 1 not Pillar 2. Data & Governance = who is allowed to see which data. Security = are secrets, auth, and attack paths controlled. Fix: every chunk tagged dept_id at ingest, every retrieval query filters on JWT dept claim. Without this, one wrong call exposes everything.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: HR retrieves IT runbook</strong></p>
+<p><strong>? Correct: Data &amp; Governance (Pillar 1)</strong> � no dept_id namespace in the vector DB.</p>
+<p><strong>Common wrong answer: Security.</strong> Here is the distinction:<br>
+&nbsp;� Security failure = unauthenticated user accessing the system.<br>
+&nbsp;� Data &amp; Governance failure = authenticated, logged-in user seeing the wrong tenant's data.<br>
+Auth was working fine. The isolation layer was missing entirely. That is Pillar 1, not Pillar 2.</p>
+<p><strong>The fix:</strong><br>
+Every chunk tagged <code>dept_id</code> at ingest.<br>
+Every retrieval query filters on the JWT dept claim.<br>
+Without this, one wrong call exposes everything.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -322,7 +433,18 @@
       <div class="insight-label">Interview talking point</div>
       "We gate every prompt change on a 50-question golden set; faithfulness must stay &gt;0.85 before deploy" says more than "we use RAG."
     </div>
-    <aside class="notes">Correct: Observability (Pillar 4) � no offline eval set, no production feedback loop. Common wrong answer: Reliability. Key distinction: Reliability = system stays up; Observability = you can MEASURE quality, cost, latency. Before changing any prompt in production, you need a test set. Run in CI. If faithfulness drops, deploy is blocked. Observability for RAG is not just logs � it is an eval pipeline. The insight-box line is a real interview differentiator � say it out loud: "We gate every prompt change on a 50-question golden set; faithfulness must stay above 0.85 before deploy."</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: quality dropped after prompt change</strong></p>
+<p><strong>? Correct: Observability (Pillar 4)</strong> � no offline eval set, no production feedback loop.</p>
+<p><strong>Common wrong answer: Reliability.</strong> Key distinction:<br>
+&nbsp;� Reliability = the system stays up.<br>
+&nbsp;� Observability = you can <em>measure</em> quality, cost, and latency.</p>
+<p><strong>Say:</strong><br>
+"Before changing any prompt in production, you need a test set of known questions and expected answers.<br>
+Run it in CI. If faithfulness drops, the deploy is blocked.<br>
+Observability for RAG is not just logs � it is an eval pipeline."</p>
+<p><strong>Interview differentiator (say out loud):</strong><br>
+"We gate every prompt change on a 50-question golden set;<br>
+faithfulness must stay above 0.85 before deploy."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -337,7 +459,12 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Security (Pillar 2) � rotate key immediately + Key Vault + secret scanner in CI. First and most important step: rotate the key AND assume malicious use during the hours it was exposed. Key Vault + managed identity = permanent fix. Never suggest .env in a private repo as the solution � the .env file is the problem. Pre-commit detect-secrets hook catches this before it ever reaches git.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: API key scraped from GitHub</strong></p>
+<p><strong>? Correct: Security (Pillar 2)</strong> � rotate key immediately + Key Vault + secret scanner in CI.</p>
+<p><strong>Step 1 (immediate):</strong> Rotate the key AND assume malicious use during the hours it was exposed.</p>
+<p><strong>Step 2 (permanent fix):</strong> Key Vault + managed identity. Never commit secrets again.</p>
+<p><strong>? Never suggest:</strong> ".env in a private repo" � the .env file is exactly the problem.<br>
+Add a <code>detect-secrets</code> pre-commit hook so this is caught before it ever reaches git.</p></aside>
   </section>
 </section>
 
@@ -434,7 +561,22 @@
       </div>
 
     </div>
-    <aside class="notes">Two diagrams side by side. Click orange POC nodes first to show what is wrong, then enterprise components. Left side: FastAPI monolith (sync embed in HTTP handler), Chroma flat (no filter), OpenAI shared key (no rate limit). Right side � click each: Async Worker (ingestion out of band, no more timeout or re-embedding bug), Milvus dept-ns (one WHERE clause prevents IT/HR leak), Reranker (precision 0.61 to 0.89), NeMo Guardrails (citation enforced, HR signed off), LangSmith (every request traced). Most important line in the RAG section: "NovaAssist v1.0 uses the exact same model as v0.1 � gpt-4o-mini. Not GPT-4. Not fine-tuning. Wrong-answer rate halved purely from fixing retrieval. The model is almost never the problem."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Two diagrams side by side � click both</strong></p>
+<p><strong>Left side � click orange nodes:</strong><br>
+&nbsp;� FastAPI monolith � sync embed inside the HTTP handler<br>
+&nbsp;� Chroma flat � no namespace, no filter<br>
+&nbsp;� OpenAI shared key � no rate limit, re-embeds every call</p>
+<p><strong>Right side � click each enterprise component:</strong><br>
+&nbsp;� <strong>Async Worker</strong> � ingestion out of band, HTTP returns immediately<br>
+&nbsp;� <strong>Milvus dept-ns</strong> � one WHERE clause prevents the entire IT/HR leak<br>
+&nbsp;� <strong>Reranker</strong> � precision 0.61 ? 0.89, same model, no fine-tuning<br>
+&nbsp;� <strong>NeMo Guardrails</strong> � citation enforced; HR signed off on v1.0 only after seeing this<br>
+&nbsp;� <strong>LangSmith</strong> � every request traced: retrieval scores, tokens, latency, cost</p>
+<p><strong>Most important line in the RAG section:</strong><br>
+"NovaAssist v1.0 uses the exact same model as v0.1 � gpt-4o-mini.<br>
+Not GPT-4. Not fine-tuning.<br>
+The wrong-answer rate halved purely from fixing retrieval.<br>
+<strong>The model is almost never the problem.</strong>"</p></aside>
   </section>
 
   <!-- ARCHITECTURE BUILDER -->
@@ -486,7 +628,21 @@
         <button type="button" class="arch-add-btn" data-target="layer-eval" data-requires="layer-guardrails" data-explain="LangSmith traces every request. 30-question golden set in CI blocks bad deploys. Online: thumbs-down rate + retrieval score drift + cost/query. Requires guardrails to measure guardrail effectiveness in eval.">+ Eval &amp; Observability</button>
       </div>
     </div>
-    <aside class="notes">Explain prerequisite locking before students start: "Some layers are locked until their dependencies exist — in real architecture you cannot add guardrails to a system that has no identity layer." After Auth: "Every layer from here on depends on this. Without identity, no tenant claim in JWT, no dept filter, the data leak cannot be fixed." After Namespace: "This is the single change that prevents Incident A. One WHERE clause." After Async Worker: "HTTP handler returns immediately. The re-embedding bug is architecturally impossible now." After Guardrails: "HR signed off on v1.0 only after seeing this. Without citation enforcement, every answer is an undocumented claim." When complete: "You just built an enterprise RAG system. Notice what you did NOT change: the model, the query language, the UI. You changed the data layer, the ingestion path, and the quality controls."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Interactive � students build the stack</strong></p>
+<p><strong>Explain prerequisite locking first:</strong><br>
+"Some layers are locked until their dependencies exist �<br>
+in real architecture you cannot add guardrails to a system that has no identity layer."</p>
+<p><strong>As each layer is added:</strong><br>
+&nbsp;� <strong>Auth</strong> � "Every layer from here on depends on this. Without identity, no tenant claim in JWT, no dept filter. The data leak cannot be fixed."<br>
+&nbsp;� <strong>Namespace</strong> � "This is the single change that prevents Incident A. One WHERE clause."<br>
+&nbsp;� <strong>Async Worker</strong> � "HTTP handler returns immediately. The re-embedding bug is architecturally impossible now."<br>
+&nbsp;� <strong>Reranker</strong> � "Precision 0.61 ? 0.89. Same model."<br>
+&nbsp;� <strong>Guardrails</strong> � "HR signed off on v1.0 only after seeing this. Without citation enforcement, every answer is an undocumented claim."<br>
+&nbsp;� <strong>Eval + Observability</strong> � "LangSmith traces everything. 30-Q golden set in CI blocks bad deploys."</p>
+<p><strong>When all six are added:</strong><br>
+"You just built an enterprise RAG system.<br>
+Notice what you did NOT change: the model, the query language, the UI.<br>
+You changed the data layer, the ingestion path, and the quality controls."</p></aside>
   </section>
 
   <!-- SPOT THE GAP -->
@@ -531,7 +687,22 @@
       </div>
       <div class="gap-panel"><em>Click each numbered circle above to reveal the gap it represents&hellip;</em></div>
     </div>
-    <aside class="notes">Three gaps hidden in the v0.1 diagram. Finding the gap is half the work � picking the correct fix is the other half. Gap 1 (near Response/OpenAI): No guardrails. NeMo Guardrails with citation = correct. Rate limit = wrong (controls cost not quality). GPT-4 upgrade = wrong (model does not self-cite unless enforced). Gap 2 (near Chroma): No dept isolation. Milvus namespace + dept_id filter = correct. Redis cache = wrong (speeds retrieval, does not isolate data). Filter by username = wrong (shared accounts still cross depts). Gap 3 (near FastAPI): No observability. LangSmith + 30-Q golden eval set = correct. More unit tests = wrong (catches code bugs not quality drift). Sentry error tracker = wrong (catches exceptions not retrieval degradation). Link each gap to a real incident: guardrails=wrong parental leave answer, isolation=IT runbook leak, observability=prompt change with no eval data.</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Interactive � find gaps AND pick the correct fix</strong></p>
+<p>Finding the gap is half the work � picking the correct fix from three options is the other half.</p>
+<p><strong>Gap 1 � No guardrails (near Response/OpenAI):</strong><br>
+&nbsp;� ? NeMo Guardrails with citation enforcement<br>
+&nbsp;� ? Rate limit � controls cost, not content quality<br>
+&nbsp;� ? GPT-4 upgrade � model does not self-cite unless enforced</p>
+<p><strong>Gap 2 � No dept isolation (near Chroma):</strong><br>
+&nbsp;� ? Milvus namespace + dept_id filter from JWT<br>
+&nbsp;� ? Redis cache � speeds retrieval, does not isolate data<br>
+&nbsp;� ? Filter by username � shared accounts still cross departments</p>
+<p><strong>Gap 3 � No observability (near FastAPI):</strong><br>
+&nbsp;� ? LangSmith + 30-question golden eval set in CI<br>
+&nbsp;� ? More unit tests � catches code bugs, not retrieval quality degradation<br>
+&nbsp;� ? Sentry error tracker � catches exceptions, not silent quality drift</p>
+<p><strong>Link each gap to a real incident:</strong><br>
+guardrails = wrong parental leave answer &nbsp;|&nbsp; isolation = IT runbook leak &nbsp;|&nbsp; observability = prompt change with no data</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -545,7 +716,21 @@
       </div>
     </div>
     <p class="aside"><strong>Target:</strong> Offline (CI gate): faithfulness &gt;0.85 + citation accuracy on 30 Qs. Online: thumbs-down rate, retrieval score drift, $/query.</p>
-    <aside class="notes">Start the 2-minute timer. Let students discuss in pairs. Prompt if quiet: "What is a correct answer for an LLM response? It is not word-for-word match. How do you verify it?" After timer, share the target. Offline = 30-question golden set in CI. Before every deploy, run all 30. Gate on faithfulness >=0.85 and citation presence. If it fails, deploy blocked. Online = 7 live signals in LangSmith: thumbs-down rate, retrieval score drift, context relevance, hallucination rate, cost per query, latency percentiles, agent success rate. Critical distinction: offline catches regressions YOU introduced (prompt changes, model swaps, chunking changes). Online catches drift THE WORLD introduced � new documents, changed query patterns, batch scripts burning budget. One sentence: "Offline catches what you broke. Online catches what the world broke."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Timed pair discussion</strong></p>
+<p>Start the 2-minute timer. Let students discuss in pairs.</p>
+<p><strong>Prompt if the room is quiet:</strong><br>
+"Start with this: what is a 'correct answer' for an LLM response?<br>
+It is not word-for-word match. How do you verify it?"</p>
+<p><strong>After timer � share the target answer:</strong></p>
+<p><strong>Offline eval:</strong> 30-question golden set in CI.<br>
+Before every deploy, run all 30 questions through the live stack.<br>
+Gate on faithfulness ? 0.85 and citation presence. If it fails, the deploy is blocked.</p>
+<p><strong>Online eval:</strong> 7 live signals in LangSmith:<br>
+thumbs-down rate � retrieval score drift � context relevance � hallucination rate � cost per query � latency percentiles � agent success rate</p>
+<p><strong>The critical distinction:</strong><br>
+Offline catches regressions <em>you</em> introduced (prompt changes, model swaps, chunking changes).<br>
+Online catches drift <em>the world</em> introduced � new documents, changed query patterns, batch scripts burning budget.</p>
+<p><strong>One sentence:</strong> "Offline catches what you broke. Online catches what the world broke."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -560,7 +745,12 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Both offline CI gate + online monitoring. Offline without online: you wait for users to discover production drift � like the parental leave incident. Online without offline: regressions ship unchecked every deploy. Neither alone is sufficient because they protect against completely different failure modes.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: eval strategy</strong></p>
+<p><strong>? Correct: Both offline CI gate + online monitoring.</strong></p>
+<p><strong>Why neither alone works:</strong><br>
+&nbsp;� Offline without online ? you wait for users to discover production drift (like the parental leave incident).<br>
+&nbsp;� Online without offline ? regressions ship unchecked every deploy.</p>
+<p>They protect against <strong>completely different failure modes</strong> and you need both.</p></aside>
   </section>
 </section>
 
@@ -643,7 +833,23 @@
         </svg>
       </div>
     </div>
-    <aside class="notes">Open: "A chatbot gives a wrong answer. An agent takes a wrong action. Completely different failure modes with completely different consequences." Click create_ticket (no guard) on POC side: "Called 47 times overnight. 12 duplicate tickets. $180 in tokens. No idempotency key, no approval gate, no step limit. Agent kept retrying because it never received confirmation that it succeeded." Click Policy engine on enterprise side: "Policy is code, not a prompt. Even if the LLM is jailbroken, the policy engine still runs. You cannot prompt-inject your way past a hard policy rule." Click Audit log: "Every step logged for 90 days. Without this, IT Security cannot investigate. With it, complete replay." Key line: "Agent safety is enforced by code and policy � not by hoping the model behaves. The model is not the last line of defence. The policy engine is."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Agent lens intro � click the diagram</strong></p>
+<p><strong>Open with:</strong><br>
+"A chatbot gives a wrong answer. An agent takes a wrong action.<br>
+Completely different failure modes with completely different consequences.<br>
+Twelve duplicate ServiceNow tickets took the IT team four hours to clean up."</p>
+<p><strong>Click create_ticket (no guard) on POC side:</strong><br>
+"Called 47 times in one overnight loop. 12 duplicates. $180 in tokens.<br>
+No idempotency key, no approval gate, no step limit."</p>
+<p><strong>Click Policy engine on enterprise side:</strong><br>
+"Policy is code, not a prompt.<br>
+Even if the LLM is jailbroken, the policy engine still runs.<br>
+You cannot prompt-inject your way past a hard policy rule."</p>
+<p><strong>Click Audit log:</strong><br>
+"Every step logged for 90 days. Without this, IT Security cannot investigate. With it, complete replay."</p>
+<p><strong>Key line:</strong><br>
+"Agent safety is enforced by code and policy � not by hoping the model behaves.<br>
+The model is not the last line of defence. The policy engine is."</p></aside>
   </section>
 
   <!-- TOOL POLICY GAME -->
@@ -699,7 +905,25 @@
       </div>
       <div id="tool-game-result"></div>
     </div>
-    <aside class="notes">Introduce: "You are the policy engine. Classify six tools into three zones: auto-approve, human gate required, or block entirely." Give the room 2 minutes to classify all six, then submit together. Correct answers: search_docs=auto, lookup_asset=auto, create_ticket=gate, update_salary=gate, send_email_all=block, delete_records=block. After results, read consequence log for mis-classified tools. create_ticket on auto ? 12 duplicate tickets, IT spent 4 hours cleaning up. send_email_all on gate ? human might approve mass email at 3 AM without reading carefully � block is correct for irreversible broadcasts to 800 people. search_docs on gate ? user waited 4 hours for a read-only lookup, friction without safety benefit. Classification rule to say clearly: "Read-only plus scoped = auto. Write plus reversible = gate. Write plus irreversible or high blast-radius = block. That rule classifies 90% of tools you will ever encounter."</aside>
+    <aside class="notes"><p><strong>? 4 min &nbsp;|&nbsp; Interactive � classify 6 tools</strong></p>
+<p><strong>Introduce:</strong><br>
+"You are the policy engine. Classify six tools into three zones:<br>
+auto-approve, human gate required, or block entirely."</p>
+<p>Give 2 minutes to classify all six, then submit together.</p>
+<p><strong>? Correct answers:</strong><br>
+&nbsp;� <code>search_docs</code> ? Auto (read-only, scoped to user's dept)<br>
+&nbsp;� <code>lookup_asset</code> ? Auto (read-only, scoped to requesting user)<br>
+&nbsp;� <code>create_ticket</code> ? Human gate (write action, reversible)<br>
+&nbsp;� <code>update_salary</code> ? Human gate (financial write, reversible with approval)<br>
+&nbsp;� <code>send_email_all</code> ? Block (irreversible broadcast to 800 people)<br>
+&nbsp;� <code>delete_records</code> ? Block (permanent data destruction)</p>
+<p><strong>After results � read consequence log for mis-classified tools:</strong><br>
+&nbsp;� <code>create_ticket</code> on auto ? 12 duplicate tickets, IT spent 4 hours cleaning up.<br>
+&nbsp;� <code>send_email_all</code> on gate ? human might approve a mass email at 3 AM without reading carefully.<br>
+&nbsp;� <code>search_docs</code> on gate ? user waited 4 hours for a read-only lookup. Friction, no safety benefit.</p>
+<p><strong>Classification rule:</strong><br>
+Read-only + scoped = auto. Write + reversible = gate. Write + irreversible or high blast-radius = block.<br>
+That rule classifies 90% of tools you will ever encounter.</p></aside>
   </section>
 
   <!-- OBSERVABILITY TRIAGE -->
@@ -733,7 +957,19 @@
         <em>Click the row that looks wrong&hellip;</em>
       </div>
     </div>
-    <aside class="notes">Introduce: "This is a real trace from a NovaAssist v1.5 session. Five tool calls. One problem. 20 seconds � which row doesn't belong?" Wait for the room. Rows 3 and 4: create_ticket called twice, identical params, same session. After someone identifies it, click one of the highlighted rows to open the fix panel. Idempotency key = correct: hash(tool + params + session_id), check if seen in last 5 min, return existing ticket ID if yes. One lookup prevents all duplicates. Retry with exponential backoff = wrong: controls WHEN you retry on failure, does not prevent a duplicate when the first call already succeeded. Circuit breaker = wrong: stops calls to a FAILING service � here the service succeeded both times. After correct fix selected: "One field. One hash. Prevents all 12 duplicates. The idempotency key is the most underrated engineering pattern in agentic AI."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Read the agent trace � find and fix the anomaly</strong></p>
+<p><strong>Introduce:</strong><br>
+"This is a real trace from a NovaAssist v1.5 session. Five tool calls. One problem.<br>
+20 seconds � which row doesn't belong?"</p>
+<p>Wait for the room. Rows 3 and 4: <code>create_ticket</code> called twice, identical params, same session.</p>
+<p>After someone identifies it, click one of the highlighted rows to open the fix panel.</p>
+<p><strong>Fix options:</strong><br>
+&nbsp;� ? <strong>Idempotency key</strong> � hash(tool + params + session_id), check if seen in last 5 min. Return existing ticket ID if yes. One lookup prevents all duplicates.<br>
+&nbsp;� ? <strong>Retry with exponential backoff</strong> � controls WHEN you retry on failure. Does not prevent a duplicate when the first call already succeeded.<br>
+&nbsp;� ? <strong>Circuit breaker</strong> � stops calls to a FAILING service. Here the service succeeded both times. Wrong tool for this problem.</p>
+<p><strong>After correct fix:</strong><br>
+"One field. One hash. Prevents all 12 duplicates.<br>
+The idempotency key is the most underrated engineering pattern in agentic AI."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -747,7 +983,17 @@
       </div>
     </div>
     <p class="aside"><strong>Target:</strong> Human gate + amount threshold (&lt;$50 auto, $50—$500 gate, &gt;$500 block). Two-factor approval if &gt;$200. Never auto-approve financial writes.</p>
-    <aside class="notes">Start the 2-minute timer. Let students discuss in pairs. Expected answer: tiered policy, not a single classification. Under $50 = maybe auto if the business accepts that risk. $50-$500 = human gate showing the exact resolved action (customer_id, exact amount). Over $500 = block, require a separate process. Key insight: by the time the policy engine evaluates this decision, the agent has already resolved the vague request � "refund John's last order" � into a specific structured call: refund_payment(customer_id=1047, amount=340). The approver sees the exact number, not the vague sentence. They approve or reject a specific action.</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Timed pair discussion</strong></p>
+<p>Start the 2-minute timer. Let students discuss in pairs.</p>
+<p><strong>Expected answer � tiered policy, not a single zone:</strong><br>
+&nbsp;� Under $50 ? maybe auto (if the business accepts that risk)<br>
+&nbsp;� $50�$500 ? human gate, showing the exact resolved action<br>
+&nbsp;� Over $500 ? block, require a separate process</p>
+<p><strong>Key insight:</strong><br>
+By the time the policy engine evaluates this decision, the agent has already resolved the vague request �<br>
+"refund John's last order" ? <code>refund_payment(customer_id=1047, amount=340)</code><br>
+The approver sees the <strong>exact number</strong>, not the vague sentence.<br>
+They approve or reject a specific action, not an abstract instruction.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -762,7 +1008,14 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Policy engine + idempotency key + max_steps=8 + timeout. Idempotency key: hash(tool + params + session_id), check if seen in last 5 minutes, return existing ticket ID if yes. One check prevents all 12 duplicates. max_steps=8: if the agent loops 8 times it stops and asks the user. Both guards needed together: idempotency prevents duplicate execution, max_steps prevents infinite loops.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: 12 duplicate tickets</strong></p>
+<p><strong>? Correct: Policy engine + idempotency key + max_steps=8 + timeout.</strong></p>
+<p><strong>Idempotency key:</strong><br>
+hash(tool + params + session_id) ? check if seen in last 5 min ? return existing ticket ID if yes.<br>
+One check prevents all 12 duplicates.</p>
+<p><strong>max_steps=8:</strong><br>
+If the agent loops 8 times it stops and asks the user � prevents infinite loops.</p>
+<p>Both guards are needed together: idempotency prevents duplicate execution, max_steps prevents runaway loops.</p></aside>
   </section>
 </section>
 
@@ -833,7 +1086,20 @@
         </svg>
       </div>
     </div>
-    <aside class="notes">Key surprise: 62% of the $4,200 bill was embedding � not generation. Alex thought the expensive part was the LLM. It was the embeddings. Click the orange openai.chat.completions node first: "Re-embedding on every query plus re-embedding all docs during upload � a 3x cost multiplier." Click Complexity router on enterprise side: "Highest-leverage change. Intent classifier routes 80% of queries (FAQ) to Llama-8B NIM at $0 marginal cost. Only the 20% needing multi-step reasoning go to the cloud LLM." Click NIM Embed: "Self-hosted embedding at $0 per embed after GPU cost. This alone reduces the bill from $4,200 to under $1,000 per month at the same traffic volume." Click Cost dashboard: "CFO sees this. No dashboard = no trust = no v3.0 budget. Model is NOT the expensive part."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Inference lens � click both diagrams</strong></p>
+<p><strong>Key surprise to open with:</strong><br>
+"62% of the $4,200 bill was <em>embedding</em> � not generation.<br>
+Alex thought the expensive part was the LLM. It was the embeddings."</p>
+<p><strong>Click the orange openai.chat.completions node (POC side):</strong><br>
+"Re-embedding on every query plus re-embedding all docs during upload � a 3� cost multiplier."</p>
+<p><strong>Click Complexity router (enterprise side):</strong><br>
+"Highest-leverage change. Intent classifier routes 80% of queries (FAQ) to Llama-8B NIM at $0 marginal cost.<br>
+Only the 20% needing multi-step reasoning go to the cloud LLM."</p>
+<p><strong>Click NIM Embed:</strong><br>
+"Self-hosted embedding at $0 per embed after GPU cost.<br>
+This one change reduces the bill from $4,200 to under $1,000 per month at the same traffic volume."</p>
+<p><strong>Click Cost dashboard:</strong><br>
+"CFO sees this. No dashboard = no trust = no v3.0 budget."</p></aside>
   </section>
 
   <!-- COST SIMULATOR + SLO TAB -->
@@ -930,7 +1196,21 @@
         <p class="aside" style="margin-top:0.4em;font-size:0.72em">NovaAssist v2.0 SLA: p99 &lt; 1.2 s &middot; uptime 99.5% (= 3.6 h error budget/month) &middot; &lt;$2K/month. Cost and reliability are always in tension &mdash; pick two and fight for the third.</p>
       </div>
     </div>
-    <aside class="notes">Cost tab first: start at defaults (100% cloud, 0% cache, 400ms latency) � shows ~$4,200/month, ~850ms p99. This is Incident B. Adjust deliberately: (1) move cloud to 20% � most queries go to self-hosted Llama-8B, watch cost drop; (2) move cache to 70% � top-200 FAQ embeddings cached, embedding cost collapses; (3) move cache latency to 50ms � faster than any cloud API call. CFO verdict should show Approved. "Cost AND p99 latency both must meet target � the CFO gave two constraints, architecture satisfies both simultaneously." SLO tab: 99.5% sounds high but is only 3.6 hours error budget per month. Move to 99.9% = 43 minutes. 99.99% = 4 minutes. "Cost and reliability are always in tension. More nines = more infrastructure spend. Cannot maximise both for free."</aside>
+    <aside class="notes"><p><strong>? 4 min &nbsp;|&nbsp; Interactive � two tabs</strong></p>
+<p><strong>Cost tab (first ~2.5 min):</strong></p>
+<p>Start at defaults: 100% cloud, 0% cache, 400ms latency ? shows ~$4,200/month, ~850ms p99. This is Incident B.</p>
+<p>Adjust deliberately:<br>
+&nbsp;1. Move cloud to 20% ? "Most queries go to self-hosted Llama-8B. Watch the cost drop."<br>
+&nbsp;2. Move cache to 70% ? "Top-200 FAQ embeddings cached. Embedding cost collapses."<br>
+&nbsp;3. Move cache latency to 50ms ? "Faster than any cloud API call."</p>
+<p>CFO verdict should show <strong>Approved ?</strong>.<br>
+"Cost AND p99 latency both must meet target � the CFO gave two constraints, architecture satisfies both simultaneously."</p>
+<p><strong>SLO tab (last ~1.5 min):</strong></p>
+<p>"NovaAssist v2.0 commits to 99.5% uptime. That sounds high. What does it actually mean?"<br>
+&nbsp;� 99.5% = 3.6 hours error budget per month<br>
+&nbsp;� 99.9% = 43 minutes<br>
+&nbsp;� 99.99% = 4 minutes � requires multi-region active-active</p>
+<p>"Cost and reliability are always in tension. More nines = more infrastructure spend. Cannot maximise both for free."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -944,7 +1224,16 @@
       </div>
     </div>
     <p class="aside"><strong>Target:</strong> Intent classifier (Llama-8B, $0) decides: FAQ &rarr; Llama-8B; multi-step agent/low-confidence RAG &rarr; gpt-4o-mini. Routing decision itself is cheap.</p>
-    <aside class="notes">Start 1:30 timer � shorter discussion, concept is more constrained. After timer: the routing decision itself must be cheaper than either model. A lightweight intent classifier � small self-hosted model or even keyword rules � buckets each query. FAQ questions go to Llama-8B. Complex reasoning, low-confidence retrieval, agent steps go to cloud. The classifier costs almost nothing. 80% of NovaAssist queries are FAQ. Routing them to self-hosted is the single biggest cost saving. That is what gets you under the CFO's $2K cap.</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Timed discussion � shorter, concept is constrained</strong></p>
+<p>Start the 1:30 timer.</p>
+<p><strong>After timer � the key insight:</strong><br>
+The routing decision itself must be <em>cheaper</em> than either model.<br>
+A lightweight intent classifier � small self-hosted model or keyword rules � buckets each query:</p>
+<p>&nbsp;� FAQ questions ? Llama-8B NIM ($0 marginal cost)<br>
+&nbsp;� Complex reasoning, agent steps ? cloud LLM<br>
+&nbsp;� Low-confidence retrieval ? cloud LLM</p>
+<p>80% of NovaAssist queries are FAQ. Routing them to self-hosted is the <strong>single biggest cost saving</strong>.<br>
+The classifier costs almost nothing. The savings on the 80% is what gets you under the CFO's $2K cap.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -959,7 +1248,16 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: RAG ingestion pipeline + routing + eval. Fine-tuning bakes knowledge into frozen weights � if docs update weekly, the model is always stale by the time training completes. RAG externalises knowledge into a vector store updated in real time. Update a PDF today, model answers correctly today. No retraining needed. Fine-tuning = teaching the model a new skill. RAG = giving the model a library to look things up in. NovaAssist needs a library that updates on Mondays � not a skill.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Quiz: 2,000 PDFs updated weekly</strong></p>
+<p><strong>? Correct: RAG ingestion pipeline + routing + eval.</strong></p>
+<p><strong>Why not fine-tuning?</strong><br>
+Fine-tuning bakes knowledge into frozen weights.<br>
+If docs update weekly, the model is always stale by the time training completes.<br>
+RAG externalises knowledge into a vector store updated in real time � update a PDF today, model answers correctly today.</p>
+<p><strong>The rule:</strong><br>
+Fine-tuning = teach the model a new <em>skill</em>.<br>
+RAG = give the model a <em>library</em> to look things up in.<br>
+NovaAssist needs a library that updates on Mondays � not a skill.</p></aside>
   </section>
 </section>
 
@@ -1001,7 +1299,16 @@
       <text x="250" y="300" fill="#8CAFD0" text-anchor="middle" font-size="9">Auth &middot; Observability &middot; CI/CD &middot; Governance &middot; Secrets &middot; Cost mgmt</text>
     </svg>
     <p class="aside" style="font-size:0.65em;margin-top:0.3em">Click any layer &mdash; trace "Reset my VPN": Experience &rarr; Orchestration (agent plans) &rarr; AI Services (RAG doc) &rarr; Data (Milvus IT ns) &rarr; Platform (audit + cost)</p>
-    <aside class="notes">Click each layer and trace a real request � "Reset my VPN." Experience: HTTP request hits FastAPI, Azure AD SSO validates the JWT, token contains user identity and dept=IT. No valid JWT = 401, full stop. Orchestration: LangGraph agent plans, policy engine consulted before any tool call. AI Services: RAG retrieves VPN runbook from Milvus IT namespace only, dept_id filter from JWT, reranker scores chunks, LLM generates, NeMo Guardrails checks citation. Data: Milvus IT namespace � dept_id filter makes it architecturally impossible for any HR or Finance document to appear. Platform: LangSmith logs full trace (retrieval scores, latency, token cost, guardrail events), cost dashboard records this query in IT budget line. Closing line: "One request. Five layers. Each layer has one job. Enterprise architecture is making sure each layer does only its job and hands off cleanly to the next."</aside>
+    <aside class="notes"><p><strong>? 3 min &nbsp;|&nbsp; Five-layer diagram � trace a request</strong></p>
+<p>Click each layer and trace a real request: <strong>"Reset my VPN."</strong></p>
+<p>&nbsp;� <strong>Experience</strong> � JWT validates, dept=IT extracted. No valid JWT = 401, full stop.<br>
+&nbsp;� <strong>Orchestration</strong> � LangGraph agent plans. Policy engine consulted before any tool call.<br>
+&nbsp;� <strong>AI Services</strong> � RAG retrieves VPN runbook from Milvus IT namespace only, dept_id filter from JWT. Reranker scores chunks. LLM generates. NeMo Guardrails checks citation.<br>
+&nbsp;� <strong>Data</strong> � Milvus IT namespace. dept_id filter makes it architecturally impossible for any HR or Finance document to appear.<br>
+&nbsp;� <strong>Platform</strong> � LangSmith logs full trace (retrieval scores, latency, token cost). Cost dashboard records this query in the IT department's budget line.</p>
+<p><strong>Closing line:</strong><br>
+"One request. Five layers. Each layer has one job.<br>
+Enterprise architecture is making sure each layer does only its job and hands off cleanly to the next."</p></aside>
   </section>
 
   <section data-background-color="#011749" class="compact-section">
@@ -1086,7 +1393,21 @@
         <p class="adr-save-msg"></p>
       </div>
     </div>
-    <aside class="notes">Introduce: "This is an Architecture Decision Record exercise. You are Alex choosing a vector store for NovaAssist: Chroma, Milvus, or pgvector. No single correct answer � the right choice depends on what you prioritise. That is exactly what an ADR captures." Equal weights (all 3.0): Milvus wins on combined score � but is that right for every team? Push Ops Cost to 5: Chroma becomes very attractive (zero-ops, free, familiar) � defensible for single-dept prototype with no multi-tenancy requirement. Push Multi-tenancy to 5: Milvus wins clearly. Chroma scores 1/5 � no native multi-tenancy. This is NovaAssist's actual constraint. Push Familiarity to 5 and lower multi-tenancy to 2: pgvector wins � team knows Postgres deeply, Row-Level Security provides isolation, runs on existing infrastructure. After Lock in: "The point is not to pick the correct database. The point is to defend your choice given your constraints. Every ADR is: context, decision, consequences."</aside>
+    <aside class="notes"><p><strong>? 4 min &nbsp;|&nbsp; Interactive � weighted decision scoring</strong></p>
+<p><strong>Introduce:</strong><br>
+"This is an Architecture Decision Record exercise.<br>
+You are Alex choosing a vector store: Chroma, Milvus, or pgvector.<br>
+No single correct answer � the right choice depends on what you prioritise. That is exactly what an ADR captures."</p>
+<p><strong>Walk through the weight scenarios:</strong><br>
+&nbsp;� <strong>Equal weights (all 3.0)</strong> ? Milvus wins. But is that right for every team?<br>
+&nbsp;� <strong>Push Ops Cost to 5</strong> ? Chroma attractive (zero-ops, free, familiar). Defensible for a single-dept prototype.<br>
+&nbsp;� <strong>Push Multi-tenancy to 5</strong> ? Milvus wins clearly. Chroma scores 1/5 � no native multi-tenancy. This is NovaAssist's actual constraint.<br>
+&nbsp;� <strong>Push Familiarity to 5, lower multi-tenancy</strong> ? pgvector wins. Team knows Postgres, Row-Level Security provides isolation.</p>
+<p><strong>After Lock in my decision:</strong><br>
+"The point is not to pick the correct database.<br>
+The point is to defend your choice given your constraints.<br>
+Every ADR is: context, decision, consequences.<br>
+We never said Milvus is always right or Chroma is always wrong."</p></aside>
   </section>
 </section>
 
@@ -1096,7 +1417,13 @@
     <span class="part-label">PART 6</span>
     <h2>Final Quiz &mdash; NovaAssist Scenarios</h2>
     <p>Answer as Alex's architecture advisor.</p>
-    <aside class="notes">Say: "Five questions. Each one is a NovaAssist scenario. Answer as Alex's architecture advisor � the person responsible for the decision, not just the code." Let students answer, then reveal. Give one sentence of explanation per question. Do not spend more than 2 minutes per question � the explanations are in the success/failure text already on the slide.</aside>
+    <aside class="notes"><p><strong>? 30 sec &nbsp;|&nbsp; Final quiz intro</strong></p>
+<p><strong>Say:</strong><br>
+"Five questions. Each one is a NovaAssist scenario.<br>
+Answer as Alex's architecture advisor �<br>
+the person responsible for the decision, not just the code."</p>
+<p>Let students answer, then reveal. Give one sentence of explanation.<br>
+Do not spend more than 2 minutes per question.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1114,7 +1441,19 @@
       <button type="button" class="quiz-multiselect-submit poll-submit" disabled style="margin-top:8px">Check my selection</button>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Multi-select � must pick exactly two. Correct: Milvus namespace with mandatory dept_id filter (fixes data isolation, Pillar 1) PLUS embedding cache and NIM routing for 80% of queries (fixes cost, Pillar 5). Two changes attacking two completely different pillars simultaneously. GPT-4 upgrade: does not isolate data or reduce embedding cost. Fine-tuning: expensive and stale with weekly doc updates. Audit logs: add traceability but do not reduce cost or improve isolation. Key message: "Enterprise solutions often need to target multiple pillars simultaneously. That is the compound thinking this question tests."</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Q1 � compound multi-select</strong></p>
+<p>Must pick exactly <strong>two</strong> options.</p>
+<p><strong>? Correct: Milvus namespace + embedding cache and NIM routing.</strong><br>
+Two changes attacking two completely different pillars simultaneously:</p>
+<p>&nbsp;� <strong>Milvus namespace + mandatory dept_id filter</strong> ? fixes data isolation (Pillar 1)<br>
+&nbsp;� <strong>Embedding cache + NIM routing (80% to Llama-8B)</strong> ? fixes cost (Pillar 5)</p>
+<p><strong>Why the wrong options are wrong:</strong><br>
+&nbsp;� GPT-4 upgrade � does not isolate data or reduce embedding cost<br>
+&nbsp;� Fine-tuning � expensive and stale with weekly doc updates<br>
+&nbsp;� Audit logs � add traceability but do not reduce cost or improve isolation</p>
+<p><strong>Key message:</strong><br>
+"Enterprise solutions often need to target multiple pillars simultaneously.<br>
+That is the compound thinking this question tests."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1129,7 +1468,16 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Fix chunking + add reranker + run 30-Q eval. Most common misdiagnosis in RAG: fluent LLM prose with wrong chunks ? students reach for a bigger model. Wrong. The LLM is working perfectly � generating fluent text from the wrong source. You cannot fix a retrieval problem by upgrading the generator. Fix the retrieval: tune chunk sizes, add a reranker, gate on your golden eval set. NovaAssist: same model as v0.1, same prompt, just added a reranker. Precision went from 0.61 to 0.89.</aside>
+    <aside class="notes"><p><strong>? 1.5 min &nbsp;|&nbsp; Q2 � fluent text, wrong chunks</strong></p>
+<p><strong>? Correct: Fix chunking + add reranker + run 30-Q eval.</strong></p>
+<p>Most common misdiagnosis in RAG: students reach for a bigger model. Wrong.</p>
+<p><strong>The diagnosis:</strong><br>
+Fluent LLM text + wrong chunks = <em>retrieval</em> problem, not a model problem.<br>
+The LLM is working perfectly � it is generating fluent text from the wrong source.<br>
+You cannot fix a retrieval problem by upgrading the generator.</p>
+<p><strong>NovaAssist result:</strong><br>
+Same model as v0.1, same prompt, just added a reranker.<br>
+Precision: 0.61 ? 0.89.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1145,7 +1493,20 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Route 80% of queries to self-hosted Llama-8B NIM + cache top-200 FAQ embeddings. Hardest question � two constraints simultaneously: cost AND latency. Most interventions only address one. Bigger cloud model: raises both cost AND latency. Async worker: helps upload latency but not query cost. Audit logs: add compliance cost. NIM routing + embedding cache attacks both: most queries become $0 marginal cost and sub-200ms from cache or self-hosted model. Key message: "If you ever have two conflicting constraints from two stakeholders, find the change that addresses both simultaneously. That is the lever."</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Q3 � hardest question: two constraints</strong></p>
+<p><strong>? Correct: Route 80% to self-hosted Llama-8B NIM + cache top-200 FAQ embeddings.</strong></p>
+<p>This is the hardest question � two constraints simultaneously: <strong>cost AND latency</strong>.<br>
+Most interventions only address one.</p>
+<p><strong>Why the wrong answers fail:</strong><br>
+&nbsp;� Bigger cloud model ? raises both cost AND latency<br>
+&nbsp;� Async worker ? helps upload latency, does not touch query cost<br>
+&nbsp;� Audit logs ? add compliance but also add cost</p>
+<p><strong>Why NIM routing + cache wins:</strong><br>
+Most queries become $0 marginal cost and sub-200ms � served from cache or the self-hosted model.<br>
+Both constraints satisfied with one architectural change.</p>
+<p><strong>Key message:</strong><br>
+"If you ever have two conflicting constraints from two stakeholders,<br>
+find the change that addresses both simultaneously. That is the lever."</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1160,7 +1521,15 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: FAQ cache + NIM Llama-8B for 80% of queries + cache embeddings. 8-second p99 and $4K/month. The diagnosis: most queries are FAQ, every query hits the cloud LLM, embeddings recomputed on every request. Removing rate limits: makes both latency and cost worse. Longer system prompts: increase token count and cost. The lever is routing and caching � not the prompt, not the model.</aside>
+    <aside class="notes"><p><strong>? 1.5 min &nbsp;|&nbsp; Q4 � high bill, high latency</strong></p>
+<p><strong>? Correct: FAQ cache + NIM Llama-8B for 80% of queries + cache embeddings.</strong></p>
+<p><strong>The diagnosis:</strong><br>
+Most queries are FAQ ? hitting the cloud LLM unnecessarily.<br>
+Embeddings recomputed on every request ? driving up cost and latency.</p>
+<p><strong>Why the wrong answers are wrong:</strong><br>
+&nbsp;� Remove rate limits ? makes both latency and cost worse<br>
+&nbsp;� Longer system prompts ? increase token count and cost<br>
+The lever is routing and caching � not the prompt, not the model.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1175,7 +1544,14 @@
       </div>
       <p class="quiz-feedback"></p>
     </div>
-    <aside class="notes">Correct: Data & Governance (Pillar 1). Students still sometimes say Security � same distinction as Quiz 1 at the start of Part 1. Authentication was working fine. The logged-in HR employee received documents from the wrong namespace because there was no namespace. Security failure = unauthenticated user accessing the system. Data & Governance failure = authenticated user accessing the wrong tenant's data.</aside>
+    <aside class="notes"><p><strong>? 1 min &nbsp;|&nbsp; Q5 � IT/HR doc leak pillar</strong></p>
+<p><strong>? Correct: Data &amp; Governance (Pillar 1).</strong></p>
+<p>Students still sometimes say Security � same distinction as Quiz 1 at the start of Part 1.</p>
+<p><strong>The distinction:</strong><br>
+&nbsp;� Security failure = unauthenticated user accessing the system.<br>
+&nbsp;� Data &amp; Governance failure = authenticated user accessing the wrong tenant's data.</p>
+<p>Authentication was working fine. The logged-in HR employee received documents from the wrong namespace<br>
+because there was <em>no namespace</em>. The isolation layer was missing.</p></aside>
   </section>
 
   <section data-background-color="#011749">
@@ -1202,14 +1578,45 @@
       <button type="button" id="export-checklist">Copy checklist to clipboard</button>
       <button type="button" id="print-checklist">Print checklist</button>
     </div>
-    <aside class="notes">Walk through briefly � do not read every line. Pick 5 most relevant to your audience. Always read these three: (1) Dept namespace on every vector query � the fix for Incident A (IT runbook in HR results). (2) Secrets in Key Vault, never in git or .env � the fix for Incident D (scraped API key). (3) Idempotency key on create_ticket and all write tools � the fix for the 12 duplicate tickets. Then say: "Your README should name which pillars you knowingly skipped and why. 'We deferred tenant isolation because this is a single-user prototype; before production we would add namespace filtering.' That one sentence demonstrates the kind of thinking that separates a junior engineer from a senior one." Ask if anyone wants to copy or print the checklist � the buttons are on the slide.</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Portable reference card</strong></p>
+<p>Walk through briefly � <strong>do not read every line</strong>. Pick 5 most relevant to your audience.</p>
+<p><strong>Always read these three:</strong><br>
+&nbsp;1. <strong>Dept namespace on every vector query</strong> � the fix for Incident A (IT runbook in HR results).<br>
+&nbsp;2. <strong>Secrets in Key Vault, never in git or .env</strong> � the fix for Incident D (scraped API key).<br>
+&nbsp;3. <strong>Idempotency key on all write tools</strong> � the fix for the 12 duplicate tickets.</p>
+<p><strong>Say:</strong><br>
+"This checklist is not only for NovaAssist.<br>
+Your README should name which pillars you knowingly skipped and why.<br>
+'We deferred tenant isolation because this is a single-user prototype;<br>
+before production we would add namespace filtering.'<br>
+That one sentence demonstrates the kind of thinking that separates a junior engineer from a senior one."</p>
+<p>Ask if anyone wants to copy or print � buttons are on the slide.</p></aside>
   </section>
 
   <section class="title-slide" data-background-color="#011749">
     <h1>Alex's Lesson</h1>
     <p class="subtitle">The demo that wins applause is not the architecture that survives Monday.</p>
     <p class="meta">Take your worksheet. Redraw NovaAssist v2.0 from memory tonight.<br>If you can trace one request through 5 layers, you understand enterprise AI.</p>
-    <aside class="notes">Read the closing line slowly: "The demo that wins applause is not the architecture that survives Monday." Then: "Alex's POC was good. It proved the idea could work. That is exactly what a POC is for. The mistake was calling it production before running the risk list. Every failure in Week 2 was already visible in the code on Friday. None were surprises. Enterprise architecture is the discipline of finding those failures before your users do." Closing challenge: "Tonight � not next week, tonight � close your laptop and try to redraw NovaAssist v2.0 from memory. Five layers, three lenses. If you can trace one request from the chat UI through authentication through the RAG pipeline through the data layer and out to the audit log � you understood this workshop." Practical action: "This week, write one Architecture Decision Record for your own project. Context: what problem were you solving. Decision: what you chose and what you ruled out. Consequences: what you gained and what you deferred. That single habit separates people who build demos from people who build systems." Pause. Let the room sit with it. Then open for questions.</aside>
+    <aside class="notes"><p><strong>? 2 min &nbsp;|&nbsp; Closing � slow down</strong></p>
+<p>Read the closing line <strong>slowly</strong>:<br>
+"The demo that wins applause is not the architecture that survives Monday."</p>
+<p><strong>Then:</strong><br>
+"Alex's POC was good. It proved the idea could work. That is exactly what a POC is for.<br>
+The mistake was calling it production before running the risk list.<br>
+Every failure in Week 2 was already visible in the code on Friday. None were surprises.<br>
+Enterprise architecture is the discipline of finding those failures before your users do."</p>
+<p><strong>Closing challenge:</strong><br>
+"Tonight � not next week, tonight � close your laptop and try to redraw NovaAssist v2.0 from memory.<br>
+Five layers, three lenses. If you can trace one request from the chat UI through authentication,<br>
+through the RAG pipeline, through the data layer, and out to the audit log �<br>
+you understood this workshop."</p>
+<p><strong>Practical action:</strong><br>
+"This week, write one Architecture Decision Record for your own project.<br>
+Context: what problem were you solving.<br>
+Decision: what you chose and what you ruled out.<br>
+Consequences: what you gained and what you deferred.<br>
+That single habit separates people who build demos from people who build systems."</p>
+<p><strong>Pause.</strong> Let the room sit with it for a moment. Then open for questions.</p></aside>
   </section>
 </section>
 
