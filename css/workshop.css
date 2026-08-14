@@ -1568,12 +1568,19 @@ body {
 
 .trace-row {
   display: grid;
-  grid-template-columns: 24px 110px 1fr 56px 68px 72px;
-  gap: 4px 8px;
+  grid-template-columns: 22px 108px 1fr 64px 76px 86px;
+  gap: 4px 6px;
   align-items: center;
   padding: 6px 10px;
   border-bottom: 1px solid var(--border);
   cursor: default;
+}
+
+.trace-row > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .trace-row:last-child { border-bottom: none; }
